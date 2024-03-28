@@ -3,7 +3,7 @@ from datetime import datetime
 
 conn = psycopg2.connect(
     host="localhost",
-    database="university",
+    database="COMP3005_Final",
     user="postgres",
     password="student"
 )

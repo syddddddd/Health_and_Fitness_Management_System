@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.Scanner;
 
 public class Main {
 
@@ -17,13 +18,35 @@ public class Main {
             connection = DriverManager.getConnection(url, user, password);
 
             // Check if connected
+            /*
             if (connection != null) {
                 System.out.println("Connected to PostgreSQL successfully!");
             } else {
                 System.out.println("Failed to establish connection.");
             }
+            */
 
-            // functions can go here
+            // login
+            while (true){
+
+                System.out.println("Health and Fitness Club Management System");
+                System.out.println("-----------------------------------------");
+                System.out.println("Member login:  0");
+                System.out.println("Trainer login: 1");
+                System.out.println("Admin login:   2");
+                System.out.println("Exit program:  3");
+                System.out.println();
+
+                Scanner input = new Scanner(System.in);
+
+                System.out.print("Please enter your choice: ");
+                int choice = input.nextInt();
+
+                if (choice == 3){
+                    break;
+                }
+
+            }
 
             connection.close();
         } catch (ClassNotFoundException | SQLException e) {

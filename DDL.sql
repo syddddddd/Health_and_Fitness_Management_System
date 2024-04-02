@@ -1,5 +1,5 @@
 -- create members table
-CREATE TABLE Members(
+CREATE TABLE Member(
     member_id SERIAL PRIMARY KEY,
     fname VARCHAR(255) NOT NULL,
     lname VARCHAR(255) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE Schedule(
     availability VARCHAR(255) NOT NULL,
     session_type VARCHAR(255) NOT NULL,
     FOREIGN KEY (member_id)
-        REFERENCES Members,
+        REFERENCES Member,
     FOREIGN KEY (trainer_id)
         REFERENCES Trainers
 );

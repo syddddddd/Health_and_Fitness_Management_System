@@ -58,7 +58,8 @@ CREATE TABLE Admin(
 
 --create schedule table
 CREATE TABLE Schedule(
-    time_slot PRIMARY KEY TIME NOT NULL,
+    schedule_id SERIAL PRIMARY KEY,
+    time_slot TIME NOT NULL, -- primary key option?
     member_id INT REFERENCES Member(member_id),
     trainer_id INT REFERENCES Trainer(trainer_id),
 
@@ -71,5 +72,33 @@ CREATE TABLE Schedule(
 
 );
 
--- personal info table for all of them???
--- keep track of things like names, emails, phones, birth_date, sex
+-- create dashboard table
+CREATE TABLE Dashboard(
+    dashboard_id SERIAL PRIMARY KEY,
+    member_id INT REFERENCES Member(member_id),
+
+    -- health stats
+    -- multiple attributes exercise routines
+    -- multiple attributes fitness achievements
+);
+
+-- create booking table
+CREATE TABLE Booking (
+    booking_id SERIAL PRIMARY KEY,
+    time_slot DATE DEFAULT CURRENT_DATE,
+    room_id INT NOT NULL
+    -- need to create a room table? aka keep track of number, capacity and equipment
+);
+
+-- create equipment table????
+
+-- create maintenance table
+CREATE TABLE Maintenance (
+   maintenance_id SERIAL PRIMARY KEY,
+   equipment_id INT NOT NULL, -- could be a reference to a table
+   equip_name VARCHAR(255) NOT NULL,
+   model_year DATE DEFAULT CURRENT_DATE,
+   purchase_date DATE DEFAULT CURRENT_DATE,
+   last_checkup DATE DEFAULT CURRENT_DATE,
+   working_orderVARCHAR(255) NOT NULL
+);

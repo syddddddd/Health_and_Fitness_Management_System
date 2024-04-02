@@ -19,6 +19,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.current_user = None
+        self.username = None
 
         self.setWindowTitle('Main Window')
         #self.setGeometry(100, 100, 400, 300)
@@ -66,7 +67,6 @@ class UserChoiceWindow(QDialog):
     def open_widget(self):
         MainWindow.current_user = self.dropdown.currentText()
         self.accept()
-
 
 
 class LoginWindow(QDialog):

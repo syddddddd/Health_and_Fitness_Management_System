@@ -15,5 +15,5 @@ CREATE TABLE Members(
     height INT,
     goal_weight INT,
     distance INT,
-    time TIME
+    goal_time TIME
 );

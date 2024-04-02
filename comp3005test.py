@@ -40,9 +40,6 @@ class MainWindow(QMainWindow):
         login.exec_()
 
 
-        #dialog.exec_()
-
-
 class UserChoiceWindow(QDialog):
     def __init__(self):
         super().__init__()

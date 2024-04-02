@@ -102,3 +102,13 @@ CREATE TABLE Maintenance (
    last_checkup DATE DEFAULT CURRENT_DATE,
    working_orderVARCHAR(255) NOT NULL
 );
+
+-- create payment table
+CREATE TABLE Payment (
+   payment_id SERIAL PRIMARY KEY,
+   member_id INT REFERENCES Member(member_id),
+   member_fee INT NOT NULL
+
+    -- group/single sessions?
+    -- monthly or all at once??
+);

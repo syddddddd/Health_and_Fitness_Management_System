@@ -1,3 +1,4 @@
+from re import match
 
 import psycopg2
 from datetime import datetime
@@ -12,7 +13,7 @@ from PyQt5.QtWidgets import \
     QComboBox, \
     QLineEdit, \
     QHBoxLayout
-#from comp3005Functions import *
+from FitnessFunctions import *
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -148,86 +149,127 @@ class RegisterWindow(QDialog):
         super().__init__()
         self.setWindowTitle(f'Registration Window')
 
-        form = QHBoxLayout()
-        col1 = QVBoxLayout()
-        col2 = QVBoxLayout()
+        self.currentUser = currentUser
+
+        self.form = QHBoxLayout()
+        self.col1 = QVBoxLayout()
+        self.col2 = QVBoxLayout()
 
         personalLabel = QLabel('PERSONAL INFO')
-        spaceLabel = QLabel('')
-        col1.addWidget(personalLabel)
-        col2.addWidget(spaceLabel)
+        self.spaceLabel = QLabel('')
+        self.col1.addWidget(personalLabel)
+        self.col2.addWidget(self.spaceLabel)
 
         fnameLabel = QLabel('First Name:')
         self.first = QLineEdit()
         self.first.setMaxLength(40)
         self.first.setPlaceholderText("Enter your text")
-        col1.addWidget(fnameLabel)
-        col2.addWidget(self.first)
+        self.col1.addWidget(fnameLabel)
+        self.col2.addWidget(self.first)
 
         lnameLabel = QLabel('Last Name:')
         self.last = QLineEdit()
         self.last.setMaxLength(40)
         self.last.setPlaceholderText("Enter your text")
-        col1.addWidget(lnameLabel)
-        col2.addWidget(self.last)
+        self.col1.addWidget(lnameLabel)
+        self.col2.addWidget(self.last)
 
         userLabel = QLabel('Username:')
         self.username = QLineEdit()
         self.username.setMaxLength(40)
         self.username.setPlaceholderText("Enter your text")
-        col1.addWidget(userLabel)
-        col2.addWidget(self.username)
+        self.col1.addWidget(userLabel)
+        self.col2.addWidget(self.username)
 
         passLabel = QLabel('Password:')
         self.password = QLineEdit()
         self.password.setMaxLength(40)
         self.password.setPlaceholderText("Enter your text")
-        col1.addWidget(passLabel)
-        col2.addWidget(self.password)
+        self.col1.addWidget(passLabel)
+        self.col2.addWidget(self.password)
 
         emailLabel = QLabel('Email:')
         self.email = QLineEdit()
         self.email.setMaxLength(40)
         self.email.setPlaceholderText("Enter your text")
-        col1.addWidget(emailLabel)
-        col2.addWidget(self.email)
+        self.col1.addWidget(emailLabel)
+        self.col2.addWidget(self.email)
 
         phoneLabel = QLabel('Phone Number:')
         self.phoneNum = QLineEdit()
         self.phoneNum.setMaxLength(40)
         self.phoneNum.setPlaceholderText("Enter your text")
-        col1.addWidget(phoneLabel)
-        col2.addWidget(self.phoneNum)
+        self.col1.addWidget(phoneLabel)
+        self.col2.addWidget(self.phoneNum)
 
-        birthLabel = QLabel('Birthday:')
-        self.birthday = QLineEdit()
-        self.birthday.setMaxLength(40)
-        self.birthday.setPlaceholderText("Enter your text")
-        col1.addWidget(birthLabel)
-        col2.addWidget(self.birthday)
 
-        if currentUser == 'Trainer':
+        if self.currentUser != 'Admin':
             genderLabel = QLabel('Gender:')
             self.gender = QComboBox()
             self.gender.addItem('other')
             self.gender.addItem('male')
             self.gender.addItem('female')
-            col1.addWidget(genderLabel)
-            col2.addWidget(self.gender)
+            self.col1.addWidget(genderLabel)
+            self.col2.addWidget(self.gender)
 
         btn = QPushButton('Register', self)
         btn.clicked.connect(self.registered)
-        col1.addWidget(spaceLabel)
-        col2.addWidget(btn)
+        self.col1.addWidget(self.spaceLabel)
+        self.col2.addWidget(btn)
 
-        form.addLayout(col1)
-        form.addLayout(col2)
+        self.form.addLayout(self.col1)
+        self.form.addLayout(self.col2)
 
-        self.setLayout(form)
+        self.setLayout(self.form)
 
     def registered(self):
-        #check database if null
+        added = addMember(self.first.text(), self.last.text(), self.email.text(), self.phoneNum.text(),
+                          self.gender.currentText(), self.username.text(), self.password.text())
+
+        
+        if self.currentUser == 'Member':
+            added = addMember(self.first.text(), self.last.text(), self.email.text(), self.phoneNum.text(),
+                              self.gender.currentText(), self.username.text(), self.password.text())
+        elif self.currentUser == 'Trainer':
+            added = addTrainer(self.first.text(), self.last.text(), self.email.text(), self.phoneNum.text(),
+                              self.gender.currentText(), self.username.text(), self.password.text())
+        else:
+            added = addAdmin(self.first.text(), self.last.text(), self.email.text(), self.phoneNum.text(),
+                             self.username.text(), self.password.text())
+
+        print(added)
+        if added:
+            self.accept()
+
+        else:
+            self.setDisabled(True)
+            error = RegisterError()
+            error.show()
+            if error.exec_() == QDialog.Accepted:
+                self.setDisabled(False)
+
+
+
+class RegisterError(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle(f'Registration Window')
+
+        layout = QVBoxLayout()
+        label = QLabel('Please Fill in all entries')
+
+        btn = QPushButton('Okay', self)
+        btn.clicked.connect(self.got_it)
+
+        layout.addWidget(label)
+        layout.addWidget(btn)
+
+        self.setLayout(layout)
+
+    def got_it(self):
         self.accept()
+
+
 
 class SetupMemberProfile(QDialog):
     def __init__(self, currentUser):

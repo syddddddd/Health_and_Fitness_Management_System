@@ -5,6 +5,8 @@ html(lang="en")
         
         h1 New Member Sign Up
 
+        include ./header
+
         form(action="/signup" method="post")
             label(for='fname') Enter first name: 
             input(type="text" id="fname" name="fname" required)

@@ -5,10 +5,8 @@ const port = 3000;
 app.set("view engine", "pug");
 
 app.use(express.static("public"));
-
 app.use(express.urlencoded({extended: true}));
 
-//import session from 'express-session';
 const session = require('express-session');
 app.use(session({ 
 	secret: 'top secret key',
@@ -73,12 +71,17 @@ app.post('/login', async (req, res) => {
                 req.session.user = result.rows[0];
                 req.session.type = user;
                 //console.log(req.session);
-                res.status(200).send("Logged in");
+                //res.status(200).send("Logged in");
+                res.render(`../public/${user}`, {session : req.session});
 
             }
         }
     });
     
+});
+
+app.get('/home', async (req, res) => { 
+    res.render('../public/login', {});
 });
 
 app.get('/signup', async (req, res) => { 

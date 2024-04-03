@@ -1,0 +1,35 @@
+html(lang="en")
+    head
+        title SignUp
+    body  
+        
+        h1 New Member Sign Up
+
+        form(action="/signup" method="post")
+            label(for='fname') Enter first name: 
+            input(type="text" id="fname" name="fname" required)
+            br
+            label(for='lname') Enter last name: 
+            input(type="text" id="lname" name="lname" required)
+            br
+            br
+            label(for='email') Enter email: 
+            input(type="text" id="email" name="email" required)
+            br
+            label(for='phone') Enter phone number: 
+            input(type="text" id="phone" name="phone" required)
+            br
+            br
+            label(for='gender') Enter gender: 
+            input(type="text" id="gender" name="gender" required)
+            br
+            br
+            label(for='username') Enter username: 
+            input(type="username" id="username" name="username" required)
+            br
+            label(for='password') Enter password: 
+            input(type="password" id="password" name="password" required)
+            br
+            br
+            button(type="submit") Sign Up
+            br

@@ -1,0 +1,26 @@
+html(lang="en")
+    head
+        title Login
+    body  
+        
+        h1 Login
+
+        form(action="/login" method="post")
+
+            label(for='dropdown') Choose One: 
+            select(type='select' id='dropdown' name='dropdown')
+                option(value='member' checked) Member
+                option(value='Trainers') Trainer
+                option(value='Admins') Admin
+            br
+            br
+
+            label(for='username') Enter username: 
+            input(type="text" id="username" name="username" required)
+            br
+            label(for='password') Enter password: 
+            input(type="password" id="password" name="password" required)
+            br
+            br
+            button(type="submit") Login
+            br

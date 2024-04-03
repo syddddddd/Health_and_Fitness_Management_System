@@ -20,7 +20,7 @@ const { Client } = require('pg');
 
 const client = new Client({
     host: 'localhost',
-    database: 'Fitness',
+    database: 'COMP3005Final',
     port: '5432',
 	user: 'postgres',
 	password: 'student',
@@ -47,20 +47,32 @@ app.post('/login', async (req, res) => {
     let password = req.body.password;
     let user = req.body.dropdown;
 
-    const query = "SELECT " + user + "_id FROM " + user + " WHERE username=\'" + username + "\' AND password=\'" + password  + "\';";
-    console.log(query);
+    const query = "SELECT * FROM " + user + " WHERE username=\'" + username + "\' AND password=\'" + password  + "\';";
+    //console.log(query);
 
     client.query(query, (err,result) => {
+        //console.log(result.rows);
+        
         if (err){
-            console.log("does not exist");
-            res.status(401).send("Not authorized. Invalid password.");
+            //console.log("error");
+            res.status(401).send("error");
         }
         else{
-            console.log("exists");
-            req.session.loggedin = true;
-            req.session.username = username;
-            req.session.password = password;
-            res.status(200).send("Logged in");
+
+            if (result.rows.length == 0){
+                //console.log("does not exist");
+                res.status(401).send("does not exist");
+            }
+            else{
+
+                console.log("exists");
+                req.session.loggedin = true;
+                req.session.user = user;
+                //console.log(result.rows[0].member_id);
+                req.session.id = result.rows[0].member_id;
+                res.status(200).send("Logged in");
+
+            }
         }
     });
     
@@ -84,6 +96,7 @@ app.post('/signup', async (req, res) => {
     //console.log(query);
 
     client.query(query, (err,result) => {
+
         if (err){
             console.log("error");
         }

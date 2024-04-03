@@ -8,6 +8,14 @@ app.use(express.static("public"));
 
 app.use(express.urlencoded({extended: true}));
 
+//import session from 'express-session';
+const session = require('express-session');
+app.use(session({ 
+	secret: 'top secret key',
+    resave: true,
+    saveUninitialized: false,
+}));
+
 const { Client } = require('pg');
 
 const client = new Client({
@@ -45,9 +53,14 @@ app.post('/login', async (req, res) => {
     client.query(query, (err,result) => {
         if (err){
             console.log("does not exist");
+            res.status(401).send("Not authorized. Invalid password.");
         }
         else{
             console.log("exists");
+            req.session.loggedin = true;
+            req.session.username = username;
+            req.session.password = password;
+            res.status(200).send("Logged in");
         }
     });
     

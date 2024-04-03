@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "express": "^4.19.2",
+    "express-session": "^1.18.0",
     "pg": "^8.11.5",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "session": "^0.1.0"
   }
 }

@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="30587e43-a3f8-4c6e-9d41-2b99d5376a8c" name="Changes" comment="" />
+    <list default="true" id="30587e43-a3f8-4c6e-9d41-2b99d5376a8c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,12 +36,12 @@
     "Python.Main.executor": "Run",
     "Python.comp3005test.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "git-widget-placeholder": "Merging main",
+    "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PythonContentEntriesConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -118,7 +120,7 @@
       <workItem from="1712113856410" duration="143000" />
       <workItem from="1712114007550" duration="180000" />
       <workItem from="1712114194240" duration="427000" />
-      <workItem from="1712114814361" duration="312000" />
+      <workItem from="1712114814361" duration="932000" />
     </task>
     <servers />
   </component>

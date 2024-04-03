@@ -67,7 +67,7 @@ app.post('/signup', async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
 
-    const query = "INSERT INTO Members (fname, lname, email, phone_number, gender, username, password) VALUES ( \'" + fname + "\', \'" + lname + "\', \'" + email + "\', \'" + phone + "\', \'" + gender + "\', \'" + username + "\', \'" + password + "\');";
+    const query = "INSERT INTO member (fname, lname, email, phone_number, gender, username, password) VALUES ( \'" + fname + "\', \'" + lname + "\', \'" + email + "\', \'" + phone + "\', \'" + gender + "\', \'" + username + "\', \'" + password + "\');";
     //console.log(query);
 
     client.query(query, (err,result) => {

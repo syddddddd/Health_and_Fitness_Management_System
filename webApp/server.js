@@ -84,6 +84,10 @@ app.get('/member', async (req, res) => {
     res.render('../public/member', {session : req.session});
 });
 
+app.get('/member/profile', async (req, res) => { 
+    res.render('../public/memberProfile', {session : req.session});
+});
+
 app.get('/signup', async (req, res) => { 
     res.render('../public/signup', {});
 });

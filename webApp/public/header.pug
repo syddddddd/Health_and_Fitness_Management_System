@@ -1,7 +1,7 @@
 div#header
 if session && session.loggedin
-        if session.admin == "member"
-            a(href="/home") Home  
+        if session.type == "member"
+            a(href="/member") Home  
             |
             |
             a(href="/profile") Profile  
@@ -12,7 +12,7 @@ if session && session.loggedin
             |
             a(href="/schedule") Schedule  
 
-        if session.admin == "trainer"
+        if session.type == "trainer"
             |
             |
             
@@ -20,7 +20,7 @@ if session && session.loggedin
             |
             
         
-        if session.admin == "admin"
+        if session.type == "admin"
             |
             |
            

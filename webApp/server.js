@@ -80,8 +80,8 @@ app.post('/login', async (req, res) => {
     
 });
 
-app.get('/home', async (req, res) => { 
-    res.render('../public/login', {});
+app.get('/member', async (req, res) => { 
+    res.render('../public/member', {session : req.session});
 });
 
 app.get('/signup', async (req, res) => { 

@@ -67,9 +67,12 @@ app.post('/login', async (req, res) => {
 
                 console.log("exists");
                 req.session.loggedin = true;
-                req.session.user = user;
+                //req.session.user = user;
                 //console.log(result.rows[0].member_id);
-                req.session.id = result.rows[0].member_id;
+                //req.session.id = result.rows[0].member_id;
+                req.session.user = result.rows[0];
+                req.session.type = user;
+                //console.log(req.session);
                 res.status(200).send("Logged in");
 
             }

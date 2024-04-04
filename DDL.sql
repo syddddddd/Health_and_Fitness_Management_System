@@ -1,18 +1,20 @@
 -- create members table
 CREATE TABLE Members(
     member_id SERIAL PRIMARY KEY,
-    fname VARCHAR(255) NOT NULL CHECK (fname <> ''),
-    lname VARCHAR(255) NOT NULL CHECK (fname <> ''),
-    email VARCHAR(255) UNIQUE NOT NULL CHECK (fname <> ''),
-    phone_number VARCHAR(15) NOT NULL CHECK (fname <> ''),
+    fname VARCHAR(255) NOT NULL,
+    lname VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
     join_date DATE DEFAULT CURRENT_DATE,
-    gender VARCHAR(255) NOT NULL CHECK (fname <> ''),
+    gender VARCHAR(255) NOT NULL,
 
     -- login info
-    username VARCHAR(255) UNIQUE NOT NULL CHECK (fname <> ''),
-    password VARCHAR(255) UNIQUE NOT NULL CHECK (fname <> '')
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) UNIQUE NOT NULL
   
 );
+
+-- CHECK (fname <> '')
 
 CREATE TABLE FitnessFiles(
     -- health metrics
@@ -30,16 +32,16 @@ CREATE TABLE FitnessFiles(
 -- create trainers table
 CREATE TABLE Trainers(
     member_id SERIAL PRIMARY KEY,
-    fname VARCHAR(255) NOT NULL CHECK (fname <> ''),
-    lname VARCHAR(255) NOT NULL CHECK (fname <> ''),
-    email VARCHAR(255) UNIQUE NOT NULL CHECK (fname <> ''),
-    phone_number VARCHAR(15) NOT NULL CHECK (fname <> ''),
+    fname VARCHAR(255) NOT NULL,
+    lname VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
     join_date DATE DEFAULT CURRENT_DATE,
-    gender VARCHAR(255) NOT NULL CHECK (fname <> ''),
+    gender VARCHAR(255) NOT NULL,
 
     -- login info
-    username VARCHAR(255) UNIQUE NOT NULL CHECK (fname <> ''),
-    password VARCHAR(255) UNIQUE NOT NULL CHECK (fname <> '')
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) UNIQUE NOT NULL
   
 );
 

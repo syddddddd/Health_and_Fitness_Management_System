@@ -44,8 +44,9 @@ app.post('/login', async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
     let user = req.body.dropdown;
+    let table = user.charAt(0).toUpperCase() + user.slice(1) + 's'
 
-    const query = "SELECT * FROM " + user + " WHERE username=\'" + username + "\' AND password=\'" + password  + "\';";
+    const query = "SELECT * FROM " + table +  " WHERE username=\'" + username + "\' AND password=\'" + password  + "\';";
     //console.log(query);
 
     client.query(query, (err,result) => {
@@ -70,7 +71,8 @@ app.post('/login', async (req, res) => {
                 //req.session.id = result.rows[0].member_id;
                 req.session.user = result.rows[0];
                 req.session.type = user;
-                //console.log(req.session);
+                console.log(user)
+                console.log(req.session);
                 //res.status(200).send("Logged in");
                 res.render(`../public/${user}`, {session : req.session});
 
@@ -101,18 +103,25 @@ app.post('/signup', async (req, res) => {
     let gender = req.body.gender;
     let username = req.body.username;
     let password = req.body.password;
+    let user = req.body.dropdown;
+    let table = user.charAt(0).toUpperCase() + user.slice(1) + 's'
 
-    const query = "INSERT INTO member (fname, lname, email, phone_number, gender, username, password) VALUES ( \'" + fname + "\', \'" + lname + "\', \'" + email + "\', \'" + phone + "\', \'" + gender + "\', \'" + username + "\', \'" + password + "\');";
+    const query = "INSERT INTO " + table + " (fname, lname, email, phone_number, gender, username, password) VALUES ( \'" + fname + "\', \'" + lname + "\', \'" + email + "\', \'" + phone + "\', \'" + gender + "\', \'" + username + "\', \'" + password + "\') RETURNING *;";
     //console.log(query);
 
     client.query(query, (err,result) => {
 
         if (err){
-            console.log("error");
+            console.log(err);
+            console.log("THERE IS ERROR")
         }
         else{
             console.log("inserted");
-            res.render('../public/home', {});
+            req.session.user = result.rows[0];
+            req.session.type = user;
+            req.session.loggedin = true;
+            console.log(req.session);
+            res.render(`../public/${user}`, {session : req.session});
         }
     });
     

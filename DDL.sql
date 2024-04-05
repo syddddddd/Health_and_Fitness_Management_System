@@ -50,7 +50,7 @@ CREATE TABLE Admins(
 CREATE TABLE FitnessFiles(
     file_id SERIAL PRIMARY KEY
     -- health metrics
-    resting_hr INT,
+    --resting_hr INT,
     avg_sleep INT,
     curr_weight INT,
     height INT,

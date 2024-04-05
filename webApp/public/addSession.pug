@@ -23,10 +23,9 @@ html(lang="en")
             | #[strong Time:]
             label(for='dropdown')    Hour: 
             select(type='select' id='hour' name='hour')
-                option(value='7' checked) 7
-                -var n = 7
+                -var n = 6
                 while n < 19
-                    option(value=`${n++}`) #{n}
+                    option(value=`${++n}`) #{n}
                            
             label(for='dropdown')   Minutes: 
             select(type='select' id='min' name='min')

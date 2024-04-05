@@ -4,25 +4,55 @@ html(lang="en")
     body  
         
         include ./header
-        
+        style.
+            table {
+                border-collapse: collapse;
+                width: 60%;
+            }
+            th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
         h1 Trainer: #{session.user.fname} #{session.user.lname} 
 
         h2 Schedule 
         |
-        h3.  
-            #[strong Day&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
-            #[strong Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
-            #[strong Session Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
-            #[strong Members]
-        |
-        if schedule && schedule.length > 0
-            each sched in schedule
-                p. 
-                    #{sched.day}&nbsp;&nbsp;&nbsp;&nbsp;
-                    #{sched.time_slot}&nbsp;&nbsp;&nbsp;&nbsp;
-                    #{sched.session_type}&nbsp;&nbsp;&nbsp;&nbsp;
-                    #{sched.member_id}
-        |
+        table
+            thead 
+                tr
+                    th Day
+                    th Time
+                    th Session Type
+                    th Members
+                    
+
+            tbody
+                if schedule && schedule.length > 0
+                    each sched in schedule
+                        tr 
+                            td #{sched.day}
+                            td #{sched.time_slot}
+                            td #{sched.session_type}
+                            td #{sched.member_id}
+                            td edit
+            |
+            
+
+        //- h3.  
+        //-     #[strong Day&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+        //-     #[strong Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+        //-     #[strong Session Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+        //-     #[strong Members]
+        //- |
+
+        //- p. 
+        //-                     #{sched.day}&nbsp;&nbsp;&nbsp;&nbsp;
+        //-                     #{sched.time_slot}&nbsp;&nbsp;&nbsp;&nbsp;
+        //-                     #{sched.session_type}&nbsp;&nbsp;&nbsp;&nbsp;
+        //-                     #{sched.member_id}
+        br
         button(type="button" id="addSession") Add Session
 
         script(src="/js/trainerScheduleManagement.js")

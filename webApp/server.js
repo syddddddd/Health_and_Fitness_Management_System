@@ -103,30 +103,30 @@ app.get('/trainer', async (req, res) => {
 
             console.log("exists");
             console.log(result.rows)
-            member_
-            res.render('../public/trainer', {session : req.session, schedule: result.rows});
+            req.session.schedule = result.rows
+            res.render('../public/trainer', {session : req.session, schedule: req.session.schedule});
             
         }
     });
 
-    const query2 = "SELECT * FROM Members WHERE trainer_id=\'" + req.session.user.trainer_id + "\';";
-    //console.log(query);
+    // const query2 = "SELECT * FROM Members WHERE trainer_id=\'" + req.session.user.trainer_id + "\';";
+    // //console.log(query);
 
-    client.query(query2, (err,result) => {
-        //console.log(result.rows);
+    // client.query(query2, (err,result) => {
+    //     //console.log(result.rows);
         
-        if (err){
-            //console.log("error");
-            res.status(401).send("error");
-        }
-        else{
+    //     if (err){
+    //         //console.log("error");
+    //         res.status(401).send("error");
+    //     }
+    //     else{
 
-            console.log("exists");
-            console.log(result.rows)
-            res.render('../public/trainer', {session : req.session, schedule: result.rows});
+    //         console.log("exists");
+    //         console.log(result.rows)
+    //         res.render('../public/trainer', {session : req.session, schedule: result.rows});
             
-        }
-    });
+    //     }
+    // });
 });
 
 app.get('/member/profile', async (req, res) => { 
@@ -195,7 +195,10 @@ app.post('/addSession', async (req, res) => {
         }
         else{
             console.log("inserted");
-            res.render(`../public/trainer`, {session : req.session});
+            console.log(result.rows)
+            req.session.schedule.push(result.rows[0])
+            console.log(req.session.schedule)
+            res.render(`../public/trainer`, {session : req.session, schedule: req.session.schedule});
         }
     });
     

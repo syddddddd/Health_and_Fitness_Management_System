@@ -35,4 +35,11 @@ VALUES
 (3, 3),
 (1, 2);
 
+-- Populate FitnessFile Table
+INSERT INTO FitnessFile (member_id, avg_sleep, height, curr_weight, goal_weight, distance, goal_time)
+VALUES 
+(1, 8, 170, 200, 220, 5, ),
+(2, 5, 155, 150, 140, 10),
+(3, 9, 180, 140, 145, 7),
+
 

@@ -43,3 +43,8 @@ VALUES
 (3, 9, 180, 140, 145, 2, '00:30:00');
 
 
+SELECT s.schedule_id,ARRAY_AGG(s.member_id) as ids, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members 
+FROM ScheduledMembers s 
+JOIN Members m on m.member_id = s.member_id 
+WHERE trainer_id=3
+Group By schedule_id

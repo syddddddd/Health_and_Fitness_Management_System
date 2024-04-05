@@ -39,10 +39,12 @@ html(lang="en")
                             td
                                 if classes && classes.length > 0
                                     each item in classes     
-                                        
-                                        if item.schedule_id === sched.schedule_id 
-                                            each member in item.members 
-                                                p= member
+
+                                        if item.schedule_id === sched.schedule_id
+                                            - var n = 0
+                                            each id in item.ids 
+                                                a(href=`/member/${id}`) #{item.members[n++]}
+                                                br       
                                 
                             td edit
             |
@@ -60,6 +62,7 @@ html(lang="en")
         //-                     #{sched.time_slot}&nbsp;&nbsp;&nbsp;&nbsp;
         //-                     #{sched.session_type}&nbsp;&nbsp;&nbsp;&nbsp;
         //-                     #{sched.member_id}
+
         br
         button(type="button" id="addSession") Add Session
 

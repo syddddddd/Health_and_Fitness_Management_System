@@ -5,13 +5,13 @@ html(lang="en")
         
         include ./header
         
-        h1 #{session.user.fname}'s Profile
+        h1 #{member.fname}'s Profile
 
-        p First name: #{session.user.fname}
-        p Last name: #{session.user.lname}
-        p Email: #{session.user.email}
-        p Phone number: #{session.user.phone_number}
-        p Gender: #{session.user.gender}
+        p First name: #{member.fname}
+        p Last name: #{member.lname}
+        p Email: #{member.email}
+        p Phone number: #{member.phone_number}
+        p Gender: #{member.gender}
 
         h2 Update Profile 
         

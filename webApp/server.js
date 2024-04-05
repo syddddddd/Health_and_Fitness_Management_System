@@ -84,45 +84,6 @@ app.post('/login', async (req, res) => {
     
 });
 
-app.get('/member', async (req, res) => { 
-    res.render('../public/member', {session : req.session});
-});
-
-app.get('/trainer', async (req, res) => { 
-    try {
-        const query = "SELECT * FROM Schedule WHERE trainer_id=$1 ORDER BY time_slot";
-        const scheduleResult = await client.query(query, [req.session.user.trainer_id]);
-        console.log("getting schedule")
-
-        console.log("exists");
-        console.log(scheduleResult.rows)
-        req.session.schedule = scheduleResult.rows
-
-        const query2 = "SELECT s.schedule_id, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members FROM ScheduledMembers s JOIN Members m on m.member_id = s.member_id WHERE trainer_id=$1 Group By schedule_id";
-        const classes = await client.query(query2, [req.session.user.trainer_id]);
-
-        console.log("getting members")
-        console.log(classes.rows)
-        const data = classes.rows
-        req.session.classes = classes.rows
-
-        data.forEach(item => {
-            console.log(item.schedule_id)
-
-        });
-        
-        res.render('../public/trainer', {session : req.session, schedule : req.session.schedule, classes : req.session.classes});
-
-    } catch (err) {
-        res.status(401).send("error");
-    }
-    
-});
-
-app.get('/member/profile', async (req, res) => { 
-    res.render('../public/memberProfile', {session : req.session});
-});
-
 app.get('/signup', async (req, res) => { 
     res.render('../public/signup', {});
 });
@@ -160,6 +121,61 @@ app.post('/signup', async (req, res) => {
     
 });
 
+app.get('/member', async (req, res) => { 
+    res.render('../public/member', {session : req.session});
+});
+
+app.get('/trainer', async (req, res) => { 
+    try {
+        const query = "SELECT * FROM Schedule WHERE trainer_id=$1 ORDER BY time_slot";
+        const scheduleResult = await client.query(query, [req.session.user.trainer_id]);
+        console.log("getting schedule")
+
+        console.log("exists");
+        console.log(scheduleResult.rows)
+        req.session.schedule = scheduleResult.rows
+
+        const query2 = "SELECT s.schedule_id, ARRAY_AGG(s.member_id) as ids, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members FROM ScheduledMembers s JOIN Members m on m.member_id = s.member_id WHERE trainer_id=$1 Group By schedule_id";
+        const classes = await client.query(query2, [req.session.user.trainer_id]);
+
+        console.log("getting members")
+        console.log(classes.rows)
+        req.session.classes = classes.rows
+        
+        res.render('../public/trainer', {session : req.session, schedule : req.session.schedule, classes : req.session.classes});
+
+    } catch (err) {
+        res.status(401).send("error");
+    }
+    
+});
+
+app.get('/member/profile', async (req, res) => { 
+    res.render('../public/memberProfile', {session : req.session, member : req.session.user});
+});
+
+app.get('/member/:memberid', async (req, res) => { 
+    let id = req.params.memberid;
+    console.log(id)
+
+    try {
+        const query = "SELECT * FROM Members WHERE member_id=$1";
+        const member = await client.query(query, [id]);
+        console.log("getting member")
+
+        console.log("exists");
+        console.log(member.rows[0])
+        
+        res.render('../public/memberProfile', {session : req.session, member : member.rows[0]});
+
+    } catch (err) {
+        res.status(401).send("error");
+    }
+
+});
+
+
+
 app.get('/addSession', async (req, res) => { 
     res.render('../public/addSession', {session : req.session});
 });
@@ -170,8 +186,8 @@ app.post('/addSession', async (req, res) => {
     let time = req.body.hour + ':' + req.body.min;
     let sessType = req.body.sessType;
     let id = req.session.user.trainer_id
-    console.log("session:")
-    console.log(req.session.user)
+    //console.log("session:")
+    //console.log(req.session.user)
     //let table = req.session.type.charAt(0).toUpperCase() + req.session.type.slice(1) + 's'
 
     const query = "INSERT INTO SCHEDULE (trainer_id, day, time_slot, availability, session_type) VALUES ( \'" + id + "\', \'" + day + "\', \'" + time + "\', \'true\', \'" + sessType + "\') RETURNING *;";
@@ -185,8 +201,8 @@ app.post('/addSession', async (req, res) => {
         }
         else{
             console.log("inserted");
-            console.log(result.rows)
-            console.log(req.session.schedule)
+            //console.log(result.rows)
+            //console.log(req.session.schedule)
 
             // if (!req.session.hasOwnProperty("schedule")) {  
             //     req.session.schedule = []
@@ -194,7 +210,7 @@ app.post('/addSession', async (req, res) => {
             
             // req.session.schedule.push(result.rows[0])
             
-            console.log(req.session.schedule)
+            //console.log(req.session.schedule)
             res.redirect(`http://localhost:3000/trainer`);
             //res.render(`../public/trainer`, {session : req.session, schedule: req.session.schedule});
         }

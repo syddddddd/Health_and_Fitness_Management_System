@@ -10,24 +10,11 @@ CREATE TABLE Members(
 
     -- login info
     username VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) UNIQUE NOT NULL
+    password VARCHAR(255) NOT NULL
   
 );
 
 -- CHECK (fname <> '')
-
-CREATE TABLE FitnessFiles(
-    -- health metrics
-    resting_hr INT,
-    avg_sleep INT,
-    curr_weight INT,
-    height INT,
-
-    -- fitness goals
-    goal_weight INT,
-    distance INT,
-    goal_time TIME
-);
 
 -- create trainers table
 CREATE TABLE Trainers(
@@ -41,7 +28,7 @@ CREATE TABLE Trainers(
 
     -- login info
     username VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) UNIQUE NOT NULL
+    password VARCHAR(255) NOT NULL
   
 );
 
@@ -57,8 +44,38 @@ CREATE TABLE Admins(
 
     -- login info
     username VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) UNIQUE NOT NULL
+    password VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE FitnessFiles(
+    file_id SERIAL PRIMARY KEY
+    -- health metrics
+    resting_hr INT,
+    avg_sleep INT,
+    curr_weight INT,
+    height INT,
+
+    -- fitness goals
+    goal_weight INT,
+    distance INT,
+    goal_time TIME
+
+    --exercise_id INT,
+    --achievements_id INT,
+    member_id INT
+);
+
+CREATE TABLE ExerciseRoutines(
+    exercise_id INT,
+    member_id INT,
+    exercise VARCHAR(255) NOT NULL
+)
+
+CREATE TABLE FitnessAchievements(
+    achievements_id INT,
+    member_id INT,
+    achievements VARCHAR(255) NOT NULL
+)
 
 --create schedule table
 CREATE TABLE Schedule(
@@ -67,14 +84,14 @@ CREATE TABLE Schedule(
     day VARCHAR(255) NOT NULL,
     time_slot TIME NOT NULL, -- primary key option?
     --member_id INT REFERENCES Members(member_id),
-    UNIQUE (day, time_slot),
+    UNIQUE (trainer_id, day, time_slot),
     
 
     -- not particularly neccessary since we already have trainer_id
     --trainer_fname VARCHAR(255) NOT NULL,
     --trainer_lname VARCHAR(255) NOT NULL,
 
-    availability VARCHAR(255) NOT NULL,
+    availability BOOLEAN NOT NULL,
     session_type VARCHAR(255) NOT NULL
 
 );

@@ -7,21 +7,21 @@ html(lang="en")
         
         h1 Welcome back #{session.user.fname} #{session.user.lname} !
 
-        h3 #{member.fname}'s Profile
+        h3 #{session.user.fname}'s Profile
 
-        p First name: #{member.fname}
-        p Last name: #{member.lname}
-        p Email: #{member.email}
-        p Phone number: #{member.phone_number}
-        p Gender: #{member.gender}
+        p First name: #{session.user.fname}
+        p Last name: #{session.user.lname}
+        p Email: #{session.user.email}
+        p Phone number: #{session.user.phone_number}
+        p Gender: #{session.user.gender}
 
-        h3 #{member.fname}'s Fitness Goals 
+        h3 #{session.user.fname}'s Fitness Goals 
 
         p Goal weight: 
         p Goal running distance: 
         p Goal running time: 
 
-        h3 #{member.fname}'s Health Metrics 
+        h3 #{session.user.fname}'s Health Metrics 
 
         p Average sleep schedule: 
         p Current weight: 

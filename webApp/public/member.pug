@@ -7,4 +7,22 @@ html(lang="en")
         
         h1 Welcome back #{session.user.fname} #{session.user.lname} !
 
-        p blablablalba
+        h3 #{member.fname}'s Profile
+
+        p First name: #{member.fname}
+        p Last name: #{member.lname}
+        p Email: #{member.email}
+        p Phone number: #{member.phone_number}
+        p Gender: #{member.gender}
+
+        h3 #{member.fname}'s Fitness Goals 
+
+        p Goal weight: 
+        p Goal running distance: 
+        p Goal running time: 
+
+        h3 #{member.fname}'s Health Metrics 
+
+        p Average sleep schedule: 
+        p Current weight: 
+        p Height: 

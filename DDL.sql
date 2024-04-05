@@ -88,6 +88,7 @@ CREATE TABLE ExerciseRoutines(
 CREATE TABLE Schedule(
     schedule_id SERIAL PRIMARY KEY,
     trainer_id INT REFERENCES Trainers(trainer_id),
+    member_id INT REFERENCES Members(member_id),
     day VARCHAR(255) NOT NULL,
     time_slot TIME NOT NULL, -- primary key option?
     --member_id INT REFERENCES Members(member_id),

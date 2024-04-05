@@ -112,7 +112,7 @@ CREATE TABLE ScheduledMembers(
 -- create dashboard table
 CREATE TABLE Dashboard(
     dashboard_id SERIAL PRIMARY KEY,
-    member_id INT REFERENCES Member(member_id)
+    member_id INT REFERENCES Members(member_id)
 
     -- health stats
     -- multiple attributes exercise routines
@@ -143,7 +143,7 @@ CREATE TABLE Maintenance (
 -- create payment table
 CREATE TABLE Payment (
    payment_id SERIAL PRIMARY KEY,
-   member_id INT REFERENCES Member(member_id),
+   member_id INT REFERENCES Members(member_id),
    member_fee INT NOT NULL
 
     -- group/single sessions?

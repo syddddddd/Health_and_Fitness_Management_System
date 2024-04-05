@@ -65,16 +65,23 @@ CREATE TABLE FitnessFiles(
     member_id INT
 );
 
-CREATE TABLE ExerciseRoutines(
+CREATE TABLE MemberRoutines(
+    -- do we need to have an id for this table?? or just make exercise and member id PK??
+    table_id SERIAL PRIMARY KEY,
     exercise_id INT,
-    member_id INT,
-    exercise VARCHAR(255) NOT NULL
+    member_id INT
+    --exercise VARCHAR(255) NOT NULL
 )
 
 CREATE TABLE FitnessAchievements(
     achievements_id INT,
     member_id INT,
     achievements VARCHAR(255) NOT NULL
+)
+
+CREATE TABLE ExerciseRoutines(
+    exercise_id INT,
+    exercise VARCHAR(255) NOT NULL
 )
 
 --create schedule table

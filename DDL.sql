@@ -89,14 +89,8 @@ CREATE TABLE Schedule(
     trainer_id INT REFERENCES Trainers(trainer_id),
     member_id INT REFERENCES Members(member_id),
     day VARCHAR(255) NOT NULL,
-    time_slot TIME NOT NULL, -- primary key option?
-    --member_id INT REFERENCES Members(member_id),
+    time_slot TIME NOT NULL,
     UNIQUE (trainer_id, day, time_slot),
-    
-
-    -- not particularly neccessary since we already have trainer_id
-    --trainer_fname VARCHAR(255) NOT NULL,
-    --trainer_lname VARCHAR(255) NOT NULL,
 
     availability BOOLEAN NOT NULL,
     session_type VARCHAR(255) NOT NULL

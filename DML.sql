@@ -20,20 +20,20 @@ VALUES
 (3, 'Harley', 'Parker', 'Harley@gmail.com', '647-932-4276', 'harhar', 'har123');
 
 -- Populate Scehdule Table
-INSERT INTO Schedule (trainer_id, day, time_slot, session_type, availability)
+INSERT INTO Schedule (schedule_id, trainer_id, day, time_slot, session_type, availability)
 VALUES 
-(3, 'Monday', '16:00', 'group', true),
-(3, 'Tuesday', '8:30', 'private', false),
-(1, 'Tuesday', '9:00', 'private', false),
-(2, 'Friday', '11:00', 'private', true);
+(1, 3, 'Monday', '16:00', 'group', true),
+(2, 3, 'Tuesday', '8:30', 'private', false),
+(3, 1, 'Tuesday', '9:00', 'private', false),
+(4, 2, 'Friday', '11:00', 'private', true);
 
 -- Populate ScehduledMembers Table
 INSERT INTO ScheduledMembers (schedule_id, member_id)
 VALUES 
-(3, 1),
-(3, 2),
-(3, 3),
-(1, 2);
+(1, 1),
+(1, 2),
+(2, 3),
+(3, 2);
 
 -- Populate FitnessFile Table
 INSERT INTO FitnessFile (member_id, avg_sleep, height, curr_weight, goal_weight, distance, goal_time)

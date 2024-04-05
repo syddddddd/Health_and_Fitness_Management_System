@@ -7,4 +7,22 @@ html(lang="en")
         
         h1 Trainer: #{session.user.fname} #{session.user.lname} 
 
-        p blablablalba
+        h2 Schedule 
+        |
+        h3.  
+            #[strong Day&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+            #[strong Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+            #[strong Session Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+            #[strong Members]
+        |
+        if schedule && schedule.length > 0
+            each sched in schedule
+                p. 
+                    #{sched.day}&nbsp;&nbsp;&nbsp;&nbsp;
+                    #{sched.time_slot}&nbsp;&nbsp;&nbsp;&nbsp;
+                    #{sched.session_type}&nbsp;&nbsp;&nbsp;&nbsp;
+                    #{sched.member_id}
+        |
+        button(type="button" id="addSession") Add Session
+
+        script(src="/js/trainerScheduleManagement.js")

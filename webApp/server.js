@@ -60,7 +60,8 @@ app.post('/login', async (req, res) => {
 
             if (result.rows.length == 0){
                 //console.log("does not exist");
-                res.status(401).send("does not exist");
+                //res.status(401).send("does not exist");
+                res.redirect(`http://localhost:3000/login`);
             }
             else{
 
@@ -74,7 +75,8 @@ app.post('/login', async (req, res) => {
                 console.log(user)
                 console.log(req.session);
                 //res.status(200).send("Logged in");
-                res.render(`../public/${user}`, {session : req.session});
+                res.redirect(`http://localhost:3000/${user}`);
+                //res.render(`../public/${user}`, {session : req.session});
 
             }
         }
@@ -84,6 +86,47 @@ app.post('/login', async (req, res) => {
 
 app.get('/member', async (req, res) => { 
     res.render('../public/member', {session : req.session});
+});
+
+app.get('/trainer', async (req, res) => { 
+    const query = "SELECT * FROM Schedule WHERE trainer_id=\'" + req.session.user.trainer_id + "\';";
+    //console.log(query);
+
+    client.query(query, (err,result) => {
+        //console.log(result.rows);
+        
+        if (err){
+            //console.log("error");
+            res.status(401).send("error");
+        }
+        else{
+
+            console.log("exists");
+            console.log(result.rows)
+            member_
+            res.render('../public/trainer', {session : req.session, schedule: result.rows});
+            
+        }
+    });
+
+    const query2 = "SELECT * FROM Members WHERE trainer_id=\'" + req.session.user.trainer_id + "\';";
+    //console.log(query);
+
+    client.query(query2, (err,result) => {
+        //console.log(result.rows);
+        
+        if (err){
+            //console.log("error");
+            res.status(401).send("error");
+        }
+        else{
+
+            console.log("exists");
+            console.log(result.rows)
+            res.render('../public/trainer', {session : req.session, schedule: result.rows});
+            
+        }
+    });
 });
 
 app.get('/member/profile', async (req, res) => { 
@@ -122,6 +165,37 @@ app.post('/signup', async (req, res) => {
             req.session.loggedin = true;
             console.log(req.session);
             res.render(`../public/${user}`, {session : req.session});
+        }
+    });
+    
+});
+
+app.get('/addSession', async (req, res) => { 
+    res.render('../public/addSession', {session : req.session});
+});
+
+app.post('/addSession', async (req, res) => {
+
+    let day = req.body.day;
+    let time = req.body.hour + ':' + req.body.min;
+    let sessType = req.body.sessType;
+    let id = req.session.user.trainer_id
+    console.log("session:")
+    console.log(req.session.user)
+    //let table = req.session.type.charAt(0).toUpperCase() + req.session.type.slice(1) + 's'
+
+    const query = "INSERT INTO SCHEDULE (trainer_id, day, time_slot, availability, session_type) VALUES ( \'" + id + "\', \'" + day + "\', \'" + time + "\', \'true\', \'" + sessType + "\') RETURNING *;";
+    //console.log(query);
+
+    client.query(query, (err,result) => {
+
+        if (err){
+            console.log(err);
+            console.log("THERE IS ERROR")
+        }
+        else{
+            console.log("inserted");
+            res.render(`../public/trainer`, {session : req.session});
         }
     });
     

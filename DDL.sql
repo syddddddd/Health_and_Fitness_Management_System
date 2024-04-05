@@ -31,7 +31,7 @@ CREATE TABLE FitnessFiles(
 
 -- create trainers table
 CREATE TABLE Trainers(
-    member_id SERIAL PRIMARY KEY,
+    trainer_id SERIAL PRIMARY KEY,
     fname VARCHAR(255) NOT NULL,
     lname VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -63,18 +63,27 @@ CREATE TABLE Admins(
 --create schedule table
 CREATE TABLE Schedule(
     schedule_id SERIAL PRIMARY KEY,
+    trainer_id INT REFERENCES Trainers(trainer_id),
+    day VARCHAR(255) NOT NULL,
     time_slot TIME NOT NULL, -- primary key option?
-    member_id INT REFERENCES Member(member_id),
-    trainer_id INT REFERENCES Trainer(trainer_id),
+    --member_id INT REFERENCES Members(member_id),
+    UNIQUE (day, time_slot),
+    
 
     -- not particularly neccessary since we already have trainer_id
-    trainer_fname VARCHAR(255) NOT NULL,
-    trainer_lname VARCHAR(255) NOT NULL,
+    --trainer_fname VARCHAR(255) NOT NULL,
+    --trainer_lname VARCHAR(255) NOT NULL,
 
     availability VARCHAR(255) NOT NULL,
-    session_type VARCHAR(255) NOT NULL,
+    session_type VARCHAR(255) NOT NULL
 
 );
+
+CREATE TABLE ScheduledMembers(
+    table_id SERIAL PRIMARY KEY,
+    schedule_id INT REFERENCES Schedule(schedule_id),
+    member_id INT REFERENCES Members(member_id)
+)
 
 -- create dashboard table
 CREATE TABLE Dashboard(

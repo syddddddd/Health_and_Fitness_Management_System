@@ -1,0 +1,48 @@
+html(lang="en")
+    head
+        title Trainer page
+    body  
+        
+        include ./header
+        
+        //textboxes to add artwork info
+        h3 Add Session
+        form(action="/addSession" method="post")
+            |
+            label(for='dropdown') #[strong Day:]   
+            select(type='select' id='day' name='day')
+                option(value='sunday' checked) Sunday
+                option(value='monday') Monday
+                option(value='tuesday') Tuesday 
+                option(value='wednesday') Wednesday 
+                option(value='thursday') Thursday 
+                option(value='friday') Friday
+                option(value='saturday') Saturday
+            br
+            br
+            | #[strong Time:]
+            label(for='dropdown')    Hour: 
+            select(type='select' id='hour' name='hour')
+                option(value='7' checked) 7
+                -var n = 7
+                while n < 19
+                    option(value=`${n++}`) #{n}
+                           
+            label(for='dropdown')   Minutes: 
+            select(type='select' id='min' name='min')
+                option(value='00' checked) 00
+                option(value='30') 30
+            br
+            br
+            | #[strong Session Type:] 
+            label(for='dropdown')   Minutes: 
+            select(type='select' id='sessType' name='sessType')
+                option(value='private' checked) Private
+                option(value='group') Group
+            br
+            br
+            | 
+            button(type="submit") Add Session
+            |
+            br
+            br

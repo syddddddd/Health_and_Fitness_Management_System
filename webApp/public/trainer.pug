@@ -35,7 +35,15 @@ html(lang="en")
                             td #{sched.day}
                             td #{sched.time_slot}
                             td #{sched.session_type}
-                            td #{sched.member_id}
+
+                            td
+                                if classes && classes.length > 0
+                                    each item in classes     
+                                        
+                                        if item.schedule_id === sched.schedule_id 
+                                            each member in item.members 
+                                                p= member
+                                
                             td edit
             |
             

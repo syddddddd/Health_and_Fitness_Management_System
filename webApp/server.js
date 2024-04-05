@@ -89,46 +89,34 @@ app.get('/member', async (req, res) => {
 });
 
 app.get('/trainer', async (req, res) => { 
-    const query = "SELECT * FROM Schedule WHERE trainer_id=\'" + req.session.user.trainer_id + "\';";
-    //console.log(query);
+    try {
+        const query = "SELECT * FROM Schedule WHERE trainer_id=$1 ORDER BY time_slot";
+        const scheduleResult = await client.query(query, [req.session.user.trainer_id]);
+        console.log("getting schedule")
 
-    client.query(query, (err,result) => {
-        //console.log(result.rows);
+        console.log("exists");
+        console.log(scheduleResult.rows)
+        req.session.schedule = scheduleResult.rows
+
+        const query2 = "SELECT s.schedule_id, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members FROM ScheduledMembers s JOIN Members m on m.member_id = s.member_id WHERE trainer_id=$1 Group By schedule_id";
+        const classes = await client.query(query2, [req.session.user.trainer_id]);
+
+        console.log("getting members")
+        console.log(classes.rows)
+        const data = classes.rows
+        req.session.classes = classes.rows
+
+        data.forEach(item => {
+            console.log(item.schedule_id)
+
+        });
         
-        if (err){
-            //console.log("error");
-            res.status(401).send("error");
-        }
-        else{
+        res.render('../public/trainer', {session : req.session, schedule : req.session.schedule, classes : req.session.classes});
 
-            console.log("exists");
-            console.log(result.rows)
-            req.session.schedule = result.rows
-            //res.render('../public/trainer', {session : req.session, schedule: req.session.schedule});
-            
-        }
-    });
-
-    // const query2 = "SELECT * array_agg(member_id) as members FROM ScheduledMembers WHERE trainer_id=\'" + req.session.user.trainer_id + "\' ;";
-    // //console.log(query);
-
-    // client.query(query2, (err,result) => {
-    //     //console.log(result.rows);
-        
-    //     if (err){
-    //         //console.log("error");
-    //         res.status(401).send("error");
-    //     }
-    //     else{
-
-    //         console.log("exists");
-    //         console.log(result.rows)
-            
-            
-    //     }
-    // });
-
-    res.render('../public/trainer', {session : req.session, schedule: req.session.schedule});
+    } catch (err) {
+        res.status(401).send("error");
+    }
+    
 });
 
 app.get('/member/profile', async (req, res) => { 
@@ -200,14 +188,15 @@ app.post('/addSession', async (req, res) => {
             console.log(result.rows)
             console.log(req.session.schedule)
 
-            if (!req.session.hasOwnProperty("schedule")) {  
-                req.session.schedule = []
-            } 
+            // if (!req.session.hasOwnProperty("schedule")) {  
+            //     req.session.schedule = []
+            // } 
             
-            req.session.schedule.push(result.rows[0])
+            // req.session.schedule.push(result.rows[0])
             
             console.log(req.session.schedule)
-            res.render(`../public/trainer`, {session : req.session, schedule: req.session.schedule});
+            res.redirect(`http://localhost:3000/trainer`);
+            //res.render(`../public/trainer`, {session : req.session, schedule: req.session.schedule});
         }
     });
     

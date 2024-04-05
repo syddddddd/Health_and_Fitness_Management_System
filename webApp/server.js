@@ -47,10 +47,10 @@ app.post('/login', async (req, res) => {
     let table = user.charAt(0).toUpperCase() + user.slice(1) + 's'
 
     const query = "SELECT * FROM " + table +  " WHERE username=\'" + username + "\' AND password=\'" + password  + "\';";
-    //console.log(query);
+    console.log(query);
 
     client.query(query, (err,result) => {
-        //console.log(result.rows);
+        console.log(result.rows);
         
         if (err){
             //console.log("error");

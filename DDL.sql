@@ -48,7 +48,7 @@ CREATE TABLE Admins(
 );
 
 CREATE TABLE FitnessFiles(
-    file_id SERIAL PRIMARY KEY
+    file_id SERIAL PRIMARY KEY,
     -- health metrics
     --resting_hr INT,
     avg_sleep INT,
@@ -58,7 +58,7 @@ CREATE TABLE FitnessFiles(
     -- fitness goals
     goal_weight INT,
     distance INT,
-    goal_time TIME
+    goal_time TIME,
 
     --exercise_id INT,
     --achievements_id INT,
@@ -71,18 +71,18 @@ CREATE TABLE MemberRoutines(
     exercise_id INT,
     member_id INT
     --exercise VARCHAR(255) NOT NULL
-)
+);
 
 CREATE TABLE FitnessAchievements(
     achievements_id INT,
     member_id INT,
     achievements VARCHAR(255) NOT NULL
-)
+);
 
 CREATE TABLE ExerciseRoutines(
     exercise_id INT,
     exercise VARCHAR(255) NOT NULL
-)
+);
 
 --create schedule table
 CREATE TABLE Schedule(
@@ -107,12 +107,12 @@ CREATE TABLE ScheduledMembers(
     table_id SERIAL PRIMARY KEY,
     schedule_id INT REFERENCES Schedule(schedule_id),
     member_id INT REFERENCES Members(member_id)
-)
+);
 
 -- create dashboard table
 CREATE TABLE Dashboard(
     dashboard_id SERIAL PRIMARY KEY,
-    member_id INT REFERENCES Member(member_id),
+    member_id INT REFERENCES Member(member_id)
 
     -- health stats
     -- multiple attributes exercise routines
@@ -137,7 +137,7 @@ CREATE TABLE Maintenance (
    model_year DATE DEFAULT CURRENT_DATE,
    purchase_date DATE DEFAULT CURRENT_DATE,
    last_checkup DATE DEFAULT CURRENT_DATE,
-   working_orderVARCHAR(255) NOT NULL
+   working_order VARCHAR(255) NOT NULL
 );
 
 -- create payment table

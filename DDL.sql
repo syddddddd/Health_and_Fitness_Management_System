@@ -62,20 +62,19 @@ CREATE TABLE FitnessFiles(
 
     --exercise_id INT,
     --achievements_id INT,
-    member_id INT
+    member_id INT REFERENCES Members(member_id)
 );
 
 CREATE TABLE MemberRoutines(
-    -- do we need to have an id for this table?? or just make exercise and member id PK??
     table_id SERIAL PRIMARY KEY,
     exercise_id INT,
-    member_id INT
+    member_id INT REFERENCES Members(member_id)
     --exercise VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE FitnessAchievements(
     achievements_id INT,
-    member_id INT,
+    member_id INT REFERENCES Members(member_id),
     achievements VARCHAR(255) NOT NULL
 );
 

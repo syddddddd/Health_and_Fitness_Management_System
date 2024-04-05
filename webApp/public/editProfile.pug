@@ -1,0 +1,23 @@
+html(lang="en")
+    head
+        title Edit profile
+    body  
+        
+        include ./header
+        
+        h1 Edit #{session.user.fname}'s Profile
+
+        p First name:
+            input#firstName(type="textbox")
+        p Last name:
+            input#lastName(type="textbox")
+        p Email:
+            input#email(type="textbox")
+        p Phone number:
+            input#phoneNumber(type="textbox")
+        p Gender: 
+            select#gender(type="select")
+                option(value='other' checked) Other
+                option(value='male') Male
+                option(value='female') Female
+        

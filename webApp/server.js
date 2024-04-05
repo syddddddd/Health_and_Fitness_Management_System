@@ -150,8 +150,8 @@ app.get('/trainer', async (req, res) => {
     
 });
 
-app.get('/member/profile', async (req, res) => { 
-    res.render('../public/memberProfile', {session : req.session, member : req.session.user});
+app.get('/member/editProfile', async (req, res) => { 
+    res.render('../public/editProfile', {session : req.session});
 });
 
 app.get('/member/:memberid', async (req, res) => { 

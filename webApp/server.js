@@ -104,12 +104,12 @@ app.get('/trainer', async (req, res) => {
             console.log("exists");
             console.log(result.rows)
             req.session.schedule = result.rows
-            res.render('../public/trainer', {session : req.session, schedule: req.session.schedule});
+            //res.render('../public/trainer', {session : req.session, schedule: req.session.schedule});
             
         }
     });
 
-    // const query2 = "SELECT * FROM Members WHERE trainer_id=\'" + req.session.user.trainer_id + "\';";
+    // const query2 = "SELECT * array_agg(member_id) as members FROM ScheduledMembers WHERE trainer_id=\'" + req.session.user.trainer_id + "\' ;";
     // //console.log(query);
 
     // client.query(query2, (err,result) => {
@@ -123,10 +123,12 @@ app.get('/trainer', async (req, res) => {
 
     //         console.log("exists");
     //         console.log(result.rows)
-    //         res.render('../public/trainer', {session : req.session, schedule: result.rows});
+            
             
     //     }
     // });
+
+    res.render('../public/trainer', {session : req.session, schedule: req.session.schedule});
 });
 
 app.get('/member/profile', async (req, res) => { 
@@ -196,7 +198,14 @@ app.post('/addSession', async (req, res) => {
         else{
             console.log("inserted");
             console.log(result.rows)
+            console.log(req.session.schedule)
+
+            if (!req.session.hasOwnProperty("schedule")) {  
+                req.session.schedule = []
+            } 
+            
             req.session.schedule.push(result.rows[0])
+            
             console.log(req.session.schedule)
             res.render(`../public/trainer`, {session : req.session, schedule: req.session.schedule});
         }

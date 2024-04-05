@@ -28,12 +28,12 @@ VALUES
 (4, 2, 'Friday', '11:00', 'private', true);
 
 -- Populate ScehduledMembers Table
-INSERT INTO ScheduledMembers (schedule_id, member_id)
+INSERT INTO ScheduledMembers (schedule_id, trainer_id, member_id)
 VALUES 
-(1, 1),
-(1, 2),
-(2, 3),
-(3, 2);
+(1, 3, 1),
+(1, 3, 2),
+(2, 3, 3),
+(3, 1, 2);
 
 -- Populate FitnessFile Table
 INSERT INTO FitnessFile (member_id, avg_sleep, height, curr_weight, goal_weight, distance, goal_time)

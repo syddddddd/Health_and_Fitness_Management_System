@@ -62,20 +62,19 @@ CREATE TABLE FitnessFiles(
 
     --exercise_id INT,
     --achievements_id INT,
-    member_id INT
+    member_id INT REFERENCES Members(member_id)
 );
 
 CREATE TABLE MemberRoutines(
-    -- do we need to have an id for this table?? or just make exercise and member id PK??
     table_id SERIAL PRIMARY KEY,
     exercise_id INT,
-    member_id INT
+    member_id INT REFERENCES Members(member_id)
     --exercise VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE FitnessAchievements(
     achievements_id INT,
-    member_id INT,
+    member_id INT REFERENCES Members(member_id),
     achievements VARCHAR(255) NOT NULL
 );
 
@@ -88,15 +87,10 @@ CREATE TABLE ExerciseRoutines(
 CREATE TABLE Schedule(
     schedule_id SERIAL PRIMARY KEY,
     trainer_id INT REFERENCES Trainers(trainer_id),
+    member_id INT REFERENCES Members(member_id),
     day VARCHAR(255) NOT NULL,
-    time_slot TIME NOT NULL, -- primary key option?
-    --member_id INT REFERENCES Members(member_id),
+    time_slot TIME NOT NULL,
     UNIQUE (trainer_id, day, time_slot),
-    
-
-    -- not particularly neccessary since we already have trainer_id
-    --trainer_fname VARCHAR(255) NOT NULL,
-    --trainer_lname VARCHAR(255) NOT NULL,
 
     availability BOOLEAN NOT NULL,
     session_type VARCHAR(255) NOT NULL

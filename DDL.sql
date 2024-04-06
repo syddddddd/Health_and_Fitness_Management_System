@@ -85,7 +85,7 @@ CREATE TABLE Equipment(
 CREATE TABLE Exercises(
     exercise_id SERIAL PRIMARY KEY,
     exercise VARCHAR(255) NOT NULL,
-    equipment_id INT REFERENCES Equipmennt(equipment_id);
+    equipment_id INT REFERENCES Equipment(equipment_id),
     info TEXT
 );
 
@@ -135,7 +135,7 @@ CREATE TABLE RoomBooking(
 -- create maintenance table
 CREATE TABLE Maintenance (
    maintenance_id SERIAL PRIMARY KEY,
-   equipment_id INT REFERENCES Equipmennt(equipment_id);
+   equipment_id INT REFERENCES Equipment(equipment_id),
    purchase_date DATE DEFAULT CURRENT_DATE,
    last_checkup DATE DEFAULT CURRENT_DATE,
    working_order VARCHAR(255) NOT NULL

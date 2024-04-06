@@ -157,7 +157,7 @@ app.get('/trainer', async (req, res) => {
         console.log(classes.rows)
         req.session.classes = classes.rows
         
-        res.render('../public/trainer', {session : req.session, schedule : req.session.schedule, classes : req.session.classes});
+        res.render('../public/trainer', {session : req.session, schedule : req.session.schedule, classes :  req.session.classes});
 
     } catch (err) {
         res.status(401).send("error");

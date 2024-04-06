@@ -22,9 +22,9 @@ VALUES
 -- Populate Scehdule Table
 INSERT INTO Schedule (trainer_id, day, time_slot, session_type, availability)
 VALUES 
-(1, 'Monday', '16:00', 'group', true),
-(2, 'Tuesday', '8:30', 'private', false),
-(3, 'Tuesday', '9:00', 'private', false),
+(3, 'Monday', '16:00', 'group', true),
+(3, 'Tuesday', '8:30', 'private', false),
+(2, 'Tuesday', '9:00', 'private', false),
 (1, 'Friday', '11:00', 'private', true);
 
 -- Populate ScehduledMembers Table

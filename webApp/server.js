@@ -208,7 +208,7 @@ app.post('/member/editProfile', async (req, res) => {
     }
 
     // if the personal info is not empty, update it
-    if (setPersonalInfo != []){
+    if (setPersonalInfo.length > 0){
 
         let setString = "";
 
@@ -222,7 +222,7 @@ app.post('/member/editProfile', async (req, res) => {
 
             if (err){
                 console.log(err);
-                console.log("THERE IS ERROR");
+                console.log("error updating personal info");
                 res.status(401).send("error");
             }
             else{
@@ -254,7 +254,7 @@ app.post('/member/editProfile', async (req, res) => {
     }
 
     // if the fitness files is not empty, update it
-    if (setFitnessFiles != []){
+    if (setFitnessFiles.length > 0){
 
         let setFileString = "";
 
@@ -267,8 +267,7 @@ app.post('/member/editProfile', async (req, res) => {
         client.query(fitnessQuery, (err,result) => {
 
             if (err){
-                console.log(err);
-                console.log("THERE IS ERROR");
+                console.log("error updating fitness files");
                 res.status(401).send("error");
             }
             else{
@@ -283,7 +282,7 @@ app.post('/member/editProfile', async (req, res) => {
         //console.log(result.rows);
         
         if (err){
-            //console.log("error");
+            console.log("error findng the user after update");
             res.status(401).send("error");
         }
         else{

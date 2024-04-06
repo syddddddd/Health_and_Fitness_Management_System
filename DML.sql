@@ -36,11 +36,25 @@ VALUES
 (3, 1, 2);
 
 -- Populate FitnessFile Table
-INSERT INTO FitnessFiles (member_id, avg_sleep, height, curr_weight, goal_weight, distance, goal_time)
+INSERT INTO FitnessFiles (member_id, goal_weight, distance, goal_time)
 VALUES 
-(1, 8, 170, 200, 220, 5, '01:00:00'),
-(2, 5, 155, 150, 140, 10, '01:30:00'),
-(3, 9, 180, 140, 145, 2, '00:30:00');
+(1, 220, 5, '01:00:00'),
+(2, 140, 10, '01:30:00'),
+(3, 145, 2, '00:30:00');
+
+-- Populate HealthMetrics Table
+INSERT INTO HealthMetrics (member_id, hours_slept, curr_weight, height, calories_consummed)
+VALUES 
+(1, 7, 230, 66, 1985),
+(2, 8, 155, 72, 2543),
+(3, 4, 168, 74, 2122);
+
+-- Populate HealthMetrics Table
+INSERT INTO HealthStatistics (member_id, hours_slept, curr_weight, height, calories_consummed)
+VALUES 
+(1, 7, 230, 66, 1985),
+(2, 8, 155, 72, 2543),
+(3, 4, 168, 74, 2122);
 
 
 SELECT s.schedule_id,ARRAY_AGG(s.member_id) as ids, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members 

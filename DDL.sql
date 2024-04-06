@@ -49,38 +49,62 @@ CREATE TABLE Admins(
 
 CREATE TABLE FitnessFiles(
     file_id SERIAL PRIMARY KEY,
-    -- health metrics
-    --resting_hr INT,
-    avg_sleep INT,
-    curr_weight INT,
-    height INT,
 
     -- fitness goals
     goal_weight INT,
     distance INT,
     goal_time TIME,
 
-    --exercise_id INT,
-    --achievements_id INT,
     member_id INT REFERENCES Members(member_id)
 );
 
-CREATE TABLE MemberRoutines(
-    table_id SERIAL PRIMARY KEY,
-    exercise_id INT,
+CREATE TABLE HealthMetrics(
+    health_metric_id SERIAL PRIMARY KEY,
+    member_id INT REFERENCES Members(member_id),
+    hours_slept INT,
+    curr_weight INT,
+    height INT,
+    calories_consummed INT
+);
+
+CREATE TABLE HealthStatistics(
+    health_stats_id SERIAL PRIMARY KEY,
+    member_id INT REFERENCES Members(member_id),
+    hours_slept INT,
+    curr_weight INT,
+    height INT,
+    calories_consummed INT
+);
+
+-- create dashboard table
+CREATE TABLE Dashboard(
+    dashboard_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Members(member_id)
-    --exercise VARCHAR(255) NOT NULL
+
+    -- health stats
+
+
+    -- multiple attributes exercise routines
+    -- multiple attributes fitness achievements
+);
+
+CREATE TABLE Exercises(
+    exercise_id SERIAL PRIMARY KEY,
+    exercise VARCHAR(255) NOT NULL,
+    info TEXT
+);
+
+CREATE TABLE MemberRoutines(
+    routine_id SERIAL PRIMARY KEY,
+    exercise_id INT REFERENCES Exercises(exercise_id),
+    dashboard_id INT REFERENCES Dashboard(dashboard_id),
+    exercise VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE FitnessAchievements(
     achievements_id INT,
     member_id INT REFERENCES Members(member_id),
     achievements VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE ExerciseRoutines(
-    exercise_id INT,
-    exercise VARCHAR(255) NOT NULL
 );
 
 --create schedule table
@@ -103,16 +127,6 @@ CREATE TABLE ScheduledMembers(
     schedule_id INT REFERENCES Schedule(schedule_id),
     trainer_id INT REFERENCES Trainers(trainer_id),
     member_id INT REFERENCES Members(member_id)
-);
-
--- create dashboard table
-CREATE TABLE Dashboard(
-    dashboard_id SERIAL PRIMARY KEY,
-    member_id INT REFERENCES Members(member_id)
-
-    -- health stats
-    -- multiple attributes exercise routines
-    -- multiple attributes fitness achievements
 );
 
 -- create booking table

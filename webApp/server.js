@@ -182,8 +182,9 @@ app.post('/member/editProfile', async (req, res) => {
 
     // health metrics
     let sleep = req.body.sleep;
-    let curWeight = req.body.curWeight;
+    let curWeight = req.body.currentWeight;
     let height = req.body.height;
+    let calories = req.body.calories;
 
     // current user
     let user = req.session.user.member_id;
@@ -243,15 +244,6 @@ app.post('/member/editProfile', async (req, res) => {
     if (time){
         setFitnessFiles.push("goal_time = \'" + time + "\'");
     }
-    if (sleep){
-        setFitnessFiles.push("avg_sleep = " + sleep);
-    }
-    if (curWeight){
-        setFitnessFiles.push("curr_weight = " + curWeight);
-    }
-    if (height){
-        setFitnessFiles.push("height = " + height);
-    }
 
     // if the fitness files is not empty, update it
     if (setFitnessFiles.length > 0){
@@ -276,6 +268,10 @@ app.post('/member/editProfile', async (req, res) => {
         });
     }
 
+    insertHealthMetrics(user, sleep, curWeight, height, calories);
+    insertHealthStats(user, sleep, curWeight, height, calories);
+
+
     const query = "SELECT * FROM Members WHERE member_id= " + user;
 
     client.query(query, (err,result) => {
@@ -294,6 +290,98 @@ app.post('/member/editProfile', async (req, res) => {
     });
     
 });
+
+function insertHealthMetrics(user, sleep, curWeight, height, calories){
+
+    let setHealthMetrics = [];
+
+    if (sleep){
+        setHealthMetrics.push("hours_slept = " + sleep);
+    }
+    if (curWeight){
+        setHealthMetrics.push("curr_weight = " + curWeight);
+    }
+    if (height){
+        setHealthMetrics.push("height = " + height);
+    }
+    if (calories){
+        setHealthMetrics.push("calories_consummed = " + calories);
+    }
+
+    if (setHealthMetrics.length > 0){
+
+        let setMetricsString = "";
+
+        setMetricsString += setHealthMetrics.join(', ');
+        //console.log(setMetricsString);
+
+        const fitnessQuery = "UPDATE HealthMetrics SET " + setMetricsString + " WHERE member_id= " + user;
+        //console.log(fitnessQuery);
+
+        client.query(fitnessQuery, (err,result) => {
+
+            if (err){
+                console.log("error updating health metrics");
+                res.status(401).send("error");
+            }
+            else{
+                console.log("updated health metrics");
+            }
+        });
+    }
+}
+
+function insertHealthStats(user, sleep, curWeight, height, calories){
+
+    let setHMvariables = [];
+    let setHMData = [];
+
+    if (sleep){
+        setHMvariables.push("hours_slept");
+        setHMData.push(sleep);
+    }
+    if (curWeight){
+        setHMvariables.push("curr_weight");
+        setHMData.push(curWeight);
+    }
+    if (height){
+        setHMvariables.push("height");
+        setHMData.push(height);
+    }
+    if (calories){
+        setHMvariables.push("calories_consummed");
+        setHMData.push(calories);
+    }
+
+    // if the stats are not empty, update it
+    if (setHMvariables.length > 0){
+
+        let varString = "";
+        let dataString = "";
+
+        varString += setHMvariables.join(', ');
+       //console.log(varString);
+
+        dataString += "\'";
+        dataString += setHMData.join("\', \'");
+        dataString += "\'"
+        //console.log(dataString);
+
+        const healthQuery = "INSERT INTO HealthStatistics (member_id, " + varString + " ) VALUES ( \'" + user + "\', " + dataString + ");";
+        //console.log(healthQuery);
+
+        client.query(healthQuery, (err,result) => {
+
+            if (err){
+                console.log("error updating health stats");
+                //res.status(401).send("error");
+            }
+            else{
+                console.log("updated health stats");
+            }
+        });
+    }
+}
 
 app.get('/member/:memberid', async (req, res) => { 
     let id = req.params.memberid;

@@ -414,8 +414,8 @@ app.get('/member/dashboard', async (req, res) => {
     }
 });
 
-app.get('/member/:memberid', async (req, res) => { 
-    let id = req.params.memberid;
+app.get('/member/:memberId', async (req, res) => { 
+    let id = req.params.memberId;
     console.log(id)
 
     try {
@@ -433,7 +433,6 @@ app.get('/member/:memberid', async (req, res) => {
     }
 
 });
-
 
 
 app.get('/addSession', async (req, res) => { 
@@ -477,6 +476,26 @@ app.post('/addSession', async (req, res) => {
         }
     });
     
+});
+
+app.get('/editSession/:schedId', async (req, res) => { 
+    let id = req.params.schedId;
+    console.log(id)
+
+    try {
+        const query = "SELECT * FROM Members WHERE member_id=$1";
+        const member = await client.query(query, [id]);
+        console.log("getting member")
+
+        console.log("exists");
+        console.log(member.rows[0])
+        
+        res.render('../public/memberProfile', {session : req.session, member : member.rows[0]});
+
+    } catch (err) {
+        res.status(401).send("error");
+    }
+
 });
 
 

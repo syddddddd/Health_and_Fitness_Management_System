@@ -17,12 +17,12 @@ html(lang="en")
 
         h3 #{session.user.fname}'s Fitness Goals 
 
-        p Goal weight: 
-        p Goal running distance: 
-        p Goal running time: 
+        p Goal weight: #{fitness.goal_weight}
+        p Goal running distance: #{fitness.distance}
+        p Goal running time: #{fitness.goal_time}
 
         h3 #{session.user.fname}'s Health Metrics 
 
-        p Average sleep schedule: 
-        p Current weight: 
-        p Height: 
+        p Average sleep schedule: #{fitness.avg_sleep}
+        p Current weight: #{fitness.curr_weight}
+        p Height: #{fitness.height}

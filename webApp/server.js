@@ -122,7 +122,19 @@ app.post('/signup', async (req, res) => {
 });
 
 app.get('/member', async (req, res) => { 
-    res.render('../public/member', {session : req.session});
+    try{
+
+        let user = req.session.user.member_id;
+        
+        const query = "SELECT * FROM FitnessFiles WHERE member_id= " + user;
+        const fitnessResults = await client.query(query);
+        //console.log(fitnessResults.rows);
+        
+        res.render('../public/member', {session : req.session, fitness : fitnessResults.rows[0]});
+    }
+    catch(err){
+        res.status(401).send("error");
+    }
 });
 
 app.get('/trainer', async (req, res) => { 

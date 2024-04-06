@@ -56,9 +56,12 @@ VALUES
 (2, 8, 155, 72, 2543),
 (3, 4, 168, 74, 2122);
 
+-- Populate Exercise Table
+INSERT INTO Exercise (exerise, info)
+VALUES 
+("sit-ups", "Sets of 5 sit-ups"),
+("push-ups", "Sets of 10 push-ups"),
+("treadmill", "Running for 30 minutes"),
+("eliptical", "Using the eliptical for 20 minutes"),
+("weights", "Lift different weights for 5 sets");
 
-SELECT s.schedule_id,ARRAY_AGG(s.member_id) as ids, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members 
-FROM ScheduledMembers s 
-JOIN Members m on m.member_id = s.member_id 
-WHERE trainer_id=3
-Group By schedule_id

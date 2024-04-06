@@ -222,7 +222,8 @@ app.post('/member/editProfile', async (req, res) => {
 
             if (err){
                 console.log(err);
-                console.log("THERE IS ERROR")
+                console.log("THERE IS ERROR");
+                res.status(401).send("error");
             }
             else{
                 console.log("updated personal info");
@@ -267,7 +268,8 @@ app.post('/member/editProfile', async (req, res) => {
 
             if (err){
                 console.log(err);
-                console.log("THERE IS ERROR")
+                console.log("THERE IS ERROR");
+                res.status(401).send("error");
             }
             else{
                 console.log("updated fitness goals");
@@ -338,6 +340,7 @@ app.post('/addSession', async (req, res) => {
         if (err){
             console.log(err);
             console.log("THERE IS ERROR")
+            res.status(401).send("error");
         }
         else{
             console.log("inserted");

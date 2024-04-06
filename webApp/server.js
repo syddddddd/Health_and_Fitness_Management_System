@@ -129,8 +129,11 @@ app.get('/member', async (req, res) => {
         const query = "SELECT * FROM FitnessFiles WHERE member_id= " + user;
         const fitnessResults = await client.query(query);
         //console.log(fitnessResults.rows);
+
+        const query2 = "SELECT * FROM HealthMetrics WHERE member_id= " + user;
+        const healthResults = await client.query(query2);
         
-        res.render('../public/member', {session : req.session, fitness : fitnessResults.rows[0]});
+        res.render('../public/member', {session : req.session, fitness : fitnessResults.rows[0], health : healthResults.rows[0]});
     }
     catch(err){
         res.status(401).send("error");

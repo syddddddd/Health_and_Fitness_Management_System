@@ -56,12 +56,34 @@ VALUES
 (2, 8, 155, 72, 2543),
 (3, 4, 168, 74, 2122);
 
--- Populate Exercise Table
-INSERT INTO Exercise (exerise, info)
+-- Populate Equipment Table
+INSERT INTO Equipment (equip_name, model_year)
 VALUES 
-("sit-ups", "Sets of 5 sit-ups"),
-("push-ups", "Sets of 10 push-ups"),
-("treadmill", "Running for 30 minutes"),
-("eliptical", "Using the eliptical for 20 minutes"),
-("weights", "Lift different weights for 5 sets");
+("mats", 2023),
+("treadmill", 2021),
+("eliptical", 2022);
+("weights", 2019),
+("rower", 2017),
+("indoor bike", 2016);
 
+-- Populate Exercise Table
+INSERT INTO Exercise (exerise, equipment_id, info)
+VALUES 
+("sit-ups", 1, "Sets of 5 sit-ups"),
+("push-ups", 1, "Sets of 10 push-ups"),
+("treadmill", 2, "Running for 30 minutes"),
+("eliptical", 3, "Using the eliptical for 20 minutes"),
+("weights", 4, "Lift different weights for 5 sets"),
+("rowing", 5, "Rowing for 20 minutes"),
+("cycling", 6, "Use the indoor bicycle for 30 minutes");
+
+-- Populate Equipment Table
+INSERT INTO MemberRoutines (member_id, exercise_id)
+VALUES 
+(1, 1),
+(1, 4),
+(1, 3);
+(2, 6),
+(2, 2),
+(3, 5),
+(3, 6);

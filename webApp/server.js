@@ -47,10 +47,10 @@ app.post('/login', async (req, res) => {
     let table = user.charAt(0).toUpperCase() + user.slice(1) + 's'
 
     const query = "SELECT * FROM " + table +  " WHERE username=\'" + username + "\' AND password=\'" + password  + "\';";
-    console.log(query);
+    //console.log(query);
 
     client.query(query, (err,result) => {
-        console.log(result.rows);
+        //console.log(result.rows);
         
         if (err){
             //console.log("error");
@@ -72,7 +72,7 @@ app.post('/login', async (req, res) => {
                 //req.session.id = result.rows[0].member_id;
                 req.session.user = result.rows[0];
                 req.session.type = user;
-                console.log(user)
+                //console.log(user)
                 console.log(req.session);
                 //res.status(200).send("Logged in");
                 res.redirect(`http://localhost:3000/${user}`);
@@ -152,6 +152,134 @@ app.get('/trainer', async (req, res) => {
 
 app.get('/member/editProfile', async (req, res) => { 
     res.render('../public/editProfile', {session : req.session});
+});
+
+app.post('/member/editProfile', async (req, res) => {
+
+    // personal info
+    let fname = req.body.fname;
+    let lname = req.body.lname;
+    let email = req.body.email;
+    let phone = req.body.phone;
+    let gender = req.body.gender;
+
+    // fitness goals
+    let goalWeight = req.body.goalWeight;
+    let distance = req.body.distance;
+    let time = req.body.time;
+
+    // health metrics
+    let sleep = req.body.sleep;
+    let curWeight = req.body.curWeight;
+    let height = req.body.height;
+
+    // current user
+    let user = req.session.user.member_id;
+
+    // update personal info based on input by user
+    let setPersonalInfo = [];
+    
+    if (fname){
+        setPersonalInfo.push("fname = \'" + fname + "\'");
+    }
+    if (lname){
+        setPersonalInfo.push("lname = \'" + lname + "\'");
+    }
+    if (email){
+        setPersonalInfo.push("email = \'" + email + "\'");
+    }
+    if (phone){
+        setPersonalInfo.push("phone = \'" + phone + "\'");
+    }
+    if (gender != "empty"){
+        setPersonalInfo.push("gender = \'" + gender + "\'");
+    }
+
+    // if the personal info is not empty, update it
+    if (setPersonalInfo != []){
+
+        let setString = "";
+
+        setString += setPersonalInfo.join(', ');
+        //console.log(setString);
+
+        const pInfoquery = "UPDATE Members SET " + setString + " WHERE member_id= " + user;
+        //console.log(pInfoquery);
+
+        client.query(pInfoquery, (err,result) => {
+
+            if (err){
+                console.log(err);
+                console.log("THERE IS ERROR")
+            }
+            else{
+                console.log("updated personal info");
+            }
+        });
+    }
+
+    // update fitness files based on input by user
+    let setFitnessFiles = [];
+
+    if (goalWeight){
+        setFitnessFiles.push("goal_weight = " + goalWeight);
+    }
+    if (distance){
+        setFitnessFiles.push("distance = " + distance);
+    }
+    if (time){
+        setFitnessFiles.push("goal_time = \'" + time + "\'");
+    }
+    if (sleep){
+        setFitnessFiles.push("avg_sleep = " + sleep);
+    }
+    if (curWeight){
+        setFitnessFiles.push("curr_weight = " + curWeight);
+    }
+    if (height){
+        setFitnessFiles.push("height = " + height);
+    }
+
+    // if the fitness files is not empty, update it
+    if (setFitnessFiles != []){
+
+        let setFileString = "";
+
+        setFileString += setFitnessFiles.join(', ');
+       //console.log(setFileString);
+
+        const fitnessQuery = "UPDATE FitnessFiles SET " + setFileString + " WHERE member_id= " + user;
+        //console.log(fitnessQuery);
+
+        client.query(fitnessQuery, (err,result) => {
+
+            if (err){
+                console.log(err);
+                console.log("THERE IS ERROR")
+            }
+            else{
+                console.log("updated fitness goals");
+            }
+        });
+    }
+
+    const query = "SELECT * FROM Members WHERE member_id= " + user;
+
+    client.query(query, (err,result) => {
+        //console.log(result.rows);
+        
+        if (err){
+            //console.log("error");
+            res.status(401).send("error");
+        }
+        else{
+            req.session.user = result.rows[0];
+            //console.log(user)
+            //console.log(req.session);
+            res.redirect(`http://localhost:3000/member`);
+        }
+    });
+    
 });
 
 app.get('/member/:memberid', async (req, res) => { 

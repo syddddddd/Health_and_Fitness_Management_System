@@ -109,7 +109,6 @@ CREATE TABLE Schedule(
 );
 
 CREATE TABLE ScheduledMembers(
-    -- need table id??
     table_id SERIAL PRIMARY KEY,
     schedule_id INT REFERENCES Schedule(schedule_id),
     trainer_id INT REFERENCES Trainers(trainer_id),

@@ -132,34 +132,6 @@ app.get('/member', async (req, res) => {
     }
 });
 
-app.get('/member/:memberId', async (req, res) => { 
-    let id = req.params.memberId;
-    console.log(id)
-
-    try {
-        const query = "SELECT * FROM Members WHERE member_id=$1";
-        const member = await client.query(query, [id]);
-        console.log("getting member")
-
-        console.log("exists");
-        console.log(member.rows[0])
-
-        const query2 = "SELECT * FROM FitnessFiles WHERE member_id=$1";
-        const fitnessResults = await client.query(query2, [id]);
-        //console.log(fitnessResults.rows);
-
-        const query3 = "SELECT * FROM HealthMetrics WHERE member_id=$1";
-        const healthResults = await client.query(query3, [id]);
-        
-        res.render('../public/member', {session : req.session, member : member.rows[0], fitness : fitnessResults.rows[0], health : healthResults.rows[0]});
-        //res.render('../public/member', {session : req.session, member : member.rows[0]});
-
-    } catch (err) {
-        res.status(401).send("error");
-    }
-
-});
-
 app.get('/trainer', async (req, res) => { 
     try {
         const query = "SELECT * FROM Schedule WHERE trainer_id=$1 ORDER BY time_slot";
@@ -434,7 +406,33 @@ app.get('/member/dashboard', async (req, res) => {
     }
 });
 
+app.get('/member/:memberId', async (req, res) => { 
+    let id = req.params.memberId;
+    console.log(id)
 
+    try {
+        const query = "SELECT * FROM Members WHERE member_id=$1";
+        const member = await client.query(query, [id]);
+        console.log("getting member")
+
+        console.log("exists");
+        console.log(member.rows[0])
+
+        const query2 = "SELECT * FROM FitnessFiles WHERE member_id=$1";
+        const fitnessResults = await client.query(query2, [id]);
+        //console.log(fitnessResults.rows);
+
+        const query3 = "SELECT * FROM HealthMetrics WHERE member_id=$1";
+        const healthResults = await client.query(query3, [id]);
+        
+        res.render('../public/member', {session : req.session, member : member.rows[0], fitness : fitnessResults.rows[0], health : healthResults.rows[0]});
+        //res.render('../public/member', {session : req.session, member : member.rows[0]});
+
+    } catch (err) {
+        res.status(401).send("error");
+    }
+
+});
 
 
 app.get('/addSession', async (req, res) => { 

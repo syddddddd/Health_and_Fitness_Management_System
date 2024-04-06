@@ -386,6 +386,34 @@ function insertHealthStats(user, sleep, curWeight, height, calories){
     }
 }
 
+app.get('/member/dashboard', async (req, res) => { 
+
+    try{
+
+        let user = req.session.user.member_id;
+
+        let healthstats = {};
+
+        const avgSleep = "SELECT AVG(CAST(hours_slept as FLOAT)) FROM HealthStatistics WHERE member_id= " + user;
+        const sleepResults = await client.query(avgSleep);
+        healthstats.sleep = sleepResults.rows[0].avg;
+
+        const avgWeight = "SELECT AVG(CAST(curr_weight as FLOAT)) FROM HealthStatistics WHERE member_id= " + user;
+        const weightResults = await client.query(avgWeight);
+        healthstats.weight = weightResults.rows[0].avg;
+
+        const avgCalories = "SELECT AVG(CAST(calories_consummed as FLOAT)) FROM HealthStatistics WHERE member_id= " + user;
+        const caloriesResults = await client.query(avgCalories);
+        healthstats.calories = caloriesResults.rows[0].avg;
+        
+        //console.log(healthstats);
+        res.render('../public/memberDashboard', {session : req.session, health : healthstats});
+    }
+    catch(err){
+        res.status(401).send("error");
+    }
+});
+
 app.get('/member/:memberid', async (req, res) => { 
     let id = req.params.memberid;
     console.log(id)

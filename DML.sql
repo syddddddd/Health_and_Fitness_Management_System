@@ -59,15 +59,15 @@ VALUES
 -- Populate Equipment Table
 INSERT INTO Equipment (equip_name, model_year)
 VALUES 
-('mats', 2023),
-('treadmill', 2021),
-('eliptical', 2022),
-('weights', 2019),
-('rower', 2017),
-('indoor bike', 2016);
+('mats', '2023-01-01'),
+('treadmill', '2021-01-01'),
+('eliptical', '2022-01-01'),
+('weights', '2019-01-01'),
+('rower', '2017-01-01'),
+('indoor bike', '2016-01-01');
 
 -- Populate Exercise Table
-INSERT INTO Exercise (exercise, equipment_id, info)
+INSERT INTO Exercises (exercise, equipment_id, info)
 VALUES 
 ('sit-ups', 1, 'Sets of 5 sit-ups'),
 ('push-ups', 1, 'Sets of 10 push-ups'),

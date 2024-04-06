@@ -76,18 +76,6 @@ CREATE TABLE HealthStatistics(
     calories_consummed INT
 );
 
--- create dashboard table
-CREATE TABLE Dashboard(
-    dashboard_id SERIAL PRIMARY KEY,
-    member_id INT REFERENCES Members(member_id)
-
-    -- health stats
-
-
-    -- multiple attributes exercise routines
-    -- multiple attributes fitness achievements
-);
-
 CREATE TABLE Exercises(
     exercise_id SERIAL PRIMARY KEY,
     exercise VARCHAR(255) NOT NULL,
@@ -97,8 +85,7 @@ CREATE TABLE Exercises(
 CREATE TABLE MemberRoutines(
     routine_id SERIAL PRIMARY KEY,
     exercise_id INT REFERENCES Exercises(exercise_id),
-    --dashboard_id INT REFERENCES Dashboard(dashboard_id),
-    exercise VARCHAR(255) NOT NULL
+    member_id INT REFERENCES Members(member_id)
 );
 
 CREATE TABLE FitnessAchievements(

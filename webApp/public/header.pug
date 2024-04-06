@@ -1,16 +1,16 @@
 div#header
 if session && session.loggedin
         if session.type == "member"
-            a(href="/member") Home  
+            a(href="/member") Member Profile
             |
             |
             a(href="/member/editProfile") Edit Profile
             |
             |
-            a(href="/member/dashboard") Dashboard  
+            a(href="/member/dashboard") Dashboard
             |
             |
-            a(href="/member/schedule") Schedule  
+            a(href="/member/schedule") Schedule
 
         if session.type == "trainer"
             a(href="/trainer") Trainer Home 

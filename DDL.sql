@@ -97,7 +97,7 @@ CREATE TABLE Exercises(
 CREATE TABLE MemberRoutines(
     routine_id SERIAL PRIMARY KEY,
     exercise_id INT REFERENCES Exercises(exercise_id),
-    dashboard_id INT REFERENCES Dashboard(dashboard_id),
+    --dashboard_id INT REFERENCES Dashboard(dashboard_id),
     exercise VARCHAR(255) NOT NULL
 );
 

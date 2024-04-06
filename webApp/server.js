@@ -268,7 +268,7 @@ app.post('/member/editProfile', async (req, res) => {
         });
     }
 
-    insertHealthMetrics(user, sleep, curWeight, height, calories);
+    updateHealthMetrics(user, sleep, curWeight, height, calories);
     insertHealthStats(user, sleep, curWeight, height, calories);
 
 
@@ -291,7 +291,7 @@ app.post('/member/editProfile', async (req, res) => {
     
 });
 
-function insertHealthMetrics(user, sleep, curWeight, height, calories){
+function updateHealthMetrics(user, sleep, curWeight, height, calories){
 
     let setHealthMetrics = [];
 

@@ -483,15 +483,21 @@ app.get('/editSession/:schedId', async (req, res) => {
     console.log(id)
 
     try {
-        const query = "SELECT * FROM Members WHERE member_id=$1";
-        const member = await client.query(query, [id]);
-        console.log("getting member")
+        const query = "SELECT * FROM Schedule WHERE schedule_id=$1";
+        const session = await client.query(query, [id]);
+        console.log("getting session")
 
         console.log("exists");
-        console.log(member.rows[0])
-        
-        res.render('../public/memberProfile', {session : req.session, member : member.rows[0]});
+        console.log(session.rows[0])
 
+        const query2 = "SELECT s.schedule_id, ARRAY_AGG(s.member_id) as ids, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members FROM ScheduledMembers s JOIN Members m on m.member_id = s.member_id WHERE trainer_id=$1 and schedule_id=$2 Group By schedule_id";
+        const theClass = await client.query(query2, [req.session.user.trainer_id, id]);
+
+        console.log(theClass.rows[0])
+
+        res.render('../public/editSession', {session : req.session, schedule : session.rows[0], theClass: theClass.rows[0]});
+
+        
     } catch (err) {
         res.status(401).send("error");
     }

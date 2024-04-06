@@ -11,13 +11,9 @@ html(lang="en")
             |
             label(for='dropdown') #[strong Day:]   
             select(type='select' id='day' name='day')
-                option(value='Sunday' checked) Sunday
-                option(value='Monday') Monday
-                option(value='Tuesday') Tuesday 
-                option(value='Wednesday') Wednesday 
-                option(value='Thursday') Thursday 
-                option(value='Friday') Friday
-                option(value='Saturday') Saturday
+                each day in ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+                    option(value=day) #{day}
+
             br
             br
             | #[strong Time:]

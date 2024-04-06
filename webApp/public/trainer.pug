@@ -42,11 +42,14 @@ html(lang="en")
 
                                         if item.schedule_id === sched.schedule_id
                                             - var n = 0
-                                            each id in item.ids 
+                                            each id in item.ids
+                                                if n > 0
+                                                    br 
                                                 a(href=`/member/${id}`) #{item.members[n++]}
                                                 br       
                                 
-                            td edit
+                            td 
+                                a(href=`/editSession/${sched.schedule_id}`) edit
             |
             
 

@@ -1,0 +1,71 @@
+html(lang="en")
+    head
+        title Trainer page
+    body  
+        
+        include ./header
+        style.
+            table {
+                border-collapse: collapse;
+                width: 60%;
+            }
+            th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+    
+        h2 Edit Schedule 
+       
+            table
+                thead 
+                    tr
+                        th Day
+                        th Time
+                        th Session Type
+                        th Members
+
+                tbody               
+                    tr 
+                        td 
+                            select(type='select' id='day' name='day')
+                                option(value=schedule.day checked) #{schedule.day}
+
+                                each day in ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+                                    if day != schedule.day 
+                                        option(value=day) #{day}
+
+                        td 
+                            label(for='dropdown')    Hour: 
+                            select(type='select' id='hour' name='hour')
+                                -var hour = schedule.time_slot.split(':')[0]
+                                option(value=hour checked) #{hour}
+                                each time in ['07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19']
+                                    if time != hour
+                                        option(value=time) #{time}
+                           
+                                        
+                            label(for='dropdown')   Minutes: 
+                            select(type='select' id='min' name='min')
+                                -var min = schedule.time_slot.split(':')[1]
+                                option(value=min checked) #{min}
+                                
+                                each time in ['00', '30']
+                                    if time != min
+                                        option(value=time) #{time}
+                        
+                        td #{schedule.session_type}
+
+                        td
+                            if theClass   
+                                - var n = 0
+                                each id in theClass.ids 
+                                    p= theClass.members[n++]
+                                          
+            br
+            button(type="submit") Save Edits
+
+        button(type="button" id="addSession") Delete Session
+
+        script(src="/js/trainerScheduleManagement.js")

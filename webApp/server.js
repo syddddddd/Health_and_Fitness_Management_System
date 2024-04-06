@@ -504,6 +504,37 @@ app.get('/editSession/:schedId', async (req, res) => {
 
 });
 
+app.post('/editSession/:schedId', async (req, res) => { 
+    let id = req.params.schedId;
+    let day = req.body.day;
+    let time = req.body.hour + ':' + req.body.min;
+    console.log(id)
+    console.log(req.body)
+
+    try {
+        if (req.body.hasOwnProperty("deleteBox")) {  
+            console.log("deleting")
+            const query = "delete from ScheduledMembers where schedule_id =$1";
+            await client.query(query, [id]);
+
+            const query2 = "delete from Schedule where schedule_id =$1";
+            await client.query(query2, [id]);
+
+        } else {
+            console.log("not deleting")
+            const query3 = "UPDATE schedule SET day =$1, time_slot =$2 WHERE schedule_id =$3";
+            await client.query(query3, [day, time, id])
+        }
+
+
+        res.redirect(`http://localhost:3000/trainer`);
+        
+    } catch (err) {
+        res.status(401).send("error");
+    }
+
+});
+
 
 app.listen(port);
 console.log(`Server is listening at http://localhost:${port}`);

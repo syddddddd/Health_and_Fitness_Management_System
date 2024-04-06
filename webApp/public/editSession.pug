@@ -1,6 +1,6 @@
 html(lang="en")
     head
-        title Trainer page
+        title Session Edit Page
     body  
         
         include ./header
@@ -15,8 +15,8 @@ html(lang="en")
                 padding: 8px;
             }
    
-        h2 Edit Schedule 
-       
+        h2 Edit Session 
+        form(action=`/editSession/${schedule.schedule_id}` method="post")
             table
                 thead 
                     tr
@@ -61,10 +61,10 @@ html(lang="en")
                                 - var n = 0
                                 each id in theClass.ids 
                                     p= theClass.members[n++]
+
+                        td     
+                            input(type='checkbox' name='deleteBox')
+                            label(for='checkbox') &nbsp;&nbsp;Delete Session 
                                           
             br
             button(type="submit") Save Edits
-
-        button(type="button" id="addSession") Delete Session
-
-        script(src="/js/trainerScheduleManagement.js")

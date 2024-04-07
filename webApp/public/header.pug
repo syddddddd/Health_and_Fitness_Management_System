@@ -19,11 +19,16 @@ if session && session.loggedin
             
         
         if session.type == "admin"
+            a(href="/admin") Admin Home
             |
             |
-           
+            a(href="/scheduleManagement") Schedules
             |
             |
+            a(href="/roomBookings") Room Bookings
+            |
+            |
+            a(href="/payments") Payments
 else 
 
     a(href="/") Home

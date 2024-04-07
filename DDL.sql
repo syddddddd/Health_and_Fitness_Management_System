@@ -107,8 +107,10 @@ CREATE TABLE Schedule(
     trainer_id INT REFERENCES Trainers(trainer_id),
     --member_id INT REFERENCES Members(member_id),
     day VARCHAR(255) NOT NULL,
-    time_slot TIME NOT NULL,
-    UNIQUE (trainer_id, day, time_slot),
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    UNIQUE (trainer_id, day, start_time),
+    CHECK (start_time <> end_time),
 
     availability BOOLEAN NOT NULL,
     session_type VARCHAR(255) NOT NULL
@@ -125,8 +127,12 @@ CREATE TABLE ScheduledMembers(
 -- create booking table
 CREATE TABLE RoomBooking(
     booking_id SERIAL PRIMARY KEY,
-    time_slot DATE DEFAULT CURRENT_DATE,
-    room_id INT NOT NULL
+    room_num INT NOT NULL
+    day VARCHAR(255) NOT NULL,
+    start_time TIME NOT NULL,  
+    end_time TIME NOT NULL  
+    event_type VARCHAR(255) NOT NULL,
+    capacity INT
     -- need to create a room table? aka keep track of number, capacity and equipment
 );
 

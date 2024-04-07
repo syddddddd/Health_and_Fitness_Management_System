@@ -16,17 +16,32 @@ html(lang="en")
 
             br
             br
-            | #[strong Time:]
+            | #[strong Start Time:]
             label(for='dropdown')    Hour: 
-            select(type='select' id='hour' name='hour')
+            select(type='select' id='hour' name='start_hour')
                 -var n = 6
                 while n < 19
                     option(value=`${++n}`) #{n}
                            
             label(for='dropdown')   Minutes: 
-            select(type='select' id='min' name='min')
+            select(type='select' id='min' name='start_min')
                 option(value='00' checked) 00
                 option(value='30') 30
+
+            br
+            br
+            | #[strong End Time:]
+            label(for='dropdown')    Hour: 
+            select(type='select' id='hour' name='end_hour')
+                -var n = 6
+                while n < 19
+                    option(value=`${++n}`) #{n}
+                           
+            label(for='dropdown')   Minutes: 
+            select(type='select' id='min' name='end_min')
+                option(value='00' checked) 00
+                option(value='30') 30
+
             br
             br
             | #[strong Session Type:] 

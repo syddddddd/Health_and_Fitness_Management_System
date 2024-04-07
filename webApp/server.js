@@ -134,7 +134,7 @@ app.get('/member', async (req, res) => {
 
 app.get('/trainer', async (req, res) => { 
     try {
-        const query = "SELECT * FROM Schedule WHERE trainer_id=$1 ORDER BY time_slot";
+        const query = "SELECT * FROM Schedule WHERE trainer_id=$1 ORDER BY day, start_time";
         const scheduleResult = await client.query(query, [req.session.user.trainer_id]);
         console.log("getting schedule")
 
@@ -420,13 +420,11 @@ app.get('/member/:memberId', async (req, res) => {
 
         const query2 = "SELECT * FROM FitnessFiles WHERE member_id=$1";
         const fitnessResults = await client.query(query2, [id]);
-        //console.log(fitnessResults.rows);
 
         const query3 = "SELECT * FROM HealthMetrics WHERE member_id=$1";
         const healthResults = await client.query(query3, [id]);
         
         res.render('../public/member', {session : req.session, member : member.rows[0], fitness : fitnessResults.rows[0], health : healthResults.rows[0]});
-        //res.render('../public/member', {session : req.session, member : member.rows[0]});
 
     } catch (err) {
         res.status(401).send("error");
@@ -442,14 +440,12 @@ app.get('/addSession', async (req, res) => {
 app.post('/addSession', async (req, res) => {
 
     let day = req.body.day;
-    let time = req.body.hour + ':' + req.body.min;
+    let start_time = req.body.start_hour + ':' + req.body.start_min;
+    let end_time = req.body.end_hour + ':' + req.body.end_min;
     let sessType = req.body.sessType;
     let id = req.session.user.trainer_id
-    //console.log("session:")
-    //console.log(req.session.user)
-    //let table = req.session.type.charAt(0).toUpperCase() + req.session.type.slice(1) + 's'
 
-    const query = "INSERT INTO SCHEDULE (trainer_id, day, time_slot, availability, session_type) VALUES ( \'" + id + "\', \'" + day + "\', \'" + time + "\', \'true\', \'" + sessType + "\') RETURNING *;";
+    const query = "INSERT INTO SCHEDULE (trainer_id, day, start_time, end_time, availability, session_type) VALUES ( \'" + id + "\', \'" + day + "\', \'" + start_time + "\', \'" + end_time + "\', \'true\', \'" + sessType + "\') RETURNING *;";
     //console.log(query);
 
     client.query(query, (err,result) => {
@@ -461,18 +457,7 @@ app.post('/addSession', async (req, res) => {
         }
         else{
             console.log("inserted");
-            //console.log(result.rows)
-            //console.log(req.session.schedule)
-
-            // if (!req.session.hasOwnProperty("schedule")) {  
-            //     req.session.schedule = []
-            // } 
-            
-            // req.session.schedule.push(result.rows[0])
-            
-            //console.log(req.session.schedule)
             res.redirect(`http://localhost:3000/trainer`);
-            //res.render(`../public/trainer`, {session : req.session, schedule: req.session.schedule});
         }
     });
     
@@ -507,7 +492,8 @@ app.get('/editSession/:schedId', async (req, res) => {
 app.post('/editSession/:schedId', async (req, res) => { 
     let id = req.params.schedId;
     let day = req.body.day;
-    let time = req.body.hour + ':' + req.body.min;
+    let start_time = req.body.start_hour + ':' + req.body.start_min;
+    let end_time = req.body.end_hour + ':' + req.body.end_min;
     console.log(id)
     console.log(req.body)
 
@@ -522,10 +508,9 @@ app.post('/editSession/:schedId', async (req, res) => {
 
         } else {
             console.log("not deleting")
-            const query3 = "UPDATE schedule SET day =$1, time_slot =$2 WHERE schedule_id =$3";
-            await client.query(query3, [day, time, id])
+            const query3 = "UPDATE schedule SET day =$1, start_time =$2, end_time=$3 WHERE schedule_id =$4";
+            await client.query(query3, [day, start_time, end_time, id])
         }
-
 
         res.redirect(`http://localhost:3000/trainer`);
         

@@ -21,7 +21,8 @@ html(lang="en")
                 thead 
                     tr
                         th Day
-                        th Time
+                        th Start Time
+                        th End Time
                         th Session Type
                         th Members
 
@@ -37,7 +38,7 @@ html(lang="en")
 
                         td 
                             label(for='dropdown')    Hour: 
-                            select(type='select' id='hour' name='hour')
+                            select(type='select' id='hour' name='start_hour')
                                 -var hour = schedule.time_slot.split(':')[0]
                                 option(value=hour checked) #{hour}
                                 each time in ['07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19']
@@ -46,7 +47,25 @@ html(lang="en")
                            
                                         
                             label(for='dropdown')   Minutes: 
-                            select(type='select' id='min' name='min')
+                            select(type='select' id='min' name='start_min')
+                                -var min = schedule.time_slot.split(':')[1]
+                                option(value=min checked) #{min}
+                                
+                                each time in ['00', '30']
+                                    if time != min
+                                        option(value=time) #{time}
+                        td 
+                            label(for='dropdown')    Hour: 
+                            select(type='select' id='hour' name='end_hour')
+                                -var hour = schedule.time_slot.split(':')[0]
+                                option(value=hour checked) #{hour}
+                                each time in ['07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19']
+                                    if time != hour
+                                        option(value=time) #{time}
+                           
+                                        
+                            label(for='dropdown')   Minutes: 
+                            select(type='select' id='min' name='end_min')
                                 -var min = schedule.time_slot.split(':')[1]
                                 option(value=min checked) #{min}
                                 

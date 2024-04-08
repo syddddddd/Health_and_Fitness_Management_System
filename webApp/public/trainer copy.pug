@@ -1,0 +1,74 @@
+html(lang="en")
+    head
+        title Trainer page
+    body  
+        
+        include ./header
+        style.
+            table {
+                border-collapse: collapse;
+                width: 60%;
+            }
+            th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+        h1 Trainer: #{session.user.fname} #{session.user.lname} 
+
+        h2 Schedule 
+        |
+        table
+            thead 
+                tr
+                    th Day
+                    th Start Time
+                    th End Time
+                    th Session Type
+                    th Members
+                    
+
+            tbody
+                if schedule && schedule.length > 0
+                    each sched in schedule
+                        tr 
+                            td #{sched.day}
+                            td #{sched.start_time}
+                            td #{sched.end_time}
+                            td #{sched.session_type}
+
+                            td
+                                if classes && classes.length > 0
+                                    each item in classes     
+
+                                        if item.schedule_id === sched.schedule_id
+                                            - var n = 0
+                                            each id in item.ids
+                                                if n > 0
+                                                    br 
+                                                a(href=`/member/${id}`) #{item.members[n++]}
+                                                br       
+                                
+                            td 
+                                a(href=`/editSession/${sched.schedule_id}`) edit
+            |
+            
+
+        //- h3.  
+        //-     #[strong Day&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+        //-     #[strong Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+        //-     #[strong Session Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+        //-     #[strong Members]
+        //- |
+
+        //- p. 
+        //-                     #{sched.day}&nbsp;&nbsp;&nbsp;&nbsp;
+        //-                     #{sched.time_slot}&nbsp;&nbsp;&nbsp;&nbsp;
+        //-                     #{sched.session_type}&nbsp;&nbsp;&nbsp;&nbsp;
+        //-                     #{sched.member_id}
+
+        br
+        button(type="button" id="addSession") Add Session
+
+        script(src="/js/trainerScheduleManagement.js")

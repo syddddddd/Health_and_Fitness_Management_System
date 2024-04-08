@@ -3,7 +3,7 @@ INSERT INTO Members (fname, lname, email, phone_number, gender, username, passwo
 VALUES 
 ('Ari', 'Rubin', 'ari.rubin@binboy.com', '647-222-3333', 'male', 'arriba', 'ari123'),
 ('Patrick', 'Wu', 'PatWu@WuHoo.ca', '416-823-4412', 'male', 'KrabbyPatty', 'pat123'),
-('Kensley', 'Schonoaur', 'Kenslay@middleville.com', '647-727-3345', 'female', 'kenslay', 'ken123');
+('Kensley', 'Schonauer', 'Kenslay@middleville.com', '647-727-3345', 'female', 'kenslay', 'ken123');
 
 -- Populate Trainers Table
 INSERT INTO Trainers (fname, lname, email, phone_number, gender, username, password)

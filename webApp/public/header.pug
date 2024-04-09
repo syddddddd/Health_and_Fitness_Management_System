@@ -13,9 +13,10 @@ if session && session.loggedin
             a(href="/member/schedule") Schedule
 
         if session.type == "trainer"
-            a(href="/trainer") Trainer Home 
+            a(href="/trainer") Trainer Home
             |
             |
+            a(href="/trainerAvailability") Availability
             
         
         if session.type == "admin"
@@ -25,7 +26,7 @@ if session && session.loggedin
             a(href="/scheduleManagement") Schedules
             |
             |
-            a(href="/roomBookings") Room Bookings
+            a(href="/maintenance") Maintenance
             |
             |
             a(href="/payments") Payments

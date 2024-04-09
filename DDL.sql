@@ -125,11 +125,18 @@ CREATE TABLE ScheduledMembers(
     member_id INT REFERENCES Members(member_id)
 );
 
--- create booking table
-CREATE TABLE RoomBooking(
-    booking_id SERIAL PRIMARY KEY,
-    room_num INT NOT NULL,
-    schedule_id INT,
+CREATE TABLE TrainerAvailability(
+    availability_id SERIAL PRIMARY KEY,
+    trainer_id INT REFERENCES Trainers(trainer_id),
+    day VARCHAR(255) NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL 
+);
+
+-- create rooms table
+CREATE TABLE Rooms(
+    room_num INT NOT NULL PRIMARY KEY,
+    availability BOOLEAN
     -- need to create a room table? aka keep track of number, capacity and equipment
 );
 

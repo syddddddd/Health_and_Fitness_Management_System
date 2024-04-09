@@ -17,7 +17,8 @@ INSERT INTO Admins (fname, lname, email, phone_number, username, password)
 VALUES 
 ('Doug', 'Dimmadome', 'Doug@Dimmadome.enterprises', '647-467-3322', 'digdug', 'dug123'),
 ('Rick', 'Man', 'Man@gmail.com', '416-777-5355', 'rick', 'rick123'),
-('Harley', 'Parker', 'Harley@gmail.com', '647-932-4276', 'harhar', 'har123');
+('Harley', 'Parker', 'Harley@gmail.com', '647-932-4276', 'harhar', 'har123'),
+('Sarah', 'Cruickshank', 'CruickedTeeth@gmail.com', '416-787-1486', 'sarahnWrap', 'sar123');
 
 -- Populate Scehdule Table
 INSERT INTO Schedule (trainer_id, day, start_time, end_time, session_type, availability)
@@ -91,9 +92,61 @@ VALUES
 (3, 5),
 (3, 6);
 
-INSERT INTO RoomBooking (room_id, day, start_time, end_time)
+INSERT INTO TrainerAvailability (trainer_id, day, start_time, end_time)
 VALUES
-(1, 'Tuesday', '8:30')
-(4, 'Monday', '16:00')
-(4, 'Tuesday', '9:00')
-(5, 'Friday', '11:00')
+(1, 'Sunday', '0:00', '0:00'),
+(1, 'Monday', '0:00', '0:00'),
+(1, 'Tuesday', '11:00', '20:00'),
+(1, 'Wednesday', '12:00', '20:00'),
+(1, 'Thursday', '0:00', '0:00'),
+(1, 'Friday', '10:00', '19:00'),
+(1, 'Saturday', '11:00', '20:00'),
+
+(2, 'Sunday', '7:00', '15:00'),
+(2, 'Monday', '8:00', '17:00'),
+(2, 'Tuesday', '9:00', '16:00'),
+(2, 'Wednesday', '9:00', '16:00'),
+(2, 'Thursday', '9:00', '16:00'),
+(2, 'Friday', '0:00', '0:00'),
+(2, 'Saturday', '7:00', '13:00'),
+
+(3, 'Sunday', '13:00', '20:00'),
+(3, 'Monday', '12:00', '20:00'),
+(3, 'Tuesday', '8:00', '17:00'),
+(3, 'Wednesday', '0:00', '0:00'),
+(3, 'Thursday', '13:00', '20:00'),
+(3, 'Friday', '7:00', '12:00'),
+(3, 'Saturday', '10:00', '18:00');
+
+INSERT INTO Rooms (room_num, availability)
+VALUES
+(1, true),
+(2, true),
+(3, true),
+(4, true),
+(5, true),
+(6, true),
+(7, true),
+(8, true),
+(9, true),
+(10, true),
+(11, true),
+(12, true),
+(13, true),
+(14, true),
+(15, true),
+(16, true),
+(17, true),
+(18, true),
+(19, true),
+(20, true),
+(21, true),
+(22, true),
+(23, true),
+(24, true),
+(25, true),
+(26, true),
+(27, true),
+(28, true),
+(29, true),
+(30, true);

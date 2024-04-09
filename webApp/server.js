@@ -483,8 +483,13 @@ app.get('/editSession/:schedId', async (req, res) => {
 
         console.log(theClass.rows[0])
 
+        const query3 = "SELECT room_num from Rooms WHERE availability = true ORDER BY room_num ASC";
+        const rooms = await client.query(query3);
 
-        res.render('../public/editSession', {session : req.session, schedule : session.rows[0], theClass: theClass.rows[0]});
+        console.log(rooms.rows)
+
+
+        res.render('../public/editSession', {session : req.session, schedule : session.rows[0], theClass: theClass.rows[0], rooms : rooms.rows});
 
         
     } catch (err) {
@@ -511,13 +516,27 @@ app.post('/editSession/:schedId', async (req, res) => {
             await client.query(query2, [id]);
 
         } else {
+            let room_num = null
+            if (req.body.hasOwnProperty("room_num")) { 
+                room_num = req.body.room_num 
+
+                const getOldRoom = "SELECT room_num from Schedule WHERE schedule_id=$1";
+                const rooms = await client.query(getOldRoom, [id]);
+
+                const oldRoomAvailability = "UPDATE rooms SET availability = true WHERE room_num=$1"
+                await client.query(oldRoomAvailability, [rooms.rows[0].room_num])
+                
+                const newRoomAvailability = "UPDATE rooms SET availability = false WHERE room_num=$1"
+                await client.query(newRoomAvailability, [room_num])
+            }
+
             console.log("not deleting")
-            const query3 = "UPDATE schedule SET day =$1, start_time =$2, end_time=$3 WHERE schedule_id =$4";
-            await client.query(query3, [day, start_time, end_time, id])
+            const query3 = "UPDATE schedule SET day =$1, start_time =$2, end_time=$3, room_num=$4 WHERE schedule_id =$5";
+            await client.query(query3, [day, start_time, end_time, room_num, id])
         }
 
         
-        if (req.session.type == "trainer") {
+        if (req.session.type == 'trainer') {
             res.redirect(`http://localhost:3000/trainer`);
         } else {
             res.redirect(`http://localhost:3000/scheduleManagement`);
@@ -558,6 +577,27 @@ app.get('/scheduleManagement', async (req, res) => {
         res.status(401).send("error");
     }
     
+});
+
+app.get('/trainerAvailability', async (req, res) => { 
+    let id = req.params.schedId;
+    console.log(id)
+
+    try {
+        const query = "SELECT * FROM TrainerAvailability WHERE trainer_id=$1";
+        const schedule = await client.query(query, [req.session.user.trainer_id]);
+        console.log("getting schedule")
+
+        console.log("exists");
+        console.log(schedule.rows)
+
+        res.render('../public/trainerAvailability', {session : req.session, schedule : schedule.rows});
+
+        
+    } catch (err) {
+        res.status(401).send("error");
+    }
+
 });
 
 

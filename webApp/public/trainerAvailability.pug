@@ -1,0 +1,48 @@
+html(lang="en")
+    head
+        title Trainer Availability page
+    body  
+        
+        include ./header
+        style.
+            table {
+                border-collapse: collapse;
+                width: 60%;
+            }
+            th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+        h1 Trainer: #{session.user.fname} #{session.user.lname} 
+
+        h2 Availability 
+        |
+        table
+            thead 
+                tr
+                    th Day
+                    th Start Time
+                    th End Time                    
+
+            tbody
+                if schedule && schedule.length > 0
+                    each sched in schedule
+                        tr 
+                            td #{sched.day}
+                            td 
+                                if sched.start_time != '00:00:00'
+                                    p= sched.start_time
+                                else 
+                                    p unavailable
+
+                            td 
+                                if sched.start_time != '00:00:00'
+                                    p= sched.start_time
+                                else 
+                                    p unavailable
+                            
+                            td
+                                a(href=`/editSession/${sched.schedule_id}`) edit
+   

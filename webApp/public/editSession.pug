@@ -13,6 +13,8 @@ html(lang="en")
                 border: 1px solid #dddddd;
                 text-align: left;
                 padding: 8px;
+            }#discard {
+                margin-right: 10px; 
             }
    
         h2 Edit Session 
@@ -60,7 +62,7 @@ html(lang="en")
                             select(type='select' id='hour' name='end_hour')
                                 -var hour = schedule.end_time.split(':')[0]
                                 option(value=hour checked) #{hour}
-                                each time in ['07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19']
+                                each time in ['08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20']
                                     if time != hour
                                         option(value=time) #{time}
                            
@@ -83,12 +85,20 @@ html(lang="en")
                                     p= theClass.members[n++]
                         
                         td 
-                            if schedule.room_num 
-                                p= schedule.room_num
+                            if session.type == 'admin'
+                                select(type='select' id='room_num' name='room_num')
+                                    if schedule.room_num 
+                                        option(value=schedule.room_num checked) #{schedule.room_num}
+                                    each room in rooms
+                                        if room.room_num != schedule.room_num
+                                            option(value=room.room_num) #{room.room_num}
 
                         td     
                             input(type='checkbox' name='deleteBox')
                             label(for='checkbox') &nbsp;&nbsp;Delete Session 
                                           
             br
+            button#discard(type="button" onclick='discarding("' + session.type +'")') Discard Edits
             button(type="submit") Save Edits
+
+            script(src="/js/trainerScheduleManagement.js")

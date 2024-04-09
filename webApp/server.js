@@ -458,24 +458,34 @@ app.post('/addSession', async (req, res) => {
     let sessType = req.body.sessType;
     let id = 0;
 
-    if (req.session.type = 'trainer') {
+    if (req.session.type == 'trainer') {
         id = req.session.user.trainer_id
     } else {
-        id = req.body.trainer
+        id = parseInt(req.body.trainer)
     }
     
     try {
+        console.log(req.body)
+        console.log(id)
         const query = "INSERT INTO SCHEDULE (trainer_id, day, start_time, end_time, availability, session_type) VALUES ( \'" + id + "\', \'" + day + "\', \'" + start_time + "\', \'" + end_time + "\', \'true\', \'" + sessType + "\') RETURNING *;";
         let result = await client.query(query);
 
         let sched = result.rows[0]
+        console.log(sched)
         
         const query2 = "INSERT INTO ScheduledMembers (schedule_id, trainer_id) VALUES ( \'" + sched.schedule_id + "\', \'" + id + "\');";
         await client.query(query2);
 
-        res.redirect(`http://localhost:3000/trainer`);
+        if (req.session.type == 'trainer') {
+            res.redirect(`http://localhost:3000/trainer`);
+        } else {
+            res.redirect(`http://localhost:3000/scheduleManagement`);
+        }
+
+        
         
     } catch (err) {
+        console.log(err)
         res.status(401).send("error");
     }
     
@@ -639,6 +649,34 @@ app.get('/allAvailabilities', async (req, res) => {
         res.status(401).send("error");
     }
 
+});
+
+app.get('/payments', async (req, res) => { 
+    try {
+        const getMembers = "SELECT * FROM Members";
+        const members = await client.query(getMembers);
+        console.log("getting members")
+
+        console.log("exists");
+        console.log(members.rows)
+
+        //join tables
+        const getMemberFees = "SELECT * FROM Payments Group By member_id WHERE paid = false";
+        const memberFees = await client.query(getMemberFees);
+
+
+        console.log("getting members")
+        console.log(classes.rows)
+        req.session.classes = classes.rows
+        
+        res.render('../public/scheduleManagement', {session : req.session, schedule : req.session.schedule, classes :  req.session.classes, trainers : trainers.rows});
+
+    } catch (err) {
+        console.log(err)
+
+        res.status(401).send("error");
+    }
+    
 });
 
 

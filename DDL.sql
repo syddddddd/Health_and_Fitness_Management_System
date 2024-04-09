@@ -151,17 +151,30 @@ CREATE TABLE Maintenance (
 );
 
 -- create payment table
-CREATE TABLE Payments (
+CREATE TABLE MemberFee (
    payment_id SERIAL PRIMARY KEY,
    member_id INT REFERENCES Members(member_id),
    member_fee INT NOT NULL,
-   group_fee INT,
-   private_fee INT
-
-    -- group/single sessions?
-    -- monthly or all at once??
+   paid BOOLEAN
 );
 
+CREATE TABLE GroupFees (
+    group_id SERIAL PRIMARY KEY,
+    member_id INT REFERENCES Members(member_id),
+    schedule_id INT REFERENCES Schedule(schedule_id),
+    group_fee INT,
+    paid BOOLEAN
+)
+
+CREATE TABLE PrivateFees (
+    private_id SERIAL PRIMARY KEY,
+    member_id INT REFERENCES Members(member_id),
+    schedule_id INT REFERENCES Schedule(schedule_id),
+    private_fee INT,
+    paid BOOLEAN
+)
+
+-- check if schedule overlaps with existing schedule
 CREATE OR REPLACE FUNCTION checkOverlap()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -183,6 +196,7 @@ BEFORE INSERT ON Schedule
 FOR EACH ROW
 EXECUTE FUNCTION checkOverlap();
 
+-- check if schedule matches trainer's availability 
 CREATE OR REPLACE FUNCTION checkAvailability()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -192,7 +206,7 @@ BEGIN
         WHERE trainer_id = NEW.trainer_id
           AND day = NEW.day
           AND (NEW.start_time < start_time OR NEW.end_time > end_time)
-          AND (start_time != '00:00:00' AND end_time != '00:00:00')
+          AND NOT (start_time != '00:00' OR end_time != '00:00')
     ) THEN
         RAISE EXCEPTION 'Not within trainer availability';
     END IF;
@@ -207,4 +221,4 @@ EXECUTE FUNCTION checkAvailability();
 
 INSERT INTO Schedule (trainer_id, day, start_time, end_time, session_type, availability)
 VALUES 
-(3, 'Monday', '12:00', '15:00', 'group', true)
+(2, 'Sunday', '8:00', '10:00', 'group', true)

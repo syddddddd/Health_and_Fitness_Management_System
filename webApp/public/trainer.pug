@@ -51,9 +51,8 @@ html(lang="en")
                                                 a(href=`/member/${id}`) #{item.members[n++]}
                                                 br       
                                 
-                            td 
-                                if sched.room_num
-                                    p= schedule.room_num
+                            td #{sched.room_num}
+                           
                             td
                                 a(href=`/editSession/${sched.schedule_id}`) edit
             |

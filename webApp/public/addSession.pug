@@ -52,6 +52,15 @@ html(lang="en")
             br
             br
             | 
+            if session.type == 'admin'
+                | #[strong Trainer:] 
+                label(for='dropdown')   
+                select(type='select' id='trainer' name='trainer')
+                    each trainer in trainers
+                        option(value=trainer.trainer_id) #{trainer.fname} #{trainer.lname}
+            br
+            br
+            | 
             button(type="submit") Add Session
             |
             br

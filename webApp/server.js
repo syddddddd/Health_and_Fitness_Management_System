@@ -438,7 +438,16 @@ app.get('/member/:memberId', async (req, res) => {
 
 
 app.get('/addSession', async (req, res) => { 
-    res.render('../public/addSession', {session : req.session});
+    try {
+        const query = "SELECT * FROM Trainers;";
+        let trainers = await client.query(query);
+
+        res.render('../public/addSession', {session : req.session, trainers : trainers.rows});
+        
+    } catch (err) {
+        res.status(401).send("error");
+    }
+    
 });
 
 app.post('/addSession', async (req, res) => {
@@ -447,8 +456,14 @@ app.post('/addSession', async (req, res) => {
     let start_time = req.body.start_hour + ':' + req.body.start_min;
     let end_time = req.body.end_hour + ':' + req.body.end_min;
     let sessType = req.body.sessType;
-    let id = req.session.user.trainer_id
+    let id = 0;
 
+    if (req.session.type = 'trainer') {
+        id = req.session.user.trainer_id
+    } else {
+        id = req.body.trainer
+    }
+    
     try {
         const query = "INSERT INTO SCHEDULE (trainer_id, day, start_time, end_time, availability, session_type) VALUES ( \'" + id + "\', \'" + day + "\', \'" + start_time + "\', \'" + end_time + "\', \'true\', \'" + sessType + "\') RETURNING *;";
         let result = await client.query(query);
@@ -592,6 +607,32 @@ app.get('/trainerAvailability', async (req, res) => {
         console.log(schedule.rows)
 
         res.render('../public/trainerAvailability', {session : req.session, schedule : schedule.rows});
+
+        
+    } catch (err) {
+        res.status(401).send("error");
+    }
+
+});
+
+app.get('/allAvailabilities', async (req, res) => { 
+    let id = req.params.schedId;
+    console.log(id)
+
+    try {
+        const query = "SELECT * FROM TrainerAvailability";
+        const schedule = await client.query(query);
+        console.log("getting schedule")
+
+        console.log("exists");
+        console.log(schedule.rows)
+
+        const query2 = "SELECT * FROM Trainers";
+        const trainers = await client.query(query2);
+
+        console.log(trainers.rows)
+
+        res.render('../public/allAvailabilities', {session : req.session, schedule : schedule.rows, trainers : trainers.rows});
 
         
     } catch (err) {

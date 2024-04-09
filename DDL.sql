@@ -105,12 +105,11 @@ CREATE TABLE FitnessAchievements(
 CREATE TABLE Schedule(
     schedule_id SERIAL PRIMARY KEY,
     trainer_id INT REFERENCES Trainers(trainer_id),
-    --member_id INT REFERENCES Members(member_id),
     day VARCHAR(255) NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
-    UNIQUE (trainer_id, day, start_time),
-    CHECK (start_time <> end_time),
+    --UNIQUE (trainer_id, day, start_time),
+    CHECK (start_time < end_time),
 
     availability BOOLEAN NOT NULL,
     session_type VARCHAR(255) NOT NULL,
@@ -152,11 +151,60 @@ CREATE TABLE Maintenance (
 );
 
 -- create payment table
-CREATE TABLE Payment (
+CREATE TABLE Payments (
    payment_id SERIAL PRIMARY KEY,
    member_id INT REFERENCES Members(member_id),
-   member_fee INT NOT NULL
+   member_fee INT NOT NULL,
+   group_fee INT,
+   private_fee INT
 
     -- group/single sessions?
     -- monthly or all at once??
 );
+
+CREATE OR REPLACE FUNCTION checkOverlap()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM SCHEDULE
+        WHERE trainer_id = NEW.trainer_id
+          AND day = NEW.day
+          AND NOT (NEW.start_time >= end_time OR NEW.end_time <= start_time)
+    ) THEN
+        RAISE EXCEPTION 'Schedule overlaps with existing schedules';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER scheduleOverlapTrigger
+BEFORE INSERT ON Schedule
+FOR EACH ROW
+EXECUTE FUNCTION checkOverlap();
+
+CREATE OR REPLACE FUNCTION checkAvailability()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM TrainerAvailability
+        WHERE trainer_id = NEW.trainer_id
+          AND day = NEW.day
+          AND (NEW.start_time < start_time OR NEW.end_time > end_time)
+          AND (start_time != '00:00:00' AND end_time != '00:00:00')
+    ) THEN
+        RAISE EXCEPTION 'Not within trainer availability';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER checkAvailabilityTrigger
+BEFORE INSERT ON SCHEDULE
+FOR EACH ROW
+EXECUTE FUNCTION checkAvailability();
+
+INSERT INTO Schedule (trainer_id, day, start_time, end_time, session_type, availability)
+VALUES 
+(3, 'Monday', '12:00', '15:00', 'group', true)

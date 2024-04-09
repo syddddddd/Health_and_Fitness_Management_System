@@ -85,14 +85,14 @@ CREATE TABLE Equipment(
 CREATE TABLE Exercises(
     exercise_id SERIAL PRIMARY KEY,
     exercise VARCHAR(255) NOT NULL,
-    equipment_id INT REFERENCES Equipment(equipment_id),
-    info TEXT
+    equipment_id INT REFERENCES Equipment(equipment_id)
 );
 
 CREATE TABLE MemberRoutines(
     routine_id SERIAL PRIMARY KEY,
     exercise_id INT REFERENCES Exercises(exercise_id),
-    member_id INT REFERENCES Members(member_id)
+    member_id INT REFERENCES Members(member_id),
+    setsOrDistance INT NOT NULL
 );
 
 CREATE TABLE FitnessAchievements(

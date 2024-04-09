@@ -63,34 +63,34 @@ VALUES
 -- Populate Equipment Table
 INSERT INTO Equipment (equip_name, model_year)
 VALUES 
-('mats', '2023-01-01'),
-('treadmill', '2021-01-01'),
-('eliptical', '2022-01-01'),
-('weights', '2019-01-01'),
-('rower', '2017-01-01'),
-('indoor bike', '2016-01-01');
+('Mats', '2023-01-01'),
+('Treadmill', '2021-01-01'),
+('Eliptical', '2022-01-01'),
+('Weights', '2019-01-01'),
+('Rower', '2017-01-01'),
+('Indoor bike', '2016-01-01');
 
 -- Populate Exercise Table
-INSERT INTO Exercises (exercise, equipment_id, info)
+INSERT INTO Exercises (exercise, equipment_id)
 VALUES 
-('sit-ups', 1, 'Sets of 5 sit-ups'),
-('push-ups', 1, 'Sets of 10 push-ups'),
-('treadmill', 2, 'Running for 30 minutes'),
-('eliptical', 3, 'Using the eliptical for 20 minutes'),
-('weights', 4, 'Lift different weights for 5 sets'),
-('rowing', 5, 'Rowing for 20 minutes'),
-('cycling', 6, 'Use the indoor bicycle for 30 minutes');
+('Sit-ups', 1),
+('Push-ups', 1),
+('Treadmill', 2),
+('Eliptical', 3),
+('Weights', 4),
+('Rowing', 5),
+('Cycling', 6);
 
 -- Populate Equipment Table
-INSERT INTO MemberRoutines (member_id, exercise_id)
+INSERT INTO MemberRoutines (member_id, exercise_id, setsOrDistance)
 VALUES 
-(1, 1),
-(1, 4),
-(1, 3),
-(2, 6),
-(2, 2),
-(3, 5),
-(3, 6);
+(1, 1, 5),
+(1, 4, 1),
+(1, 3, 3),
+(2, 6, 2),
+(2, 2, 10),
+(3, 5, 6),
+(3, 7, 3);
 
 INSERT INTO TrainerAvailability (trainer_id, day, start_time, end_time)
 VALUES

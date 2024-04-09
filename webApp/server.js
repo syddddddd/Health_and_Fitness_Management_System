@@ -134,7 +134,7 @@ app.get('/member', async (req, res) => {
 
 app.get('/trainer', async (req, res) => { 
     try {
-        const query = "SELECT * FROM Schedule WHERE trainer_id=$1 ORDER BY day, start_time";
+        const query = "SELECT * FROM Schedule WHERE trainer_id=$1 ORDER BY day ASC, start_time ASC";
         const scheduleResult = await client.query(query, [req.session.user.trainer_id]);
         console.log("getting schedule")
 
@@ -155,6 +155,10 @@ app.get('/trainer', async (req, res) => {
         res.status(401).send("error");
     }
     
+});
+
+app.get('/admin', async (req, res) => { 
+    res.render('../public/admin', {session : req.session});    
 });
 
 app.get('/member/editProfile', async (req, res) => { 
@@ -445,21 +449,20 @@ app.post('/addSession', async (req, res) => {
     let sessType = req.body.sessType;
     let id = req.session.user.trainer_id
 
-    const query = "INSERT INTO SCHEDULE (trainer_id, day, start_time, end_time, availability, session_type) VALUES ( \'" + id + "\', \'" + day + "\', \'" + start_time + "\', \'" + end_time + "\', \'true\', \'" + sessType + "\') RETURNING *;";
-    //console.log(query);
+    try {
+        const query = "INSERT INTO SCHEDULE (trainer_id, day, start_time, end_time, availability, session_type) VALUES ( \'" + id + "\', \'" + day + "\', \'" + start_time + "\', \'" + end_time + "\', \'true\', \'" + sessType + "\') RETURNING *;";
+        let result = await client.query(query);
 
-    client.query(query, (err,result) => {
+        let sched = result.rows[0]
+        
+        const query2 = "INSERT INTO ScheduledMembers (schedule_id, trainer_id) VALUES ( \'" + sched.schedule_id + "\', \'" + id + "\');";
+        await client.query(query2);
 
-        if (err){
-            console.log(err);
-            console.log("THERE IS ERROR")
-            res.status(401).send("error");
-        }
-        else{
-            console.log("inserted");
-            res.redirect(`http://localhost:3000/trainer`);
-        }
-    });
+        res.redirect(`http://localhost:3000/trainer`);
+        
+    } catch (err) {
+        res.status(401).send("error");
+    }
     
 });
 
@@ -475,10 +478,11 @@ app.get('/editSession/:schedId', async (req, res) => {
         console.log("exists");
         console.log(session.rows[0])
 
-        const query2 = "SELECT s.schedule_id, ARRAY_AGG(s.member_id) as ids, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members FROM ScheduledMembers s JOIN Members m on m.member_id = s.member_id WHERE trainer_id=$1 and schedule_id=$2 Group By schedule_id";
-        const theClass = await client.query(query2, [req.session.user.trainer_id, id]);
+        const query2 = "SELECT s.schedule_id, ARRAY_AGG(s.member_id) as ids, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members FROM ScheduledMembers s JOIN Members m on m.member_id = s.member_id WHERE schedule_id=$1 Group By schedule_id";
+        const theClass = await client.query(query2, [id]);
 
         console.log(theClass.rows[0])
+
 
         res.render('../public/editSession', {session : req.session, schedule : session.rows[0], theClass: theClass.rows[0]});
 
@@ -512,12 +516,48 @@ app.post('/editSession/:schedId', async (req, res) => {
             await client.query(query3, [day, start_time, end_time, id])
         }
 
-        res.redirect(`http://localhost:3000/trainer`);
+        
+        if (req.session.type == "trainer") {
+            res.redirect(`http://localhost:3000/trainer`);
+        } else {
+            res.redirect(`http://localhost:3000/scheduleManagement`);
+        }
+        
         
     } catch (err) {
         res.status(401).send("error");
     }
 
+});
+
+app.get('/scheduleManagement', async (req, res) => { 
+    try {
+        const query = "SELECT * FROM Schedule ORDER BY day ASC, start_time ASC";
+        const scheduleResult = await client.query(query);
+        console.log("getting schedule")
+
+        console.log("exists");
+        console.log(scheduleResult.rows)
+        req.session.schedule = scheduleResult.rows
+
+        const query2 = "SELECT s.schedule_id, ARRAY_AGG(s.member_id) as ids, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members FROM ScheduledMembers s JOIN Members m on m.member_id = s.member_id Group By schedule_id";
+        const classes = await client.query(query2);
+
+        const query3 = "SELECT s.schedule_id, ARRAY_AGG(s.trainer_id) as ids, ARRAY_AGG(CONCAT(t.fname, ' ', t.lname)) AS trainers FROM ScheduledMembers s JOIN Trainers t on t.trainer_id = s.trainer_id Group By schedule_id";
+        const trainers = await client.query(query3);
+
+        console.log("getting members")
+        console.log(classes.rows)
+        req.session.classes = classes.rows
+        
+        res.render('../public/scheduleManagement', {session : req.session, schedule : req.session.schedule, classes :  req.session.classes, trainers : trainers.rows});
+
+    } catch (err) {
+        console.log(err)
+
+        res.status(401).send("error");
+    }
+    
 });
 
 

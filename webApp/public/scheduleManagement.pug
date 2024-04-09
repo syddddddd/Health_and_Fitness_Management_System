@@ -7,15 +7,13 @@ html(lang="en")
         style.
             table {
                 border-collapse: collapse;
-                width: 60%;
+                width: 75%;
             }
             th, td {
                 border: 1px solid #dddddd;
                 text-align: left;
                 padding: 8px;
             }
-
-        h1 Trainer: #{session.user.fname} #{session.user.lname} 
 
         h2 Schedule 
         |
@@ -25,8 +23,10 @@ html(lang="en")
                     th Day
                     th Start Time
                     th End Time
+                    th Trainer
                     th Session Type
                     th Members
+                    th Room Number
                     
 
             tbody
@@ -36,6 +36,12 @@ html(lang="en")
                             td #{sched.day}
                             td #{sched.start_time}
                             td #{sched.end_time}
+                            td
+                                if trainers && trainers.length > 0
+                                    each trainer in trainers     
+                                        if trainer.schedule_id === sched.schedule_id
+                                            p= trainer.trainers[0]
+                                                
                             td #{sched.session_type}
 
                             td
@@ -51,22 +57,11 @@ html(lang="en")
                                                 br       
                                 
                             td 
+                                if sched.room_num
+                                    p= schedule.room_num
+                            
+                            td 
                                 a(href=`/editSession/${sched.schedule_id}`) edit
-            |
-            
-
-        //- h3.  
-        //-     #[strong Day&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
-        //-     #[strong Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
-        //-     #[strong Session Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
-        //-     #[strong Members]
-        //- |
-
-        //- p. 
-        //-                     #{sched.day}&nbsp;&nbsp;&nbsp;&nbsp;
-        //-                     #{sched.time_slot}&nbsp;&nbsp;&nbsp;&nbsp;
-        //-                     #{sched.session_type}&nbsp;&nbsp;&nbsp;&nbsp;
-        //-                     #{sched.member_id}
 
         br
         button(type="button" id="addSession") Add Session

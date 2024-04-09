@@ -7,7 +7,7 @@ html(lang="en")
         style.
             table {
                 border-collapse: collapse;
-                width: 60%;
+                width: 90%;
             }
             th, td {
                 border: 1px solid #dddddd;
@@ -25,6 +25,7 @@ html(lang="en")
                         th End Time
                         th Session Type
                         th Members
+                        th Room Number
 
                 tbody               
                     tr 
@@ -39,7 +40,7 @@ html(lang="en")
                         td 
                             label(for='dropdown')    Hour: 
                             select(type='select' id='hour' name='start_hour')
-                                -var hour = schedule.time_slot.split(':')[0]
+                                -var hour = schedule.start_time.split(':')[0]
                                 option(value=hour checked) #{hour}
                                 each time in ['07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19']
                                     if time != hour
@@ -48,7 +49,7 @@ html(lang="en")
                                         
                             label(for='dropdown')   Minutes: 
                             select(type='select' id='min' name='start_min')
-                                -var min = schedule.time_slot.split(':')[1]
+                                -var min = schedule.start_time.split(':')[1]
                                 option(value=min checked) #{min}
                                 
                                 each time in ['00', '30']
@@ -57,7 +58,7 @@ html(lang="en")
                         td 
                             label(for='dropdown')    Hour: 
                             select(type='select' id='hour' name='end_hour')
-                                -var hour = schedule.time_slot.split(':')[0]
+                                -var hour = schedule.end_time.split(':')[0]
                                 option(value=hour checked) #{hour}
                                 each time in ['07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19']
                                     if time != hour
@@ -66,7 +67,7 @@ html(lang="en")
                                         
                             label(for='dropdown')   Minutes: 
                             select(type='select' id='min' name='end_min')
-                                -var min = schedule.time_slot.split(':')[1]
+                                -var min = schedule.end_time.split(':')[1]
                                 option(value=min checked) #{min}
                                 
                                 each time in ['00', '30']
@@ -80,6 +81,10 @@ html(lang="en")
                                 - var n = 0
                                 each id in theClass.ids 
                                     p= theClass.members[n++]
+                        
+                        td 
+                            if schedule.room_num 
+                                p= schedule.room_num
 
                         td     
                             input(type='checkbox' name='deleteBox')

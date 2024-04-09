@@ -113,7 +113,8 @@ CREATE TABLE Schedule(
     CHECK (start_time <> end_time),
 
     availability BOOLEAN NOT NULL,
-    session_type VARCHAR(255) NOT NULL
+    session_type VARCHAR(255) NOT NULL,
+    room_num INT
 
 );
 
@@ -127,12 +128,8 @@ CREATE TABLE ScheduledMembers(
 -- create booking table
 CREATE TABLE RoomBooking(
     booking_id SERIAL PRIMARY KEY,
-    room_num INT NOT NULL
-    day VARCHAR(255) NOT NULL,
-    start_time TIME NOT NULL,  
-    end_time TIME NOT NULL  
-    event_type VARCHAR(255) NOT NULL,
-    capacity INT
+    room_num INT NOT NULL,
+    schedule_id INT,
     -- need to create a room table? aka keep track of number, capacity and equipment
 );
 

@@ -1,0 +1,15 @@
+html(lang="en")
+    head
+        title Trainer page
+    body  
+        
+        include ./header
+
+        h1 Admin: #{session.user.fname} #{session.user.lname} 
+
+        h3 Profile
+
+        p First name: #{session.user.fname}
+        p Last name: #{session.user.lname}
+        p Email: #{session.user.email}
+        p Phone number: #{session.user.phone_number}

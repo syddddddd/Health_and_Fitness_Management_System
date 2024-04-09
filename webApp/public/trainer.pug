@@ -7,7 +7,7 @@ html(lang="en")
         style.
             table {
                 border-collapse: collapse;
-                width: 60%;
+                width: 75%;
             }
             th, td {
                 border: 1px solid #dddddd;
@@ -27,6 +27,7 @@ html(lang="en")
                     th End Time
                     th Session Type
                     th Members
+                    th Room Number
                     
 
             tbody
@@ -51,6 +52,9 @@ html(lang="en")
                                                 br       
                                 
                             td 
+                                if sched.room_num
+                                    p= schedule.room_num
+                            td
                                 a(href=`/editSession/${sched.schedule_id}`) edit
             |
             

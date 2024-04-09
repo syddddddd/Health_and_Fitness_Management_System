@@ -82,15 +82,15 @@ VALUES
 ('Cycling', 6);
 
 -- Populate Equipment Table
-INSERT INTO MemberRoutines (member_id, exercise_id, setsOrDistance)
+INSERT INTO MemberRoutines (member_id, exercise_id, reps, distance)
 VALUES 
-(1, 1, 5),
-(1, 4, 1),
-(1, 3, 3),
-(2, 6, 2),
-(2, 2, 10),
-(3, 5, 6),
-(3, 7, 3);
+(1, 1, 5, NULL),
+(1, 4, NULL, 2),
+(1, 3, NULL, 3),
+(2, 6, NULL, 2),
+(2, 2, 10, NULL),
+(3, 5, 8, NULL),
+(3, 7, NULL, 2);
 
 INSERT INTO TrainerAvailability (trainer_id, day, start_time, end_time)
 VALUES

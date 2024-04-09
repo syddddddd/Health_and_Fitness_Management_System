@@ -92,7 +92,8 @@ CREATE TABLE MemberRoutines(
     routine_id SERIAL PRIMARY KEY,
     exercise_id INT REFERENCES Exercises(exercise_id),
     member_id INT REFERENCES Members(member_id),
-    setsOrDistance INT NOT NULL
+    reps INT,
+    distance INT
 );
 
 CREATE TABLE FitnessAchievements(

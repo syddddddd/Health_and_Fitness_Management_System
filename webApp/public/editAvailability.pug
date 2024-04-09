@@ -1,0 +1,66 @@
+html(lang="en")
+    head
+        title Availability Edit Page
+    body  
+        
+        include ./header
+        style.
+            table {
+                border-collapse: collapse;
+                width: 50%;
+            }
+            th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }#discard {
+                margin-right: 10px; 
+            }
+   
+        h2 Edit Availability 
+        form(action=`/editAvailability/${schedule.availability_id}` method="post")
+            table
+                thead 
+                    tr
+                        th Day
+                        th Start Time
+                        th End Time
+
+                tbody               
+                    tr 
+                        td #{schedule.day}
+                            //- select(type='select' id='day' name='day')
+                            //-     option(value=schedule.day checked) #{schedule.day}
+
+                            //-     each day in ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+                            //-         if day != schedule.day 
+                            //-             option(value=day) #{day}
+
+                        td 
+                            label(for='dropdown')    Time: 
+                            select(type='select' id='hour' name='start_hour')
+                                -var hour = schedule.start_time.split(':')[0]
+                                option(value=hour+':00' checked) #{hour}:00
+                                each time in ['00:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
+                                    if time != hour
+                                        option(value=time) #{time}
+                           
+                            label &nbsp;&nbsp;(00:00 = unavailable)
+                           
+                        td 
+                            label(for='dropdown')    Time: 
+                            select(type='select' id='hour' name='end_hour')
+                                -var hour = schedule.end_time.split(':')[0]
+                                option(value=hour+':00' checked) #{hour}:00
+                                each time in ['00:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00']
+                                    if time != hour
+                                        option(value=time) #{time}
+                            
+                            label &nbsp;&nbsp;(00:00 = unavailable)
+                               
+                     
+            br
+            button#discard(type="button" onclick='discarding("' + session.type +'")') Discard Edits
+            button(type="submit") Save Edits
+
+            script(src="/js/trainerScheduleManagement.js")

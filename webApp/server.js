@@ -134,7 +134,16 @@ app.get('/member', async (req, res) => {
 
 app.get('/trainer', async (req, res) => { 
     try {
-        const query = "SELECT * FROM Schedule WHERE trainer_id=$1 ORDER BY day ASC, start_time ASC";
+        const query = "SELECT * FROM Schedule WHERE trainer_id=$1 ORDER BY CASE \
+                        WHEN day = 'Sunday' THEN 1 \
+                        WHEN day = 'Monday' THEN 2 \
+                        WHEN day = 'Tuesday' THEN 3 \
+                        WHEN day = 'Wednesday' THEN 4 \
+                        WHEN day = 'Thursday' THEN 5 \
+                        WHEN day = 'Friday' THEN 6 \
+                        WHEN day = 'Saturday' THEN 7 \
+                        ELSE 8 \
+                        END, start_time;"
         const scheduleResult = await client.query(query, [req.session.user.trainer_id]);
         console.log("getting schedule")
 
@@ -578,7 +587,16 @@ app.post('/editSession/:schedId', async (req, res) => {
 
 app.get('/scheduleManagement', async (req, res) => { 
     try {
-        const query = "SELECT * FROM Schedule ORDER BY day ASC, start_time ASC";
+        const query = "SELECT * FROM Schedule ORDER BY CASE \
+                        WHEN day = 'Sunday' THEN 1 \
+                        WHEN day = 'Monday' THEN 2 \
+                        WHEN day = 'Tuesday' THEN 3 \
+                        WHEN day = 'Wednesday' THEN 4 \
+                        WHEN day = 'Thursday' THEN 5 \
+                        WHEN day = 'Friday' THEN 6 \
+                        WHEN day = 'Saturday' THEN 7 \
+                        ELSE 8 \
+                        END, start_time;"
         const scheduleResult = await client.query(query);
         console.log("getting schedule")
 
@@ -611,7 +629,16 @@ app.get('/trainerAvailability', async (req, res) => {
     console.log(id)
 
     try {
-        const query = "SELECT * FROM TrainerAvailability WHERE trainer_id=$1";
+        const query = "SELECT * FROM TrainerAvailability WHERE trainer_id=$1 ORDER BY CASE \
+                        WHEN day = 'Sunday' THEN 1 \
+                        WHEN day = 'Monday' THEN 2 \
+                        WHEN day = 'Tuesday' THEN 3 \
+                        WHEN day = 'Wednesday' THEN 4 \
+                        WHEN day = 'Thursday' THEN 5 \
+                        WHEN day = 'Friday' THEN 6 \
+                        WHEN day = 'Saturday' THEN 7 \
+                        ELSE 8 \
+                        END, start_time;"
         const schedule = await client.query(query, [req.session.user.trainer_id]);
         console.log("getting schedule")
 
@@ -632,7 +659,16 @@ app.get('/allAvailabilities', async (req, res) => {
     console.log(id)
 
     try {
-        const query = "SELECT * FROM TrainerAvailability";
+        const query = "SELECT * FROM TrainerAvailability ORDER BY CASE \
+                        WHEN day = 'Sunday' THEN 1 \
+                        WHEN day = 'Monday' THEN 2 \
+                        WHEN day = 'Tuesday' THEN 3 \
+                        WHEN day = 'Wednesday' THEN 4 \
+                        WHEN day = 'Thursday' THEN 5 \
+                        WHEN day = 'Friday' THEN 6 \
+                        WHEN day = 'Saturday' THEN 7 \
+                        ELSE 8 \
+                        END, start_time;"
         const schedule = await client.query(query);
         console.log("getting schedule")
 
@@ -646,6 +682,55 @@ app.get('/allAvailabilities', async (req, res) => {
 
         res.render('../public/allAvailabilities', {session : req.session, schedule : schedule.rows, trainers : trainers.rows});
 
+        
+    } catch (err) {
+        res.status(401).send("error");
+    }
+
+});
+
+app.get('/editAvailability/:availabilityId', async (req, res) => { 
+    let id = req.params.availabilityId;
+    console.log(id)
+
+    try {
+        const query = "SELECT * FROM TrainerAvailability WHERE availability_id=$1 ORDER BY CASE \
+                        WHEN day = 'Sunday' THEN 1 \
+                        WHEN day = 'Monday' THEN 2 \
+                        WHEN day = 'Tuesday' THEN 3 \
+                        WHEN day = 'Wednesday' THEN 4 \
+                        WHEN day = 'Thursday' THEN 5 \
+                        WHEN day = 'Friday' THEN 6 \
+                        WHEN day = 'Saturday' THEN 7 \
+                        ELSE 8 \
+                        END, start_time"
+
+        const schedule = await client.query(query, [id]);
+        console.log("getting availability")
+
+        console.log("exists");
+        console.log(schedule.rows)
+
+        res.render('../public/editAvailability', {session : req.session, schedule : schedule.rows[0] });
+
+    } catch (err) {
+        res.status(401).send("error");
+    }
+
+});
+
+app.post('/editAvailability/:availabilityId', async (req, res) => { 
+    let id = req.params.availabilityId;
+    let start_time = req.body.start_hour;
+    let end_time = req.body.end_hour;
+    console.log(id)
+    console.log(req.body)
+
+    try {   
+        const query = "UPDATE trainerAvailability SET start_time =$1, end_time=$2 WHERE availability_id =$3";
+        await client.query(query, [start_time, end_time, id])
+
+        res.redirect(`http://localhost:3000/trainerAvailability`);
         
     } catch (err) {
         res.status(401).send("error");

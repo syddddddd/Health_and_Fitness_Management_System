@@ -220,6 +220,58 @@ BEFORE INSERT ON SCHEDULE
 FOR EACH ROW
 EXECUTE FUNCTION checkAvailability();
 
+CREATE OR REPLACE FUNCTION validAvailability()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM TrainerAvailability
+        WHERE trainer_id = NEW.trainer_id
+          AND day = NEW.day
+          AND ((NEW.start_time = '00:00' AND NEW.end_time != '00:00') OR (NEW.start_time != '00:00' AND NEW.end_time = '00:00'))
+    ) THEN
+        RAISE EXCEPTION 'Not within trainer availability';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER validAvailabilityTrigger
+BEFORE UPDATE ON TrainerAvailability
+FOR EACH ROW
+EXECUTE FUNCTION validAvailability();
+
+
+CREATE TABLE Testing (
+    day SERIAL PRIMARY KEY,
+    time INT
+);
+
+DO $$
+DECLARE
+    day_value INT;
+BEGIN
+    day_value := CASE
+        WHEN day = 'Sunday' THEN 1
+        WHEN day = 'Monday' THEN 2
+        WHEN day = 'Tuesday' THEN 3
+        WHEN day = 'Wednesday' THEN 4
+        WHEN day = 'Thursday' THEN 5
+        WHEN day = 'Friday' THEN 6
+        WHEN day = 'Saturday' THEN 7
+        ELSE 8
+    END;
+
+    RAISE NOTICE 'The value of day_value is: %', day_value;
+END;
+$$;
+
 INSERT INTO Schedule (trainer_id, day, start_time, end_time, session_type, availability)
 VALUES 
 (2, 'Sunday', '8:00', '10:00', 'group', true);
+
+UPDATE TrainerAvailability SET start_time = '00:00', end_time = '12:00' WHERE trainer_id=3 AND day = 'Sunday'
+
+UPDATE INTO TrainerAvailability (trainer_id, day, start_time, end_time)
+VALUES
+(3, 'Sunday', '0:00', '12:00')

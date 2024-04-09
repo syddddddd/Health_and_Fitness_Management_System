@@ -164,7 +164,7 @@ CREATE TABLE GroupFees (
     schedule_id INT REFERENCES Schedule(schedule_id),
     group_fee INT,
     paid BOOLEAN
-)
+);
 
 CREATE TABLE PrivateFees (
     private_id SERIAL PRIMARY KEY,
@@ -172,7 +172,7 @@ CREATE TABLE PrivateFees (
     schedule_id INT REFERENCES Schedule(schedule_id),
     private_fee INT,
     paid BOOLEAN
-)
+);
 
 -- check if schedule overlaps with existing schedule
 CREATE OR REPLACE FUNCTION checkOverlap()
@@ -221,4 +221,4 @@ EXECUTE FUNCTION checkAvailability();
 
 INSERT INTO Schedule (trainer_id, day, start_time, end_time, session_type, availability)
 VALUES 
-(2, 'Sunday', '8:00', '10:00', 'group', true)
+(2, 'Sunday', '8:00', '10:00', 'group', true);

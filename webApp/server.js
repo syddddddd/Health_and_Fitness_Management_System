@@ -403,6 +403,8 @@ app.get('/member/dashboard', async (req, res) => {
         healthstats.calories = caloriesResults.rows[0].avg;
         
         //console.log(healthstats);
+
+        
         res.render('../public/memberDashboard', {session : req.session, health : healthstats});
     }
     catch(err){

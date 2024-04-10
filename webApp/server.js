@@ -414,8 +414,15 @@ app.get('/member/dashboard', async (req, res) => {
         
         //console.log(healthstats);
 
-        
-        res.render('../public/memberDashboard', {session : req.session, health : healthstats});
+        const routines = "SELECT routine_id, exercise, reps, distance FROM MemberRoutines NATURAL INNER JOIN Exercises WHERE member_id= " + user;
+        const routinesResults = await client.query(routines);
+
+        //console.log(routinesResults.rows);
+
+        const allExercises = "SELECT exercise FROM Exercises";
+        const allExercisesResults = await client.query(allExercises);
+
+       res.render('../public/memberDashboard', {session : req.session, health : healthstats, routines : routinesResults.rows, exercises : allExercisesResults.rows});
     }
     catch(err){
         res.status(401).send("error");

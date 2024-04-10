@@ -7,8 +7,42 @@ html(lang="en")
         
         h1 #{session.user.fname}'s Dashboard
 
-        h3 #{session.user.fname}'s Health Statistics 
+        form(action="/member/dashboard" method="post")
 
-        p Average hours of sleep per night: #{health.sleep} 
-        p Average weight so far: #{health.weight} 
-        p Average calory intake per day: #{health.calories}
+            h3 #{session.user.fname}'s Exercise Routines
+ 
+
+            each r in routines     
+
+                if (r.reps != NULL)
+                    p Exercise: #{r.exercise} &nbsp;&nbsp;&nbsp; Reps: #{r.reps} &nbsp;&nbsp;&nbsp;
+                        button#finishButton(type="submit" name="finishButton" value=r.routine_id) Finished
+                        button#discardButton(type="submit" name="discardButton" value=r.routine_id) Discard
+                else 
+                    p Exercise: #{r.exercise} &nbsp;&nbsp;&nbsp; Distance: #{r.distance} km &nbsp;&nbsp;&nbsp;
+                        button#finishButton(type="submit" name="finishButton" value=r.routine_id) Finished
+                        button#discardButton(type="submit" name="discardButton" value=r.routine_id) Discard
+
+            
+            h4 Add a Exercise Routine 
+
+            p Exercise: 
+                select#gender(type="select" name="addexercise")
+                    option(value='empty' checked)
+
+                    each e in exercises 
+                        option(value=e.exercise) #{e.exercise} 
+
+                label(for="setsOrDistance") &nbsp;&nbsp;&nbsp; Enter amount of sets or distance (km): 
+                input#setsOrDistance(type="textbox" name="setsOrDistance")
+
+                label(for="addexercisebutton") &nbsp;&nbsp;&nbsp;
+                button(type="submit" id="addexercisebutton") Add
+                br
+
+
+            h3 #{session.user.fname}'s Health Statistics 
+
+            p Average hours of sleep per night: #{health.sleep} 
+            p Average weight so far: #{health.weight} 
+            p Average calory intake per day: #{health.calories}

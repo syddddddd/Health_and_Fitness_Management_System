@@ -144,9 +144,7 @@ CREATE TABLE Rooms(
 CREATE TABLE Maintenance (
    maintenance_id SERIAL PRIMARY KEY,
    equipment_id INT REFERENCES Equipment(equipment_id),
-   purchase_date DATE DEFAULT CURRENT_DATE,
-   last_checkup DATE DEFAULT CURRENT_DATE,
-   working_order VARCHAR(255) NOT NULL
+   last_checkup DATE DEFAULT CURRENT_DATE
 );
 
 -- create payment table
@@ -273,4 +271,3 @@ UPDATE TrainerAvailability SET start_time = '00:00', end_time = '12:00' WHERE tr
 UPDATE INTO TrainerAvailability (trainer_id, day, start_time, end_time)
 VALUES
 (3, 'Sunday', '0:00', '12:00')
-

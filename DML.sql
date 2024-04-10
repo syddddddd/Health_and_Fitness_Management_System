@@ -127,6 +127,16 @@ VALUES
 (3, 'Friday', '7:00', '12:00'),
 (3, 'Saturday', '10:00', '18:00');
 
+-- Populate Maintenace Table
+INSERT INTO Maintenance (equipment_id, last_checkup)
+VALUES
+(1, '2024-01-01'),
+(2, '2024-02-13'),
+(3, '2024-03-06'),
+(4, '2024-02-25'),
+(5, '2024-01-02'),
+(6, '2024-02-22');
+
 -- Populate Rooms Table
 INSERT INTO Rooms (room_num, availability)
 VALUES

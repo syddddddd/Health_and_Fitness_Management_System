@@ -1,0 +1,46 @@
+html(lang="en")
+    head
+        title Member Schedule
+    body  
+        
+        include ./header
+
+        style.
+            table {
+                border-collapse: collapse;
+                width: 75%;
+            }
+            th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+        h1 #{session.user.fname} #{session.user.lname}
+
+        h2 Schedule 
+                |
+                table
+                    thead 
+                        tr
+                            th Day
+                            th Start Time
+                            th End Time
+                            th Session Type
+                            th Trainer
+                            th Room Number
+                            
+
+                    tbody
+                        if schedule && schedule.length > 0
+                            each sched in schedule
+                                tr 
+                                    td #{sched.day}
+                                    td #{sched.start_time}
+                                    td #{sched.end_time}
+                                    td #{sched.session_type}
+                                    td #{sched.fname} #{sched.lname}                                        
+                                    td #{sched.room_num}
+                                
+                                    td
+                                        a(href=`/member/editSchedule/${sched.schedule_id}`) edit

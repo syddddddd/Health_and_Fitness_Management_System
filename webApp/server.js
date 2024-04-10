@@ -545,6 +545,23 @@ app.post('/member/dashboard', async (req, res) => {
 
 });
 
+app.get('/member/schedule', async (req, res) => { 
+
+    let user = req.session.user.member_id;
+
+    try {
+        const query = "SELECT * FROM ScheduledMembers sc JOIN Trainers t ON sc.trainer_id = t.trainer_id JOIN Schedule s ON sc.schedule_id = s.schedule_id WHERE sc.member_id=" + user;
+        const scheduleResult = await client.query(query);
+        console.log(scheduleResult.rows);
+        
+        res.render('../public/memberScheduling', {session : req.session, schedule : scheduleResult.rows});
+
+    } catch (err) {
+        res.status(401).send("error");
+    }
+    
+});
+
 app.get('/member/:memberId', async (req, res) => { 
     let id = req.params.memberId;
     console.log(id)

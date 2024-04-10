@@ -27,22 +27,27 @@ html(lang="en")
             h4 Add a Exercise Routine 
 
             p Exercise: 
-                select#gender(type="select" name="addexercise")
-                    option(value='empty' checked)
+                select#addexercise(type="select" name="addexercise")
 
-                    each e in exercises 
-                        option(value=e.exercise) #{e.exercise} 
+                    each e, index in exercises 
+                        option(value=index+1) #{e.exercise} 
 
                 label(for="setsOrDistance") &nbsp;&nbsp;&nbsp; Enter amount of sets or distance (km): 
                 input#setsOrDistance(type="textbox" name="setsOrDistance")
 
                 label(for="addexercisebutton") &nbsp;&nbsp;&nbsp;
-                button(type="submit" id="addexercisebutton") Add
+                button#addexercisebutton(type="submit" name="addexercisebutton" value="pressed") Add
                 br
 
+            h3 #{session.user.fname}'s Fitness Achivements
+
+            each a in achievements
+                        p #{a.achievement_date} | #{a.achievement}
 
             h3 #{session.user.fname}'s Health Statistics 
 
             p Average hours of sleep per night: #{health.sleep} 
             p Average weight so far: #{health.weight} 
             p Average calory intake per day: #{health.calories}
+
+        script(src="/js/dashboard.js")

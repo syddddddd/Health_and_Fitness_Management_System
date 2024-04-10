@@ -422,11 +422,127 @@ app.get('/member/dashboard', async (req, res) => {
         const allExercises = "SELECT exercise FROM Exercises";
         const allExercisesResults = await client.query(allExercises);
 
-       res.render('../public/memberDashboard', {session : req.session, health : healthstats, routines : routinesResults.rows, exercises : allExercisesResults.rows});
+        const achievements = "SELECT * FROM FitnessAchievements WHERE member_id=" + user + " ORDER BY achievement_date";
+        const achievementsResults = await client.query(achievements);
+
+       res.render('../public/memberDashboard', {session : req.session, health : healthstats, routines : routinesResults.rows, exercises : allExercisesResults.rows, achievements : achievementsResults.rows});
     }
     catch(err){
         res.status(401).send("error");
     }
+});
+
+app.post('/member/dashboard', async (req, res) => {
+
+    let user = req.session.user.member_id;
+
+    let finishRoutine = req.body.finishButton;
+    let discardRoutine = req.body.discardButton;
+
+    let addExercise = req.body.addexercise;
+    let setsOrDistance = req.body.setsOrDistance;
+    let addexercisebutton = req.body.addexercisebutton;
+
+    if (finishRoutine){
+        //console.log(finishRoutine);
+
+        const routines = "SELECT * FROM MemberRoutines NATURAL INNER JOIN Exercises NATURAL INNER JOIN Equipment WHERE routine_id=" + finishRoutine + ";";
+        const routinesResults = await client.query(routines);
+
+        //console.log(routinesResults.rows[0]);
+
+        let s = " with ";
+
+        if (routinesResults.rows[0].reps != null){
+            s += routinesResults.rows[0].reps + " reps"; 
+        }
+        else{
+            s += "distance " + routinesResults.rows[0].distance + "km"; 
+        }
+
+        let achievement = "Finished exercise routine " + routinesResults.rows[0].exercise + s + " using the equipment: " + routinesResults.rows[0].equip_name;
+        const addAchievement = "INSERT INTO FitnessAchievements (member_id, achievement) VALUES ( " + user + ", \'" + achievement + "\');";
+
+        console.log(addAchievement);
+
+        client.query(addAchievement, (err,result) => {
+
+            if (err){
+                console.log("error adding achievement");
+                res.status(401).send("error");
+            }
+            else{
+                console.log("added achievement");
+            }
+        });
+
+
+        const removeRoutine = "DELETE FROM MemberRoutines WHERE routine_id= " + finishRoutine + ";";
+
+        client.query(removeRoutine, (err,result) => {
+
+            if (err){
+                console.log("error removing routine from finished");
+                res.status(401).send("error");
+            }
+            else{
+                console.log("removed routine from finished");
+                res.redirect(`http://localhost:3000/member/dashboard`);
+            }
+        });
+
+    }
+
+    if (discardRoutine){
+        //console.log(discardRoutine);
+
+        const removeRoutine = "DELETE FROM MemberRoutines WHERE routine_id= " + discardRoutine;
+
+        client.query(removeRoutine, (err,result) => {
+
+            if (err){
+                console.log("error removing routine from discard");
+                res.status(401).send("error");
+            }
+            else{
+                console.log("removed routine from discard");
+                res.redirect(`http://localhost:3000/member/dashboard`);
+            }
+        });
+
+    }
+
+    if (addexercisebutton == "pressed"){
+        //console.log("add button pressed");
+        //console.log("exercise_id= " + addExercise);
+
+        let s = "";
+
+        if (addExercise == 1 || addExercise == 2 || addExercise == 5 ){
+            s = "reps";
+        }
+        else{
+            s = "distance";
+        }
+
+        const add = "INSERT INTO MemberRoutines (member_id, exercise_id, " + s + ") VALUES ( " + user + ", " + addExercise + ", " + setsOrDistance + " );";
+
+        //console.log(add);
+
+        client.query(add, (err,result) => {
+
+            if (err){
+                console.log("error adding routine");
+                res.status(401).send("error");
+            }
+            else{
+                console.log("added routine");
+                res.redirect(`http://localhost:3000/member/dashboard`);
+            }
+        });
+
+    }
+
 });
 
 app.get('/member/:memberId', async (req, res) => { 

@@ -39,7 +39,7 @@ VALUES
 (5, 1, 3),
 (5, 1, 1);
 
--- Populate FitnessFile Table
+-- Populate FitnessFiles Table
 INSERT INTO FitnessFiles (member_id, goal_weight, distance, goal_time)
 VALUES 
 (1, 220, 5, '01:00:00'),
@@ -53,7 +53,7 @@ VALUES
 (2, 8, 155, 72, 2543),
 (3, 4, 168, 74, 2122);
 
--- Populate HealthMetrics Table
+-- Populate HealthStatistics Table
 INSERT INTO HealthStatistics (member_id, hours_slept, curr_weight, height, calories_consummed)
 VALUES 
 (1, 7, 230, 66, 1985),
@@ -70,7 +70,7 @@ VALUES
 ('Rower', '2017-01-01'),
 ('Indoor bike', '2016-01-01');
 
--- Populate Exercise Table
+-- Populate Exercises Table
 INSERT INTO Exercises (exercise, equipment_id)
 VALUES 
 ('Sit-ups', 1),
@@ -81,7 +81,7 @@ VALUES
 ('Rowing', 5),
 ('Cycling', 6);
 
--- Populate Equipment Table
+-- Populate MemberRoutines Table
 INSERT INTO MemberRoutines (member_id, exercise_id, reps, distance)
 VALUES 
 (1, 1, 5, NULL),
@@ -92,6 +92,15 @@ VALUES
 (3, 5, 8, NULL),
 (3, 7, NULL, 2);
 
+-- Populate FitnessAchievements Table
+INSERT INTO FitnessAchievements(member_id, achievement, achievement_date)
+VALUES
+(1, 'Finished exercise routine Eliptical with distance 1km using the equipment: Eliptical', '2024-04-10 08:30:00'),
+(1, 'Finished exercise routine Cycling with distance 0.5km using the equipment: Indoor bike', '2024-04-09 17:30:00'),
+(2, 'Finished exercise routine Weights with 7 reps using the equipment: Weights', '2024-04-08 09:27:00'),
+(3, 'Finished exercise routine Sit-ups with 3 reps using the equipment: Mats', '2024-04-07 14:30:00');
+
+-- Populate TrainerAvailability Table
 INSERT INTO TrainerAvailability (trainer_id, day, start_time, end_time)
 VALUES
 (1, 'Sunday', '0:00', '0:00'),
@@ -118,6 +127,7 @@ VALUES
 (3, 'Friday', '7:00', '12:00'),
 (3, 'Saturday', '10:00', '18:00');
 
+-- Populate Rooms Table
 INSERT INTO Rooms (room_num, availability)
 VALUES
 (1, true),

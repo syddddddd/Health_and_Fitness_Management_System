@@ -97,9 +97,10 @@ CREATE TABLE MemberRoutines(
 );
 
 CREATE TABLE FitnessAchievements(
-    achievements_id INT,
+    achievements_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Members(member_id),
-    achievements VARCHAR(255) NOT NULL
+    achievement TEXT NOT NULL,
+    achievement_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 --create schedule table

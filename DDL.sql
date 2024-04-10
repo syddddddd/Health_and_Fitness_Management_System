@@ -93,7 +93,7 @@ CREATE TABLE MemberRoutines(
     exercise_id INT REFERENCES Exercises(exercise_id),
     member_id INT REFERENCES Members(member_id),
     reps INT,
-    distance INT
+    distance FLOAT
 );
 
 CREATE TABLE FitnessAchievements(

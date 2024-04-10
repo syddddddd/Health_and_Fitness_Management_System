@@ -138,10 +138,7 @@ CREATE TABLE TrainerAvailability(
 CREATE TABLE Rooms(
     room_num INT NOT NULL PRIMARY KEY,
     availability BOOLEAN
-    -- need to create a room table? aka keep track of number, capacity and equipment
 );
-
--- create equipment table????
 
 -- create maintenance table
 CREATE TABLE Maintenance (
@@ -276,3 +273,69 @@ UPDATE TrainerAvailability SET start_time = '00:00', end_time = '12:00' WHERE tr
 UPDATE INTO TrainerAvailability (trainer_id, day, start_time, end_time)
 VALUES
 (3, 'Sunday', '0:00', '12:00')
+
+-- my way of doing it 
+CREATE TABLE time_slots(
+    time_slot_id SERIAL PRIMARY KEY;
+    start_time TIME,
+    end_time TIME
+);
+
+INSERT INTO time_slot (start_time, end_time)
+VALUES
+('08:00', '9:00'),
+('09:00', '10:00'),
+('10:00', '11:00'),
+('11:00', '12:00'),
+('12:00', '13:00'),
+('13:00', '14:00'),
+('14:00', '15:00');
+
+CREATE TABLE daysOfWeek(
+    days_id SERIAL PRIMARY KEY,
+    days VARCHAR(255) NOT NULL
+);
+
+INSERT INTO daysOfWeek (days)
+VALUES
+('Monday'),
+('Tuesday'),
+('Wednesday'),
+('Thursday'),
+('Friday'),
+('Saturday'),
+('Sunday');
+
+CREATE TABLE trainerAvailWeek(
+    t_id SERIAL PRIMARY KEY,
+    trainer_id INT REFERENCES Trainers(trainer_id),
+    days_id INT REFERENCES daysOfWeek(days_id),
+    time_slot_id INT REFERENCES time_slots(time_slot_id),
+    avail BOOLEAN DEFAULT TRUE
+);
+
+INSERT INTO trainerAvailWeek (trainer_id, days_id, time_slot_id, avail)
+VALUES
+--Jason trainer_id = 1 Monday days_id=1 
+(1, 1, 1, true),            --('08:00', '9:00'),
+(1, 1, 2, true),            --('09:00', '10:00'),
+(1, 1, 3, true),            --('10:00', '11:00'),
+(1, 1, 4, true),            --('11:00', '12:00'),
+(1, 1, 5, true),            --('12:00', '13:00'),
+(1, 1, 6, true),            --('13:00', '14:00'),
+(1, 1, 7, true),            --('14:00', '15:00');
+
+CREATE TABLE availDay(
+    a_id SERIAL PRIMARY KEY,
+    trainer_id INT REFERENCES Trainers(trainer_id),
+    days_id INT REFERENCES daysOfWeek(days_id),
+    time_slot_id INT REFERENCES time_slots(time_slot_id)
+);
+
+INSERT INTO availDay (trainer_id, day, time_slot_id)
+VALUES
+(1, 'Monday', 1),
+(1, 'Wednesday', 2),
+(2, 'Tuesday', 3),
+(2, 'Thursday', 4),
+(3, 'Friday', 5);

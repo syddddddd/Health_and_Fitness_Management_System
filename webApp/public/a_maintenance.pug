@@ -1,0 +1,43 @@
+html(lang="en")
+    head
+        title Admin maintenance
+    body  
+        
+        include ./header
+        
+        style.
+            table {
+                border-collapse: collapse;
+                width: 75%;
+            }
+            th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+        form(action="/admin/maintenance" method="post") 
+
+            h1 Equipment Maintenance
+
+                    |
+                    table
+                        thead 
+                            tr
+                                th Equipment
+                                th Last Checkup
+                                th Update Checkup
+                                
+                        tbody
+                            if maintenance && maintenance.length > 0
+                                each m in maintenance
+                                    tr 
+                                        td #{m.equip_name}
+
+                                        -let c = new Date(m.last_checkup).toLocaleDateString();
+                                        td #{c}
+
+                                        td Insert: 'YYYY-MM-DD':
+                                            input#update(type="textbox" name="update")
+                                            button#updatebutton(type="submit" name="updatebutton" value=m.maintenance_id) Update
+                                            

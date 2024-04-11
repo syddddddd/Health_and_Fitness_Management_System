@@ -864,6 +864,41 @@ app.get('/trainerAvailability', async (req, res) => {
 
 });
 
+app.get('/admin/maintenance', async (req, res) => { 
+    try {
+        const maintenance = "SELECT * FROM Maintenance NATURAL INNER JOIN Equipment ORDER BY maintenance_id;"
+        const maintenanceResult = await client.query(maintenance);
+        //console.log(maintenanceResult.rows)
+        
+        res.render('../public/a_maintenance', {session : req.session, maintenance : maintenanceResult.rows});
+
+    } catch (err) {
+        res.status(401).send("error");
+    }
+    
+});
+
+app.post('/admin/maintenance', async (req, res) => { 
+    try {
+        let newTime = req.body.update;
+        let button = req.body.updatebutton;
+        
+        if (button){
+            //console.log(button, newTime[button-1]);
+
+            const query = "UPDATE Maintenance SET last_checkup = \'" + newTime[button-1] + "\' WHERE maintenance_id =" + button + ";";
+            let test = await client.query(query);                
+            //console.log(query);
+
+            res.redirect(`http://localhost:3000/admin/maintenance`);
+                
+        }
+    } catch (err) {
+        res.status(401).send("error updating checkup");
+    }
+    
+});
+
 app.get('/allAvailabilities', async (req, res) => { 
     let id = req.params.schedId;
     console.log(id)

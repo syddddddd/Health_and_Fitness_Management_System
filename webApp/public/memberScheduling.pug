@@ -17,30 +17,33 @@ html(lang="en")
             }
 
         h1 #{session.user.fname} #{session.user.lname}
-
+        
         h2 Schedule 
-                |
-                table
-                    thead 
-                        tr
-                            th Day
-                            th Start Time
-                            th End Time
-                            th Session Type
-                            th Trainer
-                            th Room Number
-                            
+        form(action=`/member/schedule` method="post")
+            table
+                thead 
+                    tr
+                        th Day
+                        th Start Time
+                        th End Time
+                        th Session Type
+                        th Trainer
+                        th Room Number
+                        
 
-                    tbody
-                        if schedule && schedule.length > 0
-                            each sched in schedule
-                                tr 
-                                    td #{sched.day}
-                                    td #{sched.start_time}
-                                    td #{sched.end_time}
-                                    td #{sched.session_type}
-                                    td #{sched.fname} #{sched.lname}                                        
-                                    td #{sched.room_num}
-                                
-                                    td
-                                        a(href=`/member/editSchedule/${sched.schedule_id}`) edit
+                tbody
+                    if schedule && schedule.length > 0
+                        each sched in schedule
+                            tr 
+                                td #{sched.day}
+                                td #{sched.start_time}
+                                td #{sched.end_time}
+                                td #{sched.session_type}
+                                td #{sched.fname} #{sched.lname}                                        
+                                td #{sched.room_num}
+                            
+                                td
+                                    input(type='checkbox' name='deleteBox' value=sched.schedule_id)
+                                    label(for='checkbox') &nbsp;&nbsp;Delete Session
+            br
+            button(type="submit" name="save" class="link") Save Edits

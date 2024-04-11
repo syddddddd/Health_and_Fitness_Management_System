@@ -590,92 +590,75 @@ app.get('/member/schedule', async (req, res) => {
     
 });
 
-app.get('/member/editSchedule/:schedId', async (req, res) => { 
-
-    let id = req.params.schedId;
-    //console.log(id)
-
-    try {
-        const reschedule = "SELECT * FROM Schedule WHERE schedule_id=$1";
-        const rescheduleResults = await client.query(reschedule, [id]);
-        console.log(rescheduleResults.rows[0]);
-
-        const availabilityReshedule = "SELECT * FROM TrainerAvailability ORDER BY " + orderByDay + ", start_time;"
-        const schedule = await client.query(availabilityReshedule);
-
-        //const query2 = "SELECT s.schedule_id, ARRAY_AGG(s.member_id) as ids, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members FROM ScheduledMembers s JOIN Members m on m.member_id = s.member_id WHERE schedule_id=$1 Group By schedule_id";
-        //const theClass = await client.query(query2, [id]);
-
-        //console.log(theClass.rows[0])
-
-        //const query3 = "SELECT room_num from Rooms WHERE availability = true ORDER BY room_num ASC";
-        //const rooms = await client.query(query3);
-
-        //console.log(rooms.rows)
-
-
-        res.render('../public/m_editSchedule', {session : req.session});
-
-        
-    } catch (err) {
-        res.status(401).send("error");
-    }
-});
-
-
-app.post('/member/editSchedule/:schedId', async (req, res) => { 
-    let id = req.params.schedId;
-
-    let day = req.body.day;
-    let start_time = req.body.start_hour + ':' + req.body.start_min;
-    let end_time = req.body.end_hour + ':' + req.body.end_min;
-
-    console.log(id)
+app.post('/member/schedule', async (req, res) => { 
+    let items = req.body.deleteBox
+    let user = req.session.user.member_id
     console.log(req.body)
 
-    /*
-    try {
-        if (req.body.hasOwnProperty("deleteBox")) {  
-            console.log("deleting")
-            const query = "delete from ScheduledMembers where schedule_id =$1";
-            await client.query(query, [id]);
-
-            const query2 = "delete from Schedule where schedule_id =$1";
-            await client.query(query2, [id]);
-
-        } else {
-            let room_num = null
-            if (req.body.hasOwnProperty("room_num")) { 
-                room_num = req.body.room_num 
-
-                const getOldRoom = "SELECT room_num from Schedule WHERE schedule_id=$1";
-                const rooms = await client.query(getOldRoom, [id]);
-
-                const oldRoomAvailability = "UPDATE rooms SET availability = true WHERE room_num=$1"
-                await client.query(oldRoomAvailability, [rooms.rows[0].room_num])
-                
-                const newRoomAvailability = "UPDATE rooms SET availability = false WHERE room_num=$1"
-                await client.query(newRoomAvailability, [room_num])
+    try {      
+        if(items) {
+            console.log(items)
+            for(item of items) {
+                let id = parseInt(item)
+                console.log(id)
+                const query = "DELETE from ScheduledMembers WHERE schedule_id =$1 AND member_id =$2";
+                await client.query(query, [id, user]);
             }
-
-            console.log("not deleting")
-            const query3 = "UPDATE schedule SET day =$1, start_time =$2, end_time=$3, room_num=$4 WHERE schedule_id =$5";
-            await client.query(query3, [day, start_time, end_time, room_num, id])
-        }
-
-        
-        if (req.session.type == 'trainer') {
-            res.redirect(`http://localhost:3000/trainer`);
-        } else {
-            res.redirect(`http://localhost:3000/scheduleManagement`);
+            
         }
         
-        
+        res.redirect(`http://localhost:3000/member/schedule`);
+
     } catch (err) {
         res.status(401).send("error");
     }
-    */
+    
 });
+
+// app.get('/member/editSchedule/:schedId', async (req, res) => { 
+//     let id = req.params.schedId;
+//     console.log(id)
+
+//     try {
+//         const query = "SELECT * FROM Schedule s JOIN trainers t ON s.trainer_id = t.trainer_id \
+//                         LEFT JOIN Rooms r ON r.room_num = s.room_num WHERE schedule_id=$1;"
+//         const session = await client.query(query, [id]);
+//         console.log("getting session")
+
+//         console.log("exists");
+//         console.log(session.rows[0])
+
+
+//         res.render('../public/m_editSchedule', {session : req.session, schedule : session.rows[0]});
+
+        
+//     } catch (err) {
+//         res.status(401).send("error");
+//     }
+// });
+
+
+// app.post('/member/editSchedule/:schedId', async (req, res) => { 
+//     let id = req.params.schedId;
+//     console.log(id)
+
+//     try {
+//         const query = "SELECT * FROM Schedule s JOIN trainers t ON s.trainer_id = t.trainer_id \
+//                         LEFT JOIN Rooms r ON r.room_num = s.room_num WHERE schedule_id=5;"
+//         const session = await client.query(query, [id]);
+//         console.log("getting session")
+
+//         console.log("exists");
+//         console.log(session.rows[0])
+
+
+//         res.render('../public/m_editSchedule', {session : req.session, schedule : session.rows[0]});
+
+        
+//     } catch (err) {
+//         res.status(401).send("error");
+//     }
+// });
 
 app.get('/member/:memberId', async (req, res) => { 
     let id = req.params.memberId;

@@ -19,3 +19,31 @@ html(lang="en")
             }
    
         h2 Edit Member Schedule
+        form(action=`/member/editSchedule/${schedule.schedule_id}` method="post")
+            table
+                thead 
+                    tr
+                        th Day
+                        th Start Time
+                        th End Time
+                        th Session Type
+                        th Trainer
+                        th Room Number
+                        
+
+                tbody  
+                    tr 
+                        td #{schedule.day}
+                        td #{schedule.start_time}
+                        td #{schedule.end_time}
+                        td #{schedule.session_type}
+                        td #{schedule.fname} #{schedule.lname}                                        
+                        td #{schedule.room_num}
+                    
+                        td     
+                            input(type='checkbox' name='deleteBox')
+                            label(for='checkbox') &nbsp;&nbsp;Cancel Session
+
+        br
+        button#discard(type="submit" name="discardBtn" value=1) Discard Edits
+        button(type="submit") Save Edits

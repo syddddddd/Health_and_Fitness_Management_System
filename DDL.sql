@@ -56,19 +56,19 @@ CREATE TABLE FitnessGoals(
 CREATE TABLE HealthMetrics(
     health_metric_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Members(member_id),
-    hours_slept INT,
-    curr_weight INT,
-    height INT,
-    calories_consummed INT
+    hours_slept FLOAT,
+    curr_weight FLOAT,
+    height FLOAT,
+    calories_consummed FLOAT
 );
 
 CREATE TABLE HealthStatistics(
     health_stats_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Members(member_id),
-    hours_slept INT,
-    curr_weight INT,
-    height INT,
-    calories_consummed INT
+    hours_slept FLOAT,
+    curr_weight FLOAT,
+    height FLOAT,
+    calories_consummed FLOAT
 );
 
 CREATE TABLE Equipment(

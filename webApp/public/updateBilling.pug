@@ -41,9 +41,11 @@ html(lang="en")
                         td #{memberFees.room_num}
                         td $ 
                             input(type="textbox" name="fee" placeholder=`${memberFees.fee}.00`) 
-                        td     
-                            input(type='checkbox' name='deleteBox')
-                            label(for='checkbox') &nbsp;&nbsp;Delete Session   
+                        
+                        if (memberFees.schedule_id)
+                            td   
+                                input(type='checkbox' name='deleteBox')
+                                label(for='checkbox') &nbsp;&nbsp;Delete Session   
 
                             
             br

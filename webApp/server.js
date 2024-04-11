@@ -275,33 +275,10 @@ app.post('/member/editProfile', async (req, res) => {
                 console.log("updated fitness goals");
             }
         });
+
     }
 
-    updateHealthMetrics(user, sleep, curWeight, height, calories);
-    insertHealthStats(user, sleep, curWeight, height, calories);
-
-
-    const query = "SELECT * FROM Members WHERE member_id= " + user;
-
-    client.query(query, (err,result) => {
-        //console.log(result.rows);
-        
-        if (err){
-            console.log("error findng the user after update");
-            res.status(401).send("error");
-        }
-        else{
-            req.session.user = result.rows[0];
-            //console.log(user)
-            //console.log(req.session);
-            res.redirect(`http://localhost:3000/member`);
-        }
-    });
-    
-});
-
-function updateHealthMetrics(user, sleep, curWeight, height, calories){
-
+    // update heath metrics based on input by user
     let setHealthMetrics = [];
 
     if (sleep){
@@ -337,11 +314,43 @@ function updateHealthMetrics(user, sleep, curWeight, height, calories){
                 console.log("updated health metrics");
             }
         });
+
+        try{
+            const query2 = "SELECT * FROM FitnessGoals WHERE member_id=" + user;
+            const fitnessResults = await client.query(query2);
+            //console.log(fitnessResults.rows[0]);
+
+            if (fitnessResults.rows[0].goal_weight == curWeight){
+                console.log("achieved goal weight");
+                const query3 = "INSERT INTO FitnessAchievements (member_id, achievement) VALUES ( " + user + ", \' Achieved goal weight of " + curWeight + " lb \')";
+                const results3 = await client.query(query3);
+            }
+
+            if (fitnessResults.rows[0].goal_weight > curWeight){
+                console.log("achieved under goal weight");
+                const query4 = "INSERT INTO FitnessAchievements (member_id, achievement) VALUES ( " + user + ", \' Achieved under goal weight of " + fitnessResults.rows[0].goal_weight + " lb with current weight of "+ curWeight +" lb\')";
+                const results4 = await client.query(query4);
+            }
+
+            if (fitnessResults.rows[0].goal_calories == calories){
+                console.log("achieved goal calorie intake");
+                const query5 = "INSERT INTO FitnessAchievements (member_id, achievement) VALUES ( " + user + ", \' Achieved goal calorie intake of " + calories + " \')";
+                const results5 = await client.query(query5);
+            }
+
+            if (fitnessResults.rows[0].goal_sleep == sleep){
+                console.log("achieved goal sleep");
+                const query6 = "INSERT INTO FitnessAchievements (member_id, achievement) VALUES ( " + user + ", \' Achieved goal hours of sleep of " + sleep + " \')";
+                const results6 = await client.query(query6);
+            }
+
+        }
+        catch (err){
+            res.status(401).send("error inserting fitness goal into achievements");
+        }
     }
-}
 
-function insertHealthStats(user, sleep, curWeight, height, calories){
-
+    // insert into health statistis
     let setHMvariables = [];
     let setHMData = [];
 
@@ -390,7 +399,26 @@ function insertHealthStats(user, sleep, curWeight, height, calories){
             }
         });
     }
-}
+
+
+    const query = "SELECT * FROM Members WHERE member_id= " + user;
+
+    client.query(query, (err,result) => {
+        //console.log(result.rows);
+        
+        if (err){
+            console.log("error findng the user after update");
+            res.status(401).send("error");
+        }
+        else{
+            req.session.user = result.rows[0];
+            //console.log(user)
+            //console.log(req.session);
+            res.redirect(`http://localhost:3000/member`);
+        }
+    });
+    
+});
 
 app.get('/member/dashboard', async (req, res) => { 
 

@@ -39,7 +39,7 @@ html(lang="en")
                 button#addexercisebutton(type="submit" name="addexercisebutton" value="pressed") Add
                 br
 
-            h3 #{session.user.fname}'s Fitness Achivements
+            h3 #{session.user.fname}'s Fitness Achievements
 
             each a in achievements
                         p #{a.achievement_date} | #{a.achievement}

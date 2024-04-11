@@ -1091,7 +1091,7 @@ app.post('/updateBill/:ids', async (req, res) => {
     try {
         if (req.body.hasOwnProperty("deleteBox")) {  
             console.log("deleting")
-            const query = "delete from Bills where bill_id =$1 Returning *";
+            const query = "delete from Billing where bill_id =$1 Returning *";
             await client.query(query, [billingId]);
 
         } else if (!discard && fee != '') {

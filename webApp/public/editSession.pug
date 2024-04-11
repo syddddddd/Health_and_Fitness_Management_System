@@ -84,14 +84,13 @@ html(lang="en")
                                 each id in theClass.ids 
                                     p= theClass.members[n++]
                         
-                        td 
-                            if session.type == 'admin'
-                                select(type='select' id='room_num' name='room_num')
-                                    if schedule.room_num 
-                                        option(value=schedule.room_num checked) #{schedule.room_num}
-                                    each room in rooms
-                                        if room.room_num != schedule.room_num
-                                            option(value=room.room_num) #{room.room_num}
+                        td      
+                            select(type='select' id='room_num' name='room_num')
+                                if schedule.room_num 
+                                    option(value=schedule.room_num checked) #{schedule.room_num}
+                                each room in rooms
+                                    if room.room_num != schedule.room_num
+                                        option(value=room.room_num) #{room.room_num}
 
                         td     
                             input(type='checkbox' name='deleteBox')

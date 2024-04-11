@@ -229,11 +229,6 @@ FOR EACH ROW
 EXECUTE FUNCTION validAvailability();
 
 
-CREATE TABLE Testing (
-    day SERIAL PRIMARY KEY,
-    time INT
-);
-
 
 INSERT INTO Schedule (trainer_id, day, start_time, end_time, session_type, availability)
 VALUES 

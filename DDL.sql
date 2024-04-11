@@ -136,7 +136,7 @@ CREATE TABLE TrainerAvailability(
 
 -- create rooms table
 CREATE TABLE Rooms(
-    room_num INT NOT NULL PRIMARY KEY,
+    room_id SERIAL PRIMARY KEY,
     availability BOOLEAN
 );
 

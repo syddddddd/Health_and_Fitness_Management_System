@@ -882,20 +882,6 @@ app.get('/admin/maintenance', async (req, res) => {
     
 });
 
-app.get('/admin/room', async (req, res) => { 
-    try {
-        const maintenance = "SELECT * FROM Maintenance NATURAL INNER JOIN Equipment ORDER BY maintenance_id;"
-        const maintenanceResult = await client.query(maintenance);
-        //console.log(maintenanceResult.rows)
-        
-        //res.render('../public/a_maintenance', {session : req.session, maintenance : maintenanceResult.rows});
-
-    } catch (err) {
-        res.status(401).send("error");
-    }
-    
-});
-
 app.post('/admin/maintenance', async (req, res) => { 
     try {
         let newTime = req.body.update;

@@ -115,7 +115,7 @@ CREATE TABLE Schedule(
 
     availability BOOLEAN NOT NULL,
     session_type VARCHAR(255) NOT NULL,
-    room_num INT
+    room_num INT REFERENCES Rooms(room_id),
 
 );
 

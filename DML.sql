@@ -175,4 +175,25 @@ VALUES
 INSERT INTO Prices (session_type, price) 
 VALUES
 ('group', 10),
-('private', 20);
+('private', 20),
+('member fee', 50);
+
+INSERT INTO Billing (member_id, fee)
+VALUES
+(1, 50),
+(2, 50),
+(3, 50);
+
+SELECT *, s.schedule_id AS schedule_id, m.member_id AS member_id FROM Schedule s 
+JOIN ScheduledMembers m on s.schedule_id = m.schedule_id 
+JOIN billing b on s.schedule_id = b.schedule_id AND m.member_id = b.member_id 
+JOIN trainers t ON t.trainer_id = s.trainer_id 
+JOIN prices p on s.session_type = p.session_type 
+WHERE m.member_id =3 ORDER BY b.bill_id DESC
+
+SELECT *, s.schedule_id AS schedule_id, m.member_id AS member_id FROM Schedule s 
+JOIN ScheduledMembers m on s.schedule_id = m.schedule_id 
+FULL JOIN billing b on s.schedule_id = b.schedule_id AND m.member_id = b.member_id 
+FULL JOIN trainers t ON t.trainer_id = s.trainer_id 
+FULL JOIN prices p on s.session_type = p.session_type AND p.price = b.fee 
+WHERE b.member_id =3 ORDER BY b.bill_id DESC

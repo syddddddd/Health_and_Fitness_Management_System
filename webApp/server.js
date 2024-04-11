@@ -680,7 +680,61 @@ app.post('/member/addSession', async (req, res) => {
 });
 
 app.get('/member/billing', async (req, res) => { 
-    res.redirect(`http://localhost:3000/billing/${req.session.user.member_id}`);
+    let id = req.session.user.member_id
+    
+    try {
+        
+        const getMember = "SELECT * FROM Members WHERE member_id =$1";
+        const member = await client.query(getMember, [id]);
+        currMember = member.rows[0]
+    
+           
+        console.log("getting member")
+        console.log("exists");
+        console.log(currMember)
+
+        //join tables
+        const getMemberFees = "SELECT *, s.schedule_id AS schedule_id, m.member_id AS member_id FROM Schedule s \
+                                JOIN ScheduledMembers m on s.schedule_id = m.schedule_id \
+                                RIGHT JOIN billing b on s.schedule_id = b.schedule_id AND m.member_id = b.member_id \
+                                FULL JOIN trainers t ON t.trainer_id = s.trainer_id \
+                                FULL JOIN prices p on p.price = b.fee \
+                                WHERE b.member_id =$1 AND b.paid = false ORDER BY b.bill_id DESC, " + orderByDay;
+        
+        const memberFees = await client.query(getMemberFees, [currMember.member_id]);
+
+        const getTotal = "SELECT member_id, SUM(fee) AS total FROM billing WHERE member_id =$1 and paid = false GROUP BY member_id"
+        const total = await client.query(getTotal, [currMember.member_id]);
+
+        console.log("getting member fee")
+        console.log(memberFees.rows)
+
+        console.log(total.rows[0])
+        
+        res.render('../public/memberBilling', {session : req.session, memberFees : memberFees.rows, totalSum : total.rows[0]});
+
+    } catch (err) {
+        console.log(err)
+
+        res.status(401).send("error");
+    }
+    
+});
+
+app.post('/member/billing', async (req, res) => { 
+    let id = req.session.user.member_id
+    
+    try {
+        console.log("updating")
+        const query = "UPDATE Billing SET paid = true WHERE member_id =$1"
+        await client.query(query, [id]);        
+        res.redirect(`http://localhost:3000/member/billing`);
+
+    } catch (err) {
+        console.log(err)
+
+        res.status(401).send("error");
+    }
     
 });
 
@@ -1027,21 +1081,14 @@ app.get('/billing/:memberId', async (req, res) => {
         //join tables
         const getMemberFees = "SELECT *, s.schedule_id AS schedule_id, m.member_id AS member_id FROM Schedule s \
                                 JOIN ScheduledMembers m on s.schedule_id = m.schedule_id \
-                                LEFT JOIN billing b on s.schedule_id = b.schedule_id AND m.member_id = b.member_id \
-                                JOIN trainers t ON t.trainer_id = s.trainer_id \
-                                JOIN prices p on s.session_type = p.session_type \
-                                WHERE m.member_id =$1 ORDER BY b.bill_id DESC, " + orderByDay;
+                                FULL JOIN billing b on s.schedule_id = b.schedule_id AND m.member_id = b.member_id \
+                                FULL JOIN trainers t ON t.trainer_id = s.trainer_id \
+                                FULL JOIN prices p on s.session_type = p.session_type\
+                                WHERE (m.member_id =$1 OR b.member_id =$1) AND (b.paid = false OR b.paid is NULL) ORDER BY b.bill_id DESC, " + orderByDay;
         
         const memberFees = await client.query(getMemberFees, [currMember.member_id]);
 
-        const getTotal = "SELECT m.member_id, SUM(b.fee) AS total\
-                            FROM scheduledmembers m\
-                            JOIN schedule s ON s.schedule_id = m.schedule_id\
-                            LEFT JOIN billing b ON s.schedule_id = b.schedule_id AND m.member_id = b.member_id\
-                            JOIN prices p ON s.session_type = p.session_type\
-                            WHERE m.member_id =$1 AND (b.paid is null OR b.paid = false)\
-                            GROUP BY m.member_id;"
-
+        const getTotal = "SELECT member_id, SUM(fee) AS total FROM billing WHERE member_id =$1 AND paid = false GROUP BY member_id"
         const total = await client.query(getTotal, [currMember.member_id]);
 
         console.log("getting member fee")

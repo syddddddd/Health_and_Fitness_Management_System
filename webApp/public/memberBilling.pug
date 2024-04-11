@@ -23,16 +23,7 @@ html(lang="en")
 
         h2 Bills
         |
-        form(action=`/billing` method="post")
-            label(for='dropdown') #[strong Member:]   
-            select(type='select' id='newMember' name='newMember')
-                option(value=currMember.member_id) #{currMember.fname} #{currMember.lname}
-                each member in members
-                    if member.member_id != currMember.member_id
-                        option(value=member.member_id) #{member.fname} #{member.lname}
-
-            button(type="submit" name="chooseBtn") Choose      
-
+        form(action=`/member/billing` method="post")
             table   
                 thead 
                     tr
@@ -40,7 +31,7 @@ html(lang="en")
                         th Start Time
                         th End Time
                         th Trainer
-                        th Session Type
+                        th Billing Type
                         th Room Number
                         th Price (CAD)
                 
@@ -54,20 +45,12 @@ html(lang="en")
                                 td #{item.fname} #{item.lname}                                                  
                                 td #{item.session_type}                               
                                 td #{item.room_num}
+                                td $ #{item.fee}.00 
 
-                                td 
-                                    if (!item.bill_id)
-                                        p $ #{item.price}.00 
-                                    else if (!item.paid)
-                                        p $ #{item.fee}.00 
+                              
+            if (totalSum)
+                h3 Total: $#{totalSum.total}
+            else 
+                h3 Total: $0.00
 
-                                td 
-                                    if (!item.bill_id)
-                                        button(type="submit" name="create" class="link" value=`${item.schedule_id}:${item.price}`) create bill
-                                    else 
-                                        a(href=`/updateBill/${item.bill_id}`) update/cancel bill
-         
-        if (totalSum)
-            h3 Total: $#{totalSum.total}
-        else 
-            h3 Total: $0.00
+            button(type="submit") Pay Bills

@@ -1135,13 +1135,10 @@ app.get('/updateBill/:billingId', async (req, res) => {
     
     try { 
         //join tables
-        const getMemberFees = "SELECT *, m.fname AS fname, m.lname AS lname, t.fname AS trainer_fname, t.lname AS trainer_lname\
-                                FROM billing b \
-                                LEFT JOIN schedule s ON b.schedule_id = s.schedule_id\
-                                FULL JOIN scheduledMembers sm ON sm.schedule_id = s.schedule_id\
-                                FULL JOIN members m ON sm.member_id = m.member_id\
-                                FULL JOIN trainers t ON s.schedule_id = t.trainer_id\
-                                WHERE bill_id =$1;"
+        const getMemberFees = "SELECT *, m.fname AS fname, m.lname AS lname, t.fname AS trainer_fname, t.lname AS trainer_lname \
+                                FROM billing b LEFT JOIN schedule s ON b.schedule_id = s.schedule_id\
+                                JOIN members m ON m.member_id = b.member_id\
+                                LEFT JOIN trainers t ON s.trainer_id = t.trainer_id WHERE bill_id =$1;"
         
         const memberFees = await client.query(getMemberFees, [id]);
 

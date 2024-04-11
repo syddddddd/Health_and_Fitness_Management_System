@@ -1,7 +1,0 @@
-need to download:
-npm install express
-npm install pug
-npm install pg 
-
-also to run it you type:
-node server.js

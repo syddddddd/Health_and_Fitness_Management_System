@@ -14,8 +14,6 @@ CREATE TABLE Members(
   
 );
 
--- CHECK (fname <> '')
-
 -- create trainers table
 CREATE TABLE Trainers(
     trainer_id SERIAL PRIMARY KEY,
@@ -49,12 +47,9 @@ CREATE TABLE Admins(
 
 CREATE TABLE FitnessFiles(
     file_id SERIAL PRIMARY KEY,
-
-    -- fitness goals
     goal_weight INT,
     distance INT,
     goal_time TIME,
-
     member_id INT REFERENCES Members(member_id)
 );
 
@@ -105,7 +100,7 @@ CREATE TABLE FitnessAchievements(
 
 -- create rooms table
 CREATE TABLE Rooms(
-    room_id SERIAL PRIMARY KEY,
+    room_num SERIAL PRIMARY KEY,
     availability BOOLEAN
 );
 
@@ -116,12 +111,12 @@ CREATE TABLE Schedule(
     day VARCHAR(255) NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
-    --UNIQUE (trainer_id, day, start_time),
+
     CHECK (start_time < end_time),
 
     availability BOOLEAN NOT NULL,
     session_type VARCHAR(255) NOT NULL,
-    room_num INT REFERENCES Rooms(room_id)
+    room_num INT REFERENCES Rooms(room_num)
 
 );
 
@@ -227,28 +222,3 @@ CREATE OR REPLACE TRIGGER validAvailabilityTrigger
 BEFORE UPDATE ON TrainerAvailability
 FOR EACH ROW
 EXECUTE FUNCTION validAvailability();
-
-
-
-INSERT INTO Schedule (trainer_id, day, start_time, end_time, session_type, availability)
-VALUES 
-(2, 'Sunday', '8:00', '10:00', 'group', true);
-
-UPDATE TrainerAvailability SET start_time = '00:00', end_time = '12:00' WHERE trainer_id=3 AND day = 'Sunday'
-
-UPDATE INTO TrainerAvailability (trainer_id, day, start_time, end_time)
-VALUES
-(3, 'Sunday', '0:00', '12:00')
-<<<<<<< Updated upstream
-=======
-
-Select * 
-from schedule s
-join scheduledmembers m on s.schedule_id = m.schedule_id
-left join billing b on s.schedule_id = b.schedule_id
-join trainers t on t.trainer_id = s.trainer_id
-join prices p on s.session_type = p.session_type
-WHERE m.member_id = 1
-ORDER BY b.bill_id
-
->>>>>>> Stashed changes

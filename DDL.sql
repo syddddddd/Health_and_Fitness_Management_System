@@ -103,6 +103,12 @@ CREATE TABLE FitnessAchievements(
     achievement_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- create rooms table
+CREATE TABLE Rooms(
+    room_id SERIAL PRIMARY KEY,
+    availability BOOLEAN
+);
+
 --create schedule table
 CREATE TABLE Schedule(
     schedule_id SERIAL PRIMARY KEY,
@@ -132,12 +138,6 @@ CREATE TABLE TrainerAvailability(
     day VARCHAR(255) NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL 
-);
-
--- create rooms table
-CREATE TABLE Rooms(
-    room_id SERIAL PRIMARY KEY,
-    availability BOOLEAN
 );
 
 -- create maintenance table

@@ -186,8 +186,8 @@ app.post('/member/editProfile', async (req, res) => {
 
     // fitness goals
     let goalWeight = req.body.goalWeight;
-    let distance = req.body.distance;
-    let time = req.body.time;
+    let goalCalories = req.body.goalCalories;
+    let goalSleep = req.body.goalSleep;
 
     // health metrics
     let sleep = req.body.sleep;
@@ -247,11 +247,11 @@ app.post('/member/editProfile', async (req, res) => {
     if (goalWeight){
         setFitnessFiles.push("goal_weight = " + goalWeight);
     }
-    if (distance){
-        setFitnessFiles.push("distance = " + distance);
+    if (goalCalories){
+        setFitnessFiles.push("goal_calories = " + goalCalories);
     }
-    if (time){
-        setFitnessFiles.push("goal_time = \'" + time + "\'");
+    if (goalSleep){
+        setFitnessFiles.push("goal_sleep = " + goalSleep);
     }
 
     // if the fitness files is not empty, update it
@@ -262,7 +262,7 @@ app.post('/member/editProfile', async (req, res) => {
         setFileString += setFitnessFiles.join(', ');
        //console.log(setFileString);
 
-        const fitnessQuery = "UPDATE FitnessFiles SET " + setFileString + " WHERE member_id= " + user;
+        const fitnessQuery = "UPDATE FitnessGoals SET " + setFileString + " WHERE member_id= " + user;
         //console.log(fitnessQuery);
 
         client.query(fitnessQuery, (err,result) => {
@@ -661,7 +661,7 @@ app.get('/member/:memberId', async (req, res) => {
         console.log("exists");
         console.log(member.rows[0])
 
-        const query2 = "SELECT * FROM FitnessFiles WHERE member_id=$1";
+        const query2 = "SELECT * FROM FitnessGoals WHERE member_id=$1";
         const fitnessResults = await client.query(query2, [id]);
 
         const query3 = "SELECT * FROM HealthMetrics WHERE member_id=$1";

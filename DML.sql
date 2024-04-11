@@ -42,9 +42,9 @@ VALUES
 -- Populate FitnessGoals Table
 INSERT INTO FitnessGoals (member_id, goal_weight, goal_calories, goal_sleep)
 VALUES 
-(1, 145, 8),
-(2, 140, 7),
-(3, 150, 9);
+(1, 145, 2100, 8),
+(2, 140, 2000, 7),
+(3, 150, 2300, 9);
 
 -- Populate HealthMetrics Table
 INSERT INTO HealthMetrics (member_id, hours_slept, curr_weight, height, calories_consummed)

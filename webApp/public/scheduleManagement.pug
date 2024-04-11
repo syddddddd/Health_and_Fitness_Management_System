@@ -36,12 +36,7 @@ html(lang="en")
                             td #{sched.day}
                             td #{sched.start_time}
                             td #{sched.end_time}
-                            td
-                                if trainers && trainers.length > 0
-                                    each trainer in trainers     
-                                        if trainer.schedule_id === sched.schedule_id
-                                            p= trainer.trainers[0]
-                                                
+                            td #{sched.fname} #{sched.lname}                                                
                             td #{sched.session_type}
 
                             td

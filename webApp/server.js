@@ -679,6 +679,11 @@ app.post('/member/addSession', async (req, res) => {
     
 });
 
+app.get('/member/billing', async (req, res) => { 
+    res.redirect(`http://localhost:3000/billing/${req.session.user.member_id}`);
+    
+});
+
 app.get('/member/:memberId', async (req, res) => { 
     let id = req.params.memberId;
     console.log(id)
@@ -849,7 +854,7 @@ app.post('/editSession/:schedId', async (req, res) => {
 
 app.get('/scheduleManagement', async (req, res) => { 
     try {
-        const query = "SELECT * FROM Schedule ORDER BY " + orderByDay + ", start_time;"
+        const query = "SELECT * FROM Schedule s JOIN trainers t ON t.trainer_id = s.trainer_id ORDER BY " + orderByDay + ", start_time;"
         const scheduleResult = await client.query(query);
         console.log("getting schedule")
 
@@ -860,14 +865,11 @@ app.get('/scheduleManagement', async (req, res) => {
         const query2 = "SELECT s.schedule_id, ARRAY_AGG(s.member_id) as ids, ARRAY_AGG(CONCAT(m.fname, ' ', m.lname)) AS members FROM ScheduledMembers s JOIN Members m on m.member_id = s.member_id Group By schedule_id";
         const classes = await client.query(query2);
 
-        const query3 = "SELECT s.schedule_id, ARRAY_AGG(s.trainer_id) as ids, ARRAY_AGG(CONCAT(t.fname, ' ', t.lname)) AS trainers FROM ScheduledMembers s JOIN Trainers t on t.trainer_id = s.trainer_id Group By schedule_id";
-        const trainers = await client.query(query3);
-
         console.log("getting members")
         console.log(classes.rows)
         req.session.classes = classes.rows
         
-        res.render('../public/scheduleManagement', {session : req.session, schedule : req.session.schedule, classes :  req.session.classes, trainers : trainers.rows});
+        res.render('../public/scheduleManagement', {session : req.session, schedule : req.session.schedule, classes :  req.session.classes});
 
     } catch (err) {
         console.log(err)

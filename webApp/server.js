@@ -578,7 +578,9 @@ app.get('/member/schedule', async (req, res) => {
     let user = req.session.user.member_id;
 
     try {
-        const query = "SELECT * FROM ScheduledMembers sc JOIN Trainers t ON sc.trainer_id = t.trainer_id JOIN Schedule s ON sc.schedule_id = s.schedule_id WHERE sc.member_id=" + user + " ORDER BY " + orderByDay + ", s.start_time";
+        const query = "SELECT * FROM ScheduledMembers sc JOIN Trainers t ON sc.trainer_id = t.trainer_id \
+                        JOIN Schedule s ON sc.schedule_id = s.schedule_id  LEFT JOIN Billing b ON s.schedule_id = b.schedule_id AND sc.member_id = b.member_id\
+                        WHERE sc.member_id=" + user + " ORDER BY " + orderByDay + ", s.start_time";
         const scheduleResult = await client.query(query);
         console.log(scheduleResult.rows);
         
@@ -622,7 +624,8 @@ app.post('/member/schedule', async (req, res) => {
 app.get('/member/addSession', async (req, res) => { 
     try {
         const query = "SELECT s.*, t.*, r.* FROM Schedule s JOIN trainers t ON s.trainer_id = t.trainer_id \
-                        LEFT JOIN ScheduledMembers sm ON s.schedule_id = sm.schedule_id LEFT JOIN Rooms r ON s.room_num = r.room_num \
+                        LEFT JOIN ScheduledMembers sm ON s.schedule_id = sm.schedule_id \
+                        LEFT JOIN Rooms r ON s.room_num = r.room_num\
                         WHERE s.availability = true GROUP BY s.schedule_id, t.trainer_id, r.room_num HAVING count(*) filter (where sm.member_id =$1) = 0\
                         ORDER BY " + orderByDay + ", start_time;"
         
@@ -1079,12 +1082,15 @@ app.get('/billing/:memberId', async (req, res) => {
         console.log(currMember)
 
         //join tables
-        const getMemberFees = "SELECT *, s.schedule_id AS schedule_id, m.member_id AS member_id FROM Schedule s \
+        const getMemberFees = "SELECT *, s.schedule_id AS schedule_id, m.member_id AS member_id FROM Schedule s\
                                 JOIN ScheduledMembers m on s.schedule_id = m.schedule_id \
                                 FULL JOIN billing b on s.schedule_id = b.schedule_id AND m.member_id = b.member_id \
                                 FULL JOIN trainers t ON t.trainer_id = s.trainer_id \
-                                FULL JOIN prices p on s.session_type = p.session_type\
-                                WHERE (m.member_id =$1 OR b.member_id =$1) AND (b.paid = false OR b.paid is NULL) ORDER BY b.bill_id DESC, " + orderByDay;
+                                FULL JOIN prices p on p.session_type = s.session_type \
+                                WHERE (m.member_id =$1 OR b.member_id =$1) AND (b.paid = false OR b.paid is NULL) ORDER BY " + orderByDay + ", start_time";
+        
+        
+        
         
         const memberFees = await client.query(getMemberFees, [currMember.member_id]);
 
@@ -1138,7 +1144,10 @@ app.get('/updateBill/:billingId', async (req, res) => {
         const getMemberFees = "SELECT *, m.fname AS fname, m.lname AS lname, t.fname AS trainer_fname, t.lname AS trainer_lname \
                                 FROM billing b LEFT JOIN schedule s ON b.schedule_id = s.schedule_id\
                                 JOIN members m ON m.member_id = b.member_id\
-                                LEFT JOIN trainers t ON s.trainer_id = t.trainer_id WHERE bill_id =$1;"
+                                LEFT JOIN trainers t ON s.trainer_id = t.trainer_id \
+                                FULL JOIN prices p on p.price = b.fee\ WHERE bill_id =$1;"
+
+                               
         
         const memberFees = await client.query(getMemberFees, [id]);
 

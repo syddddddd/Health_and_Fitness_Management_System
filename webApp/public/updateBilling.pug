@@ -37,7 +37,12 @@ html(lang="en")
                         td #{memberFees.start_time}
                         td #{memberFees.end_time}
                         td #{memberFees.trainer_fname} #{memberFees.trainer_lname}                                                  
-                        td #{memberFees.session_type}                               
+                        td 
+                            if(memberFees.session_type)
+                                p= memberFees.session_type
+                            else 
+                                p= memberFees.p_type  
+                                                            
                         td #{memberFees.room_num}
                         td $ 
                             input(type="textbox" name="fee" placeholder=`${memberFees.fee}.00`) 

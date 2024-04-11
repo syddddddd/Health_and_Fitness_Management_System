@@ -52,7 +52,11 @@ html(lang="en")
                                 td #{item.start_time}
                                 td #{item.end_time}
                                 td #{item.fname} #{item.lname}                                                  
-                                td #{item.session_type}                               
+                                td 
+                                    if(item.type)
+                                        p= item.type
+                                    else 
+                                        p= item.session_type                             
                                 td #{item.room_num}
 
                                 td 

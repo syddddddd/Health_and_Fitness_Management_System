@@ -148,6 +148,7 @@ CREATE TABLE Billing (
    member_id INT REFERENCES Members(member_id),
    schedule_id INT REFERENCES Schedule(schedule_id),
    fee FLOAT NOT NULL,
+   type VARCHAR(255),
    paid BOOLEAN DEFAULT false
 );
 
@@ -222,3 +223,9 @@ CREATE OR REPLACE TRIGGER validAvailabilityTrigger
 BEFORE UPDATE ON TrainerAvailability
 FOR EACH ROW
 EXECUTE FUNCTION validAvailability();
+"SELECT *, s.schedule_id AS schedule_id, s.session_type AS session_type, p.session_type AS p_type, m.member_id AS member_id FROM Schedule s \
+                                JOIN ScheduledMembers m on s.schedule_id = m.schedule_id \
+                                FULL JOIN billing b on s.schedule_id = b.schedule_id AND m.member_id = b.member_id \
+                                FULL JOIN trainers t ON t.trainer_id = s.trainer_id \
+                                FULL JOIN prices p on p.session_type = b.session_type\
+                                WHERE (m.member_id =$1 OR b.member_id =$1) AND (b.paid = false OR b.paid is NULL) ORDER BY b.bill_id DESC, " + orderByDay;

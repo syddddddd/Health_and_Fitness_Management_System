@@ -178,11 +178,11 @@ VALUES
 ('private', 20),
 ('member fee', 50);
 
-INSERT INTO Billing (member_id, fee)
+INSERT INTO Billing (member_id, type, fee)
 VALUES
-(1, 50),
-(2, 50),
-(3, 50);
+(1, 'member fee', 50),
+(2, 'member fee', 50),
+(3, 'member fee', 50);
 
 SELECT *, s.schedule_id AS schedule_id, m.member_id AS member_id FROM Schedule s 
 JOIN ScheduledMembers m on s.schedule_id = m.schedule_id 

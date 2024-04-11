@@ -31,6 +31,7 @@ html(lang="en")
                         th Session Type
                         th Trainer
                         th Room Number
+                        th Paid
                         
 
                 tbody
@@ -43,6 +44,14 @@ html(lang="en")
                                 td #{sched.session_type}
                                 td #{sched.fname} #{sched.lname}                                        
                                 td #{sched.room_num}
+                                td 
+                                    if sched.paid 
+                                        p Paid 
+                                    else if sched.bill_id
+                                        p Not paid 
+                                     
+                                    
+                        
                             
                                 td
                                     input(type='checkbox' name='deleteBox' value=sched.schedule_id)

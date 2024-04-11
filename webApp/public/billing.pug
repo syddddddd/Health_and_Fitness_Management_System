@@ -1,0 +1,73 @@
+html(lang="en")
+    head
+        title Payments page
+    body  
+        
+        include ./header
+        style.
+            table {
+                border-collapse: collapse;
+                width: 75%;
+            } th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            } .link {
+                background: none;
+                border: none;
+                color: blue;
+                text-decoration: underline;
+                font-size: 1em;
+                font-family: serif;
+            }
+
+        h2 Bills
+        |
+        form(action=`/billing` method="post")
+            label(for='dropdown') #[strong Member:]   
+            select(type='select' id='newMember' name='newMember')
+                option(value=currMember.member_id) #{currMember.fname} #{currMember.lname}
+                each member in members
+                    if member.member_id != currMember.member_id
+                        option(value=member.member_id) #{member.fname} #{member.lname}
+
+            button(type="submit" name="chooseBtn") Choose      
+
+            table   
+                thead 
+                    tr
+                        th Day
+                        th Start Time
+                        th End Time
+                        th Trainer
+                        th Session Type
+                        th Room Number
+                        th Price (CAD)
+                
+                tbody
+                    if memberFees && memberFees.length > 0
+                        each item in memberFees
+                            tr 
+                                td #{item.day}
+                                td #{item.start_time}
+                                td #{item.end_time}
+                                td #{item.fname} #{item.lname}                                                  
+                                td #{item.session_type}                               
+                                td #{item.room_num}
+
+                                td 
+                                    if (!item.bill_id)
+                                        p $ #{item.price}.00 
+                                    else if (!item.paid)
+                                        p $ #{item.fee}.00 
+
+                                td 
+                                    if (!item.bill_id)
+                                        button(type="submit" name="create" class="link" value=`${item.schedule_id}:${item.price}`) create bill
+                                    else 
+                                        a(href=`/updateBill/${item.bill_id}`) update/cancel bill
+         
+        if (totalSum.total)
+            h3 Total: $#{totalSum.total}
+        else 
+            h3 Total: $0.00

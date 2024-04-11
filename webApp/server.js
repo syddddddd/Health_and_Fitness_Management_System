@@ -695,6 +695,7 @@ app.post('/addSession', async (req, res) => {
     let start_time = req.body.start_hour + ':' + req.body.start_min;
     let end_time = req.body.end_hour + ':' + req.body.end_min;
     let sessType = req.body.sessType;
+    let discard = req.body.discardBtn
     let id = 0;
 
     if (req.session.type == 'trainer') {
@@ -704,16 +705,18 @@ app.post('/addSession', async (req, res) => {
     }
     
     try {
-        console.log(req.body)
-        console.log(id)
-        const query = "INSERT INTO SCHEDULE (trainer_id, day, start_time, end_time, availability, session_type) VALUES ( \'" + id + "\', \'" + day + "\', \'" + start_time + "\', \'" + end_time + "\', \'true\', \'" + sessType + "\') RETURNING *;";
-        let result = await client.query(query);
+        if (!discard) {
+            console.log(req.body)
+            console.log(id)
+            const query = "INSERT INTO SCHEDULE (trainer_id, day, start_time, end_time, availability, session_type) VALUES ( \'" + id + "\', \'" + day + "\', \'" + start_time + "\', \'" + end_time + "\', \'true\', \'" + sessType + "\') RETURNING *;";
+            let result = await client.query(query);
 
-        let sched = result.rows[0]
-        console.log(sched)
-        
-        const query2 = "INSERT INTO ScheduledMembers (schedule_id, trainer_id) VALUES ( \'" + sched.schedule_id + "\', \'" + id + "\');";
-        await client.query(query2);
+            let sched = result.rows[0]
+            console.log(sched)
+            
+            const query2 = "INSERT INTO ScheduledMembers (schedule_id, trainer_id) VALUES ( \'" + sched.schedule_id + "\', \'" + id + "\');";
+            await client.query(query2);
+        }
 
         if (req.session.type == 'trainer') {
             res.redirect(`http://localhost:3000/trainer`);
@@ -767,6 +770,7 @@ app.post('/editSession/:schedId', async (req, res) => {
     let day = req.body.day;
     let start_time = req.body.start_hour + ':' + req.body.start_min;
     let end_time = req.body.end_hour + ':' + req.body.end_min;
+    let discard = req.body.discardBtn
     console.log(id)
     console.log(req.body)
 
@@ -779,7 +783,7 @@ app.post('/editSession/:schedId', async (req, res) => {
             const query2 = "delete from Schedule where schedule_id =$1";
             await client.query(query2, [id]);
 
-        } else {
+        } else if (!discard) {
             let room_num = null
             if (req.body.hasOwnProperty("room_num")) { 
                 room_num = req.body.room_num 
@@ -965,25 +969,55 @@ app.post('/editAvailability/:availabilityId', async (req, res) => {
 
 });
 
-app.get('/payments', async (req, res) => { 
+app.get('/billing/:memberId', async (req, res) => { 
+    let id = req.params.memberId
+    
     try {
-        const getMembers = "SELECT * FROM Members";
-        const members = await client.query(getMembers);
-        console.log("getting members")
+        const getMember = "SELECT * FROM Members";
+        const members = await client.query(getMember);
 
+        console.log(req.params)
+        
+        let currMember;
+        if (id == 0) {
+            currMember = members.rows[0]
+                        
+        } else {
+            const getMember = "SELECT * FROM Members WHERE member_id =$1";
+            const member = await client.query(getMember, [id]);
+            currMember = member.rows[0]
+        }
+           
+        console.log("getting member")
         console.log("exists");
-        console.log(members.rows)
+        console.log(currMember)
 
         //join tables
-        const getMemberFees = "SELECT * FROM Payments Group By member_id WHERE paid = false";
-        const memberFees = await client.query(getMemberFees);
-
-
-        console.log("getting members")
-        console.log(classes.rows)
-        req.session.classes = classes.rows
+        const getMemberFees = "SELECT *, s.schedule_id AS schedule_id, m.member_id AS member_id FROM Schedule s \
+                                JOIN ScheduledMembers m on s.schedule_id = m.schedule_id \
+                                LEFT JOIN billing b on s.schedule_id = b.schedule_id AND m.member_id = b.member_id \
+                                JOIN trainers t ON t.trainer_id = s.trainer_id \
+                                JOIN prices p on s.session_type = p.session_type \
+                                WHERE m.member_id =$1 ORDER BY b.bill_id DESC, " + orderByDay;
         
-        res.render('../public/scheduleManagement', {session : req.session, schedule : req.session.schedule, classes :  req.session.classes, trainers : trainers.rows});
+        const memberFees = await client.query(getMemberFees, [currMember.member_id]);
+
+        const getTotal = "SELECT m.member_id, SUM(b.fee) AS total\
+                            FROM scheduledmembers m\
+                            JOIN schedule s ON s.schedule_id = m.schedule_id\
+                            LEFT JOIN billing b ON s.schedule_id = b.schedule_id AND m.member_id = b.member_id\
+                            JOIN prices p ON s.session_type = p.session_type\
+                            WHERE m.member_id =$1 AND (b.paid is null OR b.paid = false)\
+                            GROUP BY m.member_id;"
+
+        const total = await client.query(getTotal, [currMember.member_id]);
+
+        console.log("getting member fee")
+        console.log(memberFees.rows)
+
+        console.log(total.rows[0])
+        
+        res.render('../public/billing', {session : req.session, members : members.rows, currMember : currMember, memberFees : memberFees.rows, totalSum : total.rows[0]});
 
     } catch (err) {
         console.log(err)
@@ -991,6 +1025,90 @@ app.get('/payments', async (req, res) => {
         res.status(401).send("error");
     }
     
+});
+
+app.post('/billing', async (req, res) => { 
+    let newId = req.body.newMember
+    let create = req.body.create
+    
+    try {
+        if(create){
+            console.log(req.body)
+            let schedId = create.split(":")[0]
+            let price = create.split(":")[1]
+            console.log(schedId, price)
+
+            const query = "INSERT INTO Billing (member_id, schedule_id, fee) VALUES ($1, $2, $3)"
+            await client.query(query, [newId, schedId, price]);
+        }
+
+        res.redirect(`http://localhost:3000/billing/${newId}`);
+    } catch (err) {
+        console.log(err)
+
+        res.status(401).send("error");
+    }
+    
+});
+
+app.get('/updateBill/:billingId', async (req, res) => { 
+    let id = req.params.billingId
+    
+    try { 
+        //join tables
+        const getMemberFees = "SELECT *, m.fname AS fname, m.lname AS lname, t.fname AS trainer_fname, t.lname AS trainer_lname\
+                                FROM billing b \
+                                JOIN schedule s ON b.schedule_id = s.schedule_id\
+                                JOIN scheduledMembers sm ON sm.schedule_id = s.schedule_id\
+                                JOIN members m ON sm.member_id = m.member_id\
+                                JOIN trainers t ON s.schedule_id = t.trainer_id\
+                                WHERE bill_id =$1;"
+        
+        const memberFees = await client.query(getMemberFees, [id]);
+
+        console.log("getting member fee")
+        console.log(memberFees.rows)
+        
+        res.render('../public/updateBilling', {session : req.session, memberFees : memberFees.rows[0]});
+
+    } catch (err) {
+        console.log(err)
+
+        res.status(401).send("error");
+    }
+    
+});
+
+app.post('/updateBill/:ids', async (req, res) => { 
+    let ids = req.params.ids;
+    let memberId = ids.split(":")[0]
+    let billingId = ids.split(":")[1]
+    let fee = req.body.fee;
+    let discard = req.body.discardBtn
+    console.log(ids)
+    console.log(req.body)
+
+    try {
+        if (req.body.hasOwnProperty("deleteBox")) {  
+            console.log("deleting")
+            const query = "delete from Bills where bill_id =$1 Returning *";
+            await client.query(query, [billingId]);
+
+        } else if (!discard && fee != '') {
+            console.log("not deleting")
+            const query3 = "UPDATE Billing SET fee =$1 WHERE bill_id =$2 Returning *";
+            const bill = await client.query(query3, [parseFloat(fee), billingId])
+            console.log(bill)
+            
+        }
+
+        
+        res.redirect(`http://localhost:3000/billing/${memberId}`);
+    
+    } catch (err) {
+        res.status(401).send("error");
+    }
+
 });
 
 

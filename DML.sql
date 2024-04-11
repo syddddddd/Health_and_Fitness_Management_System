@@ -170,3 +170,9 @@ VALUES
 (28, true),
 (29, true),
 (30, true);
+
+
+INSERT INTO Prices (session_type, price) 
+VALUES
+('group', 10),
+('private', 20);

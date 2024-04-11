@@ -4,8 +4,12 @@ html(lang="en")
     body  
         
         include ./header
+        style.
+            #discard {
+                margin-right: 10px; 
+            }
         
-        //textboxes to add artwork info
+       
         h3 Add Session
         form(action="/addSession" method="post")
             |
@@ -61,6 +65,7 @@ html(lang="en")
             br
             br
             | 
+            button#discard(type="submit" name="discardBtn" value=1) Discard Session
             button(type="submit") Add Session
             |
             br

@@ -1,0 +1,51 @@
+html(lang="en")
+    head
+        title Payments page
+    body  
+        
+        include ./header
+        style.
+            table {
+                border-collapse: collapse;
+                width: 75%;
+            } th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            } #discard {
+                margin-right: 10px; 
+            }
+
+        h2 Update Bill
+        |
+        h4 Member: #{memberFees.fname} #{memberFees.lname}
+        form(action=`/updateBill/${memberFees.member_id}:${memberFees.bill_id}` method="post")
+            table   
+                thead 
+                    tr
+                        th Day
+                        th Start Time
+                        th End Time
+                        th Trainer
+                        th Session Type
+                        th Room Number
+                        th Price (CAD)
+                
+                tbody
+                    tr 
+                        td #{memberFees.day}
+                        td #{memberFees.start_time}
+                        td #{memberFees.end_time}
+                        td #{memberFees.trainer_fname} #{memberFees.trainer_lname}                                                  
+                        td #{memberFees.session_type}                               
+                        td #{memberFees.room_num}
+                        td $ 
+                            input(type="textbox" name="fee" placeholder=`${memberFees.fee}.00`) 
+                        td     
+                            input(type='checkbox' name='deleteBox')
+                            label(for='checkbox') &nbsp;&nbsp;Delete Session   
+
+                            
+            br
+            button#discard(type="submit" name="discardBtn" value=1) Discard Edits
+            button(type="submit") Save Edits

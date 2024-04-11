@@ -148,27 +148,18 @@ CREATE TABLE Maintenance (
 );
 
 -- create payment table
-CREATE TABLE MemberFee (
-   payment_id SERIAL PRIMARY KEY,
+CREATE TABLE Billing (
+   bill_id SERIAL PRIMARY KEY,
    member_id INT REFERENCES Members(member_id),
-   member_fee INT NOT NULL,
-   paid BOOLEAN
+   schedule_id INT REFERENCES Schedule(schedule_id),
+   fee FLOAT NOT NULL,
+   paid BOOLEAN DEFAULT false
 );
 
-CREATE TABLE GroupFees (
-    group_id SERIAL PRIMARY KEY,
-    member_id INT REFERENCES Members(member_id),
-    schedule_id INT REFERENCES Schedule(schedule_id),
-    group_fee INT,
-    paid BOOLEAN
-);
-
-CREATE TABLE PrivateFees (
-    private_id SERIAL PRIMARY KEY,
-    member_id INT REFERENCES Members(member_id),
-    schedule_id INT REFERENCES Schedule(schedule_id),
-    private_fee INT,
-    paid BOOLEAN
+CREATE TABLE Prices (
+    price_id SERIAL PRIMARY KEY,
+    session_type VARCHAR(255) NOT NULL,
+    price FLOAT NOT NULL
 );
 
 -- check if schedule overlaps with existing schedule
@@ -226,7 +217,7 @@ BEGIN
           AND day = NEW.day
           AND ((NEW.start_time = '00:00' AND NEW.end_time != '00:00') OR (NEW.start_time != '00:00' AND NEW.end_time = '00:00'))
     ) THEN
-        RAISE EXCEPTION 'Not within trainer availability';
+        RAISE EXCEPTION 'Not valid';
     END IF;
     RETURN NEW;
 END;
@@ -243,24 +234,6 @@ CREATE TABLE Testing (
     time INT
 );
 
-DO $$
-DECLARE
-    day_value INT;
-BEGIN
-    day_value := CASE
-        WHEN day = 'Sunday' THEN 1
-        WHEN day = 'Monday' THEN 2
-        WHEN day = 'Tuesday' THEN 3
-        WHEN day = 'Wednesday' THEN 4
-        WHEN day = 'Thursday' THEN 5
-        WHEN day = 'Friday' THEN 6
-        WHEN day = 'Saturday' THEN 7
-        ELSE 8
-    END;
-
-    RAISE NOTICE 'The value of day_value is: %', day_value;
-END;
-$$;
 
 INSERT INTO Schedule (trainer_id, day, start_time, end_time, session_type, availability)
 VALUES 
@@ -271,3 +244,16 @@ UPDATE TrainerAvailability SET start_time = '00:00', end_time = '12:00' WHERE tr
 UPDATE INTO TrainerAvailability (trainer_id, day, start_time, end_time)
 VALUES
 (3, 'Sunday', '0:00', '12:00')
+<<<<<<< Updated upstream
+=======
+
+Select * 
+from schedule s
+join scheduledmembers m on s.schedule_id = m.schedule_id
+left join billing b on s.schedule_id = b.schedule_id
+join trainers t on t.trainer_id = s.trainer_id
+join prices p on s.session_type = p.session_type
+WHERE m.member_id = 1
+ORDER BY b.bill_id
+
+>>>>>>> Stashed changes

@@ -98,7 +98,5 @@ html(lang="en")
                             label(for='checkbox') &nbsp;&nbsp;Delete Session 
                                           
             br
-            button#discard(type="button" onclick='discarding("' + session.type +'")') Discard Edits
+            button#discard(type="submit" name="discardBtn" value=1) Discard Edits
             button(type="submit") Save Edits
-
-            script(src="/js/trainerScheduleManagement.js")

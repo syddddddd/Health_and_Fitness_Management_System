@@ -39,12 +39,12 @@ VALUES
 (5, 1, 3),
 (5, 1, 1);
 
--- Populate FitnessFiles Table
-INSERT INTO FitnessFiles (member_id, goal_weight, distance, goal_time)
+-- Populate FitnessGoals Table
+INSERT INTO FitnessGoals (member_id, goal_weight, goal_calories, goal_sleep)
 VALUES 
-(1, 220, 5, '01:00:00'),
-(2, 140, 10, '01:30:00'),
-(3, 145, 2, '00:30:00');
+(1, 145, 8),
+(2, 140, 7),
+(3, 150, 9);
 
 -- Populate HealthMetrics Table
 INSERT INTO HealthMetrics (member_id, hours_slept, curr_weight, height, calories_consummed)

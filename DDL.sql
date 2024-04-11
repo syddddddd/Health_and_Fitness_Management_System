@@ -45,12 +45,12 @@ CREATE TABLE Admins(
     password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE FitnessFiles(
-    file_id SERIAL PRIMARY KEY,
-    goal_weight INT,
-    distance INT,
-    goal_time TIME,
-    member_id INT REFERENCES Members(member_id)
+CREATE TABLE FitnessGoals(
+    fitnessgoal_id SERIAL PRIMARY KEY,
+    member_id INT REFERENCES Members(member_id),
+    goal_weight INT NOT NULL,
+    goal_calories INT NOT NULL,
+    goal_sleep INT NOT NULL
 );
 
 CREATE TABLE HealthMetrics(

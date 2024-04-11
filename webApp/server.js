@@ -320,25 +320,25 @@ app.post('/member/editProfile', async (req, res) => {
             const fitnessResults = await client.query(query2);
             //console.log(fitnessResults.rows[0]);
 
-            if (fitnessResults.rows[0].goal_weight == curWeight){
+            if (curWeight && fitnessResults.rows[0].goal_weight == curWeight){
                 console.log("achieved goal weight");
                 const query3 = "INSERT INTO FitnessAchievements (member_id, achievement) VALUES ( " + user + ", \' Achieved goal weight of " + curWeight + " lb \')";
                 const results3 = await client.query(query3);
             }
 
-            if (fitnessResults.rows[0].goal_weight > curWeight){
+            if (curWeight && fitnessResults.rows[0].goal_weight > curWeight){
                 console.log("achieved under goal weight");
                 const query4 = "INSERT INTO FitnessAchievements (member_id, achievement) VALUES ( " + user + ", \' Achieved under goal weight of " + fitnessResults.rows[0].goal_weight + " lb with current weight of "+ curWeight +" lb\')";
                 const results4 = await client.query(query4);
             }
 
-            if (fitnessResults.rows[0].goal_calories == calories){
+            if (calories && fitnessResults.rows[0].goal_calories == calories){
                 console.log("achieved goal calorie intake");
                 const query5 = "INSERT INTO FitnessAchievements (member_id, achievement) VALUES ( " + user + ", \' Achieved goal calorie intake of " + calories + " \')";
                 const results5 = await client.query(query5);
             }
 
-            if (fitnessResults.rows[0].goal_sleep == sleep){
+            if (sleep && fitnessResults.rows[0].goal_sleep == sleep){
                 console.log("achieved goal sleep");
                 const query6 = "INSERT INTO FitnessAchievements (member_id, achievement) VALUES ( " + user + ", \' Achieved goal hours of sleep of " + sleep + " \')";
                 const results6 = await client.query(query6);

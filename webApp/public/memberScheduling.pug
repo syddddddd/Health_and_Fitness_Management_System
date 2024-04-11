@@ -14,6 +14,8 @@ html(lang="en")
                 border: 1px solid #dddddd;
                 text-align: left;
                 padding: 8px;
+            }#addBtn {
+                margin-right: 10px; 
             }
 
         h1 #{session.user.fname} #{session.user.lname}
@@ -45,5 +47,9 @@ html(lang="en")
                                 td
                                     input(type='checkbox' name='deleteBox' value=sched.schedule_id)
                                     label(for='checkbox') &nbsp;&nbsp;Delete Session
+            
             br
+            button#addBtn(type="button" name="addBtn") Add Session
             button(type="submit" name="save" class="link") Save Edits
+        
+            script(src="/js/memberSchedule.js")

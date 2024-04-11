@@ -1,0 +1,50 @@
+html(lang="en")
+    head
+        title Member Add Sesison page
+    body  
+        
+        include ./header
+        style.
+            table {
+                border-collapse: collapse;
+                width: 75%;
+            } th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            } .link {
+                background: none;
+                border: none;
+                color: blue;
+                text-decoration: underline;
+                font-size: 1em;
+                font-family: serif;
+            }
+
+        h2 Add Session
+        |
+        form(action=`/member/addSession` method="post")
+            table   
+                thead 
+                    tr
+                        th Day
+                        th Start Time
+                        th End Time
+                        th Trainer
+                        th Session Type
+                        th Room Number
+                
+                tbody
+                    if schedule && schedule.length > 0
+                        each item in schedule
+                            tr 
+                                td #{item.day}
+                                td #{item.start_time}
+                                td #{item.end_time}
+                                td #{item.fname} #{item.lname}                                                  
+                                td #{item.session_type}                               
+                                td #{item.room_num}
+
+                                td 
+                                    button(type="submit" name="join" class="link" value=`${item.schedule_id}:${item.session_type}:${item.trainer_id}`) join class
+                                   

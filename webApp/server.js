@@ -578,7 +578,7 @@ app.get('/member/schedule', async (req, res) => {
     let user = req.session.user.member_id;
 
     try {
-        const query = "SELECT * FROM ScheduledMembers sc JOIN Trainers t ON sc.trainer_id = t.trainer_id JOIN Schedule s ON sc.schedule_id = s.schedule_id WHERE sc.member_id=" + user;
+        const query = "SELECT * FROM ScheduledMembers sc JOIN Trainers t ON sc.trainer_id = t.trainer_id JOIN Schedule s ON sc.schedule_id = s.schedule_id WHERE sc.member_id=" + user + " ORDER BY " + orderByDay + ", s.start_time";
         const scheduleResult = await client.query(query);
         console.log(scheduleResult.rows);
         
@@ -586,6 +586,7 @@ app.get('/member/schedule', async (req, res) => {
 
     } catch (err) {
         res.status(401).send("error");
+        console.log(err)
     }
     
 });
@@ -603,6 +604,9 @@ app.post('/member/schedule', async (req, res) => {
                 console.log(id)
                 const query = "DELETE from ScheduledMembers WHERE schedule_id =$1 AND member_id =$2";
                 await client.query(query, [id, user]);
+
+                const query2 = "UPDATE Schedule SET availability = true WHERE schedule_id =$1"
+                await client.query(query2, [id]);
             }
             
         }
@@ -615,50 +619,65 @@ app.post('/member/schedule', async (req, res) => {
     
 });
 
-// app.get('/member/editSchedule/:schedId', async (req, res) => { 
-//     let id = req.params.schedId;
-//     console.log(id)
-
-//     try {
-//         const query = "SELECT * FROM Schedule s JOIN trainers t ON s.trainer_id = t.trainer_id \
-//                         LEFT JOIN Rooms r ON r.room_num = s.room_num WHERE schedule_id=$1;"
-//         const session = await client.query(query, [id]);
-//         console.log("getting session")
-
-//         console.log("exists");
-//         console.log(session.rows[0])
-
-
-//         res.render('../public/m_editSchedule', {session : req.session, schedule : session.rows[0]});
-
+app.get('/member/addSession', async (req, res) => { 
+    try {
+        const query = "SELECT s.*, t.*, r.* FROM Schedule s JOIN trainers t ON s.trainer_id = t.trainer_id \
+                        LEFT JOIN ScheduledMembers sm ON s.schedule_id = sm.schedule_id LEFT JOIN Rooms r ON s.room_num = r.room_num \
+                        WHERE s.availability = true GROUP BY s.schedule_id, t.trainer_id, r.room_num HAVING count(*) filter (where sm.member_id =$1) = 0\
+                        ORDER BY " + orderByDay + ", start_time;"
         
-//     } catch (err) {
-//         res.status(401).send("error");
-//     }
-// });
+        const scheduleResult = await client.query(query, [req.session.user.member_id]);
+        console.log("getting schedule")
 
-
-// app.post('/member/editSchedule/:schedId', async (req, res) => { 
-//     let id = req.params.schedId;
-//     console.log(id)
-
-//     try {
-//         const query = "SELECT * FROM Schedule s JOIN trainers t ON s.trainer_id = t.trainer_id \
-//                         LEFT JOIN Rooms r ON r.room_num = s.room_num WHERE schedule_id=5;"
-//         const session = await client.query(query, [id]);
-//         console.log("getting session")
-
-//         console.log("exists");
-//         console.log(session.rows[0])
-
-
-//         res.render('../public/m_editSchedule', {session : req.session, schedule : session.rows[0]});
-
+        console.log("exists");
+        console.log(scheduleResult.rows)
+        req.session.schedule = scheduleResult.rows
         
-//     } catch (err) {
-//         res.status(401).send("error");
-//     }
-// });
+        res.render('../public/memberAddSession', {session : req.session, schedule : scheduleResult.rows});
+
+    } catch (err) {
+        console.log(err)
+
+        res.status(401).send("error");
+    }
+    
+});
+
+app.post('/member/addSession', async (req, res) => { 
+    let memberId = req.session.user.member_id
+    let schedId = parseInt(req.body.join.split(":")[0])
+    let sessType = parseInt(req.body.join.split(":")[1])
+    let trainerId = parseInt(req.body.join.split(":")[2])
+    let availability = false
+
+    console.log(req.body)
+    
+    try {
+        const query = "INSERT INTO ScheduledMembers (schedule_id, trainer_id, member_id) VALUES ($1, $2, $3);"
+        const scheduleResult = await client.query(query, [schedId, trainerId, memberId]);
+        console.log("inserting into scheuledmembers")
+
+        if(sessType = 'group') {
+            const query2 = "SELECT COUNT(schedule_id) AS size FROM ScheduledMembers WHERE schedule_id =$1"
+            const session = await client.query(query2, [schedId])
+            
+            if (session.rows[0].size < 10) {
+                availability = true
+            }
+        }
+
+        const query3 = "UPDATE Schedule SET availability =$1 WHERE schedule_id =$2"
+        await client.query(query3, [availability, schedId])
+        
+        res.redirect(`http://localhost:3000/member/schedule`);
+
+    } catch (err) {
+        console.log(err)
+
+        res.status(401).send("error");
+    }
+    
+});
 
 app.get('/member/:memberId', async (req, res) => { 
     let id = req.params.memberId;

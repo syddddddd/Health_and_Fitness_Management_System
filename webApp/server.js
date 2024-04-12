@@ -49,6 +49,13 @@ app.get('/login', async (req, res) => {
     res.render('../public/login', {});
 });
 
+app.get('/logout', async (req, res) => { 
+    req.session.loggedin = false;
+    req.session.user = [];
+    req.session.type = [];
+    res.redirect(`http://localhost:3000/login`);
+});
+
 app.post('/login', async (req, res) => {
 
     let username = req.body.username;

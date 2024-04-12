@@ -1,3 +1,26 @@
-Alright we are dong V2 for SURRREEEEE :)))
+Caitlyn Wunderlich (SN: )
+Sydney McLeod (SN: 101236974)
+COMP 3005
+V2 Project: Health and Fitness Club Management System
 
-Using javascript, pug, express and postgresSQL
+Function: 
+The purpose of this program is to design a Health and Fitness Club Management System. 
+The system should be able to effectively manage functions for members, trainers and administration.
+The program uses Postgres as its database and is implemented as a Web application using Express, 
+Pug templates, and Javascript as its programming language.
+
+Compilation Instructions:
+
+Imports
+- npm install express
+- npm install express-session
+- npm install pug
+- npm install pg 
+
+Database creation
+- Create a database in Postgres titled 'COMP3005Final'
+- Add and execute the DDL.sql file into that database
+- Add and execute the DML.sql file into that database
+
+Launch
+- Type and run 'node server.js' in the command terminal

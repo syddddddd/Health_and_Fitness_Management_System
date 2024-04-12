@@ -1,4 +1,4 @@
--- create members table
+-- Create Members table
 CREATE TABLE Members(
     member_id SERIAL PRIMARY KEY,
     fname VARCHAR(255) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE Members(
   
 );
 
--- create trainers table
+-- Create Trainers table
 CREATE TABLE Trainers(
     trainer_id SERIAL PRIMARY KEY,
     fname VARCHAR(255) NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE Trainers(
   
 );
 
---create admins table
+-- Create Admins table
 CREATE TABLE Admins(
     admin_id SERIAL PRIMARY KEY,
     fname VARCHAR(255) NOT NULL,
@@ -45,6 +45,7 @@ CREATE TABLE Admins(
     password VARCHAR(255) NOT NULL
 );
 
+-- Create FitnessGoals table
 CREATE TABLE FitnessGoals(
     fitnessgoal_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Members(member_id),
@@ -53,6 +54,7 @@ CREATE TABLE FitnessGoals(
     goal_sleep INT NOT NULL
 );
 
+-- Create HealthMetrics table
 CREATE TABLE HealthMetrics(
     health_metric_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Members(member_id),
@@ -62,6 +64,7 @@ CREATE TABLE HealthMetrics(
     calories_consummed FLOAT
 );
 
+-- Create HealthStatistics table
 CREATE TABLE HealthStatistics(
     health_stats_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Members(member_id),
@@ -71,18 +74,21 @@ CREATE TABLE HealthStatistics(
     calories_consummed FLOAT
 );
 
+-- Create Equipment table
 CREATE TABLE Equipment(
     equipment_id SERIAL PRIMARY KEY,
     equip_name VARCHAR(255) NOT NULL,
     model_year DATE DEFAULT CURRENT_DATE
 );
 
+-- Create Exercises table
 CREATE TABLE Exercises(
     exercise_id SERIAL PRIMARY KEY,
     exercise VARCHAR(255) NOT NULL,
     equipment_id INT REFERENCES Equipment(equipment_id)
 );
 
+-- Create MemberRoutines table
 CREATE TABLE MemberRoutines(
     routine_id SERIAL PRIMARY KEY,
     exercise_id INT REFERENCES Exercises(exercise_id),
@@ -91,6 +97,7 @@ CREATE TABLE MemberRoutines(
     distance FLOAT
 );
 
+-- Create FitnessAchievements table
 CREATE TABLE FitnessAchievements(
     achievements_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Members(member_id),
@@ -98,13 +105,13 @@ CREATE TABLE FitnessAchievements(
     achievement_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- create rooms table
+-- Create Rooms table
 CREATE TABLE Rooms(
     room_num SERIAL PRIMARY KEY,
     availability BOOLEAN
 );
 
---create schedule table
+-- Create Schedule table
 CREATE TABLE Schedule(
     schedule_id SERIAL PRIMARY KEY,
     trainer_id INT REFERENCES Trainers(trainer_id),
@@ -120,6 +127,7 @@ CREATE TABLE Schedule(
 
 );
 
+-- Create ScheduledMembers table
 CREATE TABLE ScheduledMembers(
     table_id SERIAL PRIMARY KEY,
     schedule_id INT REFERENCES Schedule(schedule_id),
@@ -127,6 +135,7 @@ CREATE TABLE ScheduledMembers(
     member_id INT REFERENCES Members(member_id)
 );
 
+-- Create TrainerAvailability table
 CREATE TABLE TrainerAvailability(
     availability_id SERIAL PRIMARY KEY,
     trainer_id INT REFERENCES Trainers(trainer_id),
@@ -135,14 +144,14 @@ CREATE TABLE TrainerAvailability(
     end_time TIME NOT NULL 
 );
 
--- create maintenance table
+-- Create Maintenance table
 CREATE TABLE Maintenance (
    maintenance_id SERIAL PRIMARY KEY,
    equipment_id INT REFERENCES Equipment(equipment_id),
    last_checkup DATE DEFAULT CURRENT_DATE
 );
 
--- create payment table
+-- Create Billing table
 CREATE TABLE Billing (
    bill_id SERIAL PRIMARY KEY,
    member_id INT REFERENCES Members(member_id),
@@ -152,13 +161,14 @@ CREATE TABLE Billing (
    paid BOOLEAN DEFAULT false
 );
 
+-- Create Prices table
 CREATE TABLE Prices (
     price_id SERIAL PRIMARY KEY,
     session_type VARCHAR(255) NOT NULL,
     price FLOAT NOT NULL
 );
 
--- check if schedule overlaps with existing schedule
+-- Check if schedule overlaps with existing schedule
 CREATE OR REPLACE FUNCTION checkOverlap()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -180,7 +190,7 @@ BEFORE INSERT ON Schedule
 FOR EACH ROW
 EXECUTE FUNCTION checkOverlap();
 
--- check if schedule matches trainer's availability 
+-- Check if schedule matches trainer's availability 
 CREATE OR REPLACE FUNCTION checkAvailability()
 RETURNS TRIGGER AS $$
 BEGIN

@@ -176,7 +176,6 @@ INSERT INTO Prices (session_type, price)
 VALUES
 ('group', 10),
 ('private', 20),
-('member fee', 50);
 
 INSERT INTO Billing (member_id, type, fee)
 VALUES

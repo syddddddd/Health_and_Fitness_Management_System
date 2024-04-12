@@ -57,36 +57,27 @@ app.post('/login', async (req, res) => {
     let table = user.charAt(0).toUpperCase() + user.slice(1) + 's'
 
     const query = "SELECT * FROM " + table +  " WHERE username=\'" + username + "\' AND password=\'" + password  + "\';";
-    //console.log(query);
 
     client.query(query, (err,result) => {
-        //console.log(result.rows);
         
         if (err){
-            //console.log("error");
             res.status(401).send("error");
         }
         else{
 
             if (result.rows.length == 0){
-                //console.log("does not exist");
-                //res.status(401).send("does not exist");
                 res.redirect(`http://localhost:3000/login`);
             }
             else{
 
                 console.log("exists");
                 req.session.loggedin = true;
-                //req.session.user = user;
-                //console.log(result.rows[0].member_id);
-                //req.session.id = result.rows[0].member_id;
+                
                 req.session.user = result.rows[0];
                 req.session.type = user;
-                //console.log(user)
+                
                 console.log(req.session);
-                //res.status(200).send("Logged in");
                 res.redirect(`http://localhost:3000/${user}`);
-                //res.render(`../public/${user}`, {session : req.session});
 
             }
         }
@@ -107,10 +98,10 @@ app.post('/signup', async (req, res) => {
     let gender = req.body.gender;
     let username = req.body.username;
     let password = req.body.password;
-    let user = req.body.dropdown;
-    let table = user.charAt(0).toUpperCase() + user.slice(1) + 's'
+    //let user = req.body.dropdown;
+    //let table = user.charAt(0).toUpperCase() + user.slice(1) + 's'
 
-    const query = "INSERT INTO " + table + " (fname, lname, email, phone_number, gender, username, password) VALUES ( \'" + fname + "\', \'" + lname + "\', \'" + email + "\', \'" + phone + "\', \'" + gender + "\', \'" + username + "\', \'" + password + "\') RETURNING *;";
+    const query = "INSERT INTO Members (fname, lname, email, phone_number, gender, username, password) VALUES ( \'" + fname + "\', \'" + lname + "\', \'" + email + "\', \'" + phone + "\', \'" + gender + "\', \'" + username + "\', \'" + password + "\') RETURNING *;";
     //console.log(query);
 
     client.query(query, (err,result) => {
@@ -122,10 +113,10 @@ app.post('/signup', async (req, res) => {
         else{
             console.log("inserted");
             req.session.user = result.rows[0];
-            req.session.type = user;
+            req.session.type = 'member';
             req.session.loggedin = true;
             console.log(req.session);
-            res.render(`../public/${user}`, {session : req.session});
+            res.render(`../public/member`, {session : req.session});
         }
     });
     
@@ -578,7 +569,7 @@ app.get('/member/schedule', async (req, res) => {
     let user = req.session.user.member_id;
 
     try {
-        const query = "SELECT * FROM ScheduledMembers sc JOIN Trainers t ON sc.trainer_id = t.trainer_id \
+        const query = "SELECT *, s.schedule_id AS schedule_id FROM ScheduledMembers sc JOIN Trainers t ON sc.trainer_id = t.trainer_id \
                         JOIN Schedule s ON sc.schedule_id = s.schedule_id  LEFT JOIN Billing b ON s.schedule_id = b.schedule_id AND sc.member_id = b.member_id\
                         WHERE sc.member_id=" + user + " ORDER BY " + orderByDay + ", s.start_time";
         const scheduleResult = await client.query(query);
@@ -652,12 +643,11 @@ app.post('/member/addSession', async (req, res) => {
     let sessType = parseInt(req.body.join.split(":")[1])
     let trainerId = parseInt(req.body.join.split(":")[2])
     let availability = false
-
     console.log(req.body)
     
     try {
         const query = "INSERT INTO ScheduledMembers (schedule_id, trainer_id, member_id) VALUES ($1, $2, $3);"
-        const scheduleResult = await client.query(query, [schedId, trainerId, memberId]);
+        await client.query(query, [schedId, trainerId, memberId]);
         console.log("inserting into scheuledmembers")
 
         if(sessType = 'group') {
@@ -676,7 +666,6 @@ app.post('/member/addSession', async (req, res) => {
 
     } catch (err) {
         console.log(err)
-
         res.status(401).send("error");
     }
     
@@ -718,7 +707,6 @@ app.get('/member/billing', async (req, res) => {
 
     } catch (err) {
         console.log(err)
-
         res.status(401).send("error");
     }
     
@@ -735,7 +723,6 @@ app.post('/member/billing', async (req, res) => {
 
     } catch (err) {
         console.log(err)
-
         res.status(401).send("error");
     }
     
@@ -772,7 +759,6 @@ app.get('/addSession', async (req, res) => {
     try {
         const query = "SELECT * FROM Trainers;";
         let trainers = await client.query(query);
-
         res.render('../public/addSession', {session : req.session, trainers : trainers.rows});
         
     } catch (err) {
@@ -816,8 +802,6 @@ app.post('/addSession', async (req, res) => {
             res.redirect(`http://localhost:3000/scheduleManagement`);
         }
 
-        
-        
     } catch (err) {
         console.log(err)
         res.status(401).send("error");
@@ -846,11 +830,8 @@ app.get('/editSession/:schedId', async (req, res) => {
         const rooms = await client.query(query3);
 
         console.log(rooms.rows)
-
-
         res.render('../public/editSession', {session : req.session, schedule : session.rows[0], theClass: theClass.rows[0], rooms : rooms.rows});
-
-        
+       
     } catch (err) {
         res.status(401).send("error");
     }
@@ -871,6 +852,9 @@ app.post('/editSession/:schedId', async (req, res) => {
             console.log("deleting")
             const query = "delete from ScheduledMembers where schedule_id =$1";
             await client.query(query, [id]);
+
+            const query3 = "delete from Billing where schedule_id =$1";
+            await client.query(query3, [id]);
 
             const query2 = "delete from Schedule where schedule_id =$1";
             await client.query(query2, [id]);
@@ -894,15 +878,13 @@ app.post('/editSession/:schedId', async (req, res) => {
             const query3 = "UPDATE schedule SET day =$1, start_time =$2, end_time=$3, room_num=$4 WHERE schedule_id =$5";
             await client.query(query3, [day, start_time, end_time, room_num, id])
         }
-
-        
+       
         if (req.session.type == 'trainer') {
             res.redirect(`http://localhost:3000/trainer`);
         } else {
             res.redirect(`http://localhost:3000/scheduleManagement`);
         }
-        
-        
+              
     } catch (err) {
         res.status(401).send("error");
     }
@@ -930,7 +912,6 @@ app.get('/scheduleManagement', async (req, res) => {
 
     } catch (err) {
         console.log(err)
-
         res.status(401).send("error");
     }
     
@@ -961,7 +942,6 @@ app.get('/admin/maintenance', async (req, res) => {
     try {
         const maintenance = "SELECT * FROM Maintenance NATURAL INNER JOIN Equipment ORDER BY maintenance_id;"
         const maintenanceResult = await client.query(maintenance);
-        //console.log(maintenanceResult.rows)
         
         res.render('../public/a_maintenance', {session : req.session, maintenance : maintenanceResult.rows});
 
@@ -977,11 +957,8 @@ app.post('/admin/maintenance', async (req, res) => {
         let button = req.body.updatebutton;
         
         if (button){
-            //console.log(button, newTime[button-1]);
-
             const query = "UPDATE Maintenance SET last_checkup = \'" + newTime[button-1] + "\' WHERE maintenance_id =" + button + ";";
-            let test = await client.query(query);                
-            //console.log(query);
+            await client.query(query);                
 
             res.redirect(`http://localhost:3000/admin/maintenance`);
                 
@@ -1088,10 +1065,6 @@ app.get('/billing/:memberId', async (req, res) => {
                                 FULL JOIN trainers t ON t.trainer_id = s.trainer_id \
                                 FULL JOIN prices p on p.session_type = s.session_type \
                                 WHERE (m.member_id =$1 OR b.member_id =$1) AND (b.paid = false OR b.paid is NULL) ORDER BY " + orderByDay + ", start_time";
-        
-        
-        
-        
         const memberFees = await client.query(getMemberFees, [currMember.member_id]);
 
         const getTotal = "SELECT member_id, SUM(fee) AS total FROM billing WHERE member_id =$1 AND paid = false GROUP BY member_id"
@@ -1099,14 +1072,12 @@ app.get('/billing/:memberId', async (req, res) => {
 
         console.log("getting member fee")
         console.log(memberFees.rows)
-
         console.log(total.rows[0])
         
         res.render('../public/billing', {session : req.session, members : members.rows, currMember : currMember, memberFees : memberFees.rows, totalSum : total.rows[0]});
 
     } catch (err) {
         console.log(err)
-
         res.status(401).send("error");
     }
     
@@ -1130,7 +1101,6 @@ app.post('/billing', async (req, res) => {
         res.redirect(`http://localhost:3000/billing/${newId}`);
     } catch (err) {
         console.log(err)
-
         res.status(401).send("error");
     }
     
@@ -1146,9 +1116,6 @@ app.get('/updateBill/:billingId', async (req, res) => {
                                 JOIN members m ON m.member_id = b.member_id\
                                 LEFT JOIN trainers t ON s.trainer_id = t.trainer_id \
                                 FULL JOIN prices p on p.price = b.fee\ WHERE bill_id =$1;"
-
-                               
-        
         const memberFees = await client.query(getMemberFees, [id]);
 
         console.log("getting member fee")
@@ -1158,7 +1125,6 @@ app.get('/updateBill/:billingId', async (req, res) => {
 
     } catch (err) {
         console.log(err)
-
         res.status(401).send("error");
     }
     

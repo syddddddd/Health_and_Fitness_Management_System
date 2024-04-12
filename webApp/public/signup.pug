@@ -5,14 +5,14 @@ html(lang="en")
         
         include ./header
         
-        h1 Registration Form
+        h1 Member Registration Form
 
         form(action="/signup" method="post")
-            label(for='dropdown') Choose One: 
-            select(type='select' id='dropdown' name='dropdown')
-                option(value='member' checked) Member
-                option(value='trainer') Trainer
-                option(value='admin') Admin
+            //- label(for='dropdown') Choose One: 
+            //- select(type='select' id='dropdown' name='dropdown')
+            //-     option(value='member' checked) Member
+            //-     option(value='trainer') Trainer
+            //-     option(value='admin') Admin
             br  
             label(for='fname') Enter first name: 
             input(type="text" id="fname" name="fname" required)

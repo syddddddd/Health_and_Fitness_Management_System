@@ -26,7 +26,7 @@ VALUES
 (3, 'Monday', '16:00', '18:00', 'group', true),
 (3, 'Tuesday', '8:30', '10:00', 'private', false),
 (2, 'Tuesday', '9:00', '10:30', 'private', false),
-(1, 'Friday', '11:00', '13:00', 'private', true),
+(1, 'Friday', '11:00', '13:00', 'private', false),
 (1, 'Tuesday', '10:00', '13:00', 'group', true);
 
 -- Populate ScehduledMembers Table
@@ -37,7 +37,8 @@ VALUES
 (2, 3, 3),
 (3, 1, 2),
 (5, 1, 3),
-(5, 1, 1);
+(5, 1, 1),
+(4, 1, 3);
 
 -- Populate FitnessGoals Table
 INSERT INTO FitnessGoals (member_id, goal_weight, goal_calories, goal_sleep)

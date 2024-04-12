@@ -642,7 +642,7 @@ app.post('/member/schedule', async (req, res) => {
                 const query = "DELETE from ScheduledMembers WHERE schedule_id =$1 AND member_id =$2";
                 await client.query(query, [id, user]);
 
-                const query2 = "DELETE from Schedule WHERE schedule_id =$1"
+                const query2 = "DELETE from Schedule WHERE schedule_id =$1 AND session_type ='private'"
                 await client.query(query2, [id]);
             }
             
@@ -651,7 +651,7 @@ app.post('/member/schedule', async (req, res) => {
         res.redirect(`http://localhost:3000/member/schedule`);
 
     } catch (err) {
-        res.status(401).send("error");
+        res.status(401).send(err);
     }
     
 });

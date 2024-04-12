@@ -175,7 +175,7 @@ VALUES
 INSERT INTO Prices (session_type, price) 
 VALUES
 ('group', 10),
-('private', 20),
+('private', 20);
 
 -- Populate Billing Table
 INSERT INTO Billing (member_id, type, fee)

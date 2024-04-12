@@ -222,6 +222,7 @@ BEGIN
         WHERE trainer_id = NEW.trainer_id
           AND day = NEW.day
           AND ((NEW.start_time = '00:00' AND NEW.end_time != '00:00') OR (NEW.start_time != '00:00' AND NEW.end_time = '00:00'))
+          OR (NEW.start_time > NEW.end_time)
     ) THEN
         RAISE EXCEPTION 'Not valid';
     END IF;

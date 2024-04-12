@@ -18,15 +18,57 @@ html(lang="en")
 
         h3 #{member.fname}'s Fitness Goals 
 
-        p Goal weight: #{fitness.goal_weight} lb
-        p Goal calories consummed per day: #{fitness.goal_calories}
-        p Goal amount of sleep per night: #{fitness.goal_sleep} Hours
+        if (fitness)
+            
+            if (fitness.goal_weight != null)
+                p Goal weight: #{fitness.goal_weight} lb
+            else 
+                p Goal weight:
+            
+            if (fitness.goal_calories != null)
+                p Goal calories consummed per day: #{fitness.goal_calories}
+            else 
+                p Goal calories consummed per day:
+
+            if (fitness.goal_sleep != null)
+                p Goal amount of sleep per night: #{fitness.goal_sleep} Hours
+            else 
+                p Goal amount of sleep per night:
+
+        else 
+            p Goal weight:
+            p Goal calories consummed per day:
+            p Goal amount of sleep per night:
+        
         br
 
         h3 #{member.fname}'s Health Metrics 
 
-        p Hours of sleep: #{health.hours_slept}
-        p Current weight: #{health.curr_weight} lb
-        p Height: #{health.height} cm
-        p Calories consummed: #{health.calories_consummed}
+        if (health)
+            if (health.hours_slept)
+                p Hours of sleep: #{health.hours_slept}
+            else 
+                p Hours of sleep:
+            
+            if (health.curr_weight)
+                p Current weight: #{health.curr_weight} lb
+            else 
+                p Current weight:
+            
+            if (health.height)
+                p Height: #{health.height} cm
+            else 
+                p Height:
+            
+            if (health.calories_consummed)
+                p Calories consummed: #{health.calories_consummed}
+            else 
+                p Calories consummed:
+
+        else 
+            p Hours of sleep:
+            p Current weight:
+            p Height:
+            p Calories consummed:
+
         br

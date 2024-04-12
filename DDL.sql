@@ -49,9 +49,9 @@ CREATE TABLE Admins(
 CREATE TABLE FitnessGoals(
     fitnessgoal_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Members(member_id),
-    goal_weight INT NOT NULL,
-    goal_calories INT NOT NULL,
-    goal_sleep INT NOT NULL
+    goal_weight FLOAT,
+    goal_calories FLOAT,
+    goal_sleep FLOAT
 );
 
 -- Create HealthMetrics table

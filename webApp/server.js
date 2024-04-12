@@ -105,27 +105,64 @@ app.post('/signup', async (req, res) => {
     let gender = req.body.gender;
     let username = req.body.username;
     let password = req.body.password;
-    //let user = req.body.dropdown;
-    //let table = user.charAt(0).toUpperCase() + user.slice(1) + 's'
 
-    const query = "INSERT INTO Members (fname, lname, email, phone_number, gender, username, password) VALUES ( \'" + fname + "\', \'" + lname + "\', \'" + email + "\', \'" + phone + "\', \'" + gender + "\', \'" + username + "\', \'" + password + "\') RETURNING *;";
-    //console.log(query);
+    try{
+        const query = "INSERT INTO Members (fname, lname, email, phone_number, gender, username, password) VALUES ( \'" + fname + "\', \'" + lname + "\', \'" + email + "\', \'" + phone + "\', \'" + gender + "\', \'" + username + "\', \'" + password + "\');";
+        console.log(query);
+        let rt = await client.query(query);
+        console.log(rt.rows[0]);
+        console.log("inserted");
+    }
+    catch(err){
+        console.log("error inserting signup");
+        res.status(401).send("error");
+    }
 
-    client.query(query, (err,result) => {
 
-        if (err){
-            console.log(err);
-            console.log("THERE IS ERROR")
-        }
-        else{
-            console.log("inserted");
-            req.session.user = result.rows[0];
-            req.session.type = 'member';
-            req.session.loggedin = true;
-            console.log(req.session);
-            res.render(`../public/member`, {session : req.session});
-        }
-    });
+    // create new tables for new member
+    try{
+
+        const member = "SELECT * FROM Members WHERE username=\'" + username + "\' AND password=\'" + password  + "\'";
+        //console.log(member);
+        let r = await client.query(member);
+
+
+        const query1 = "INSERT INTO HealthMetrics (member_id) VALUES (" +  r.rows[0].member_id + ");";
+        //console.log(query);
+        await client.query(query1);
+        //console.log(rt.rows[0]);
+        //console.log("inserted");
+
+        const query2 = "INSERT INTO FitnessGoals (member_id) VALUES (" +  r.rows[0].member_id + ");";
+        //console.log(query);
+        await client.query(query2);
+
+        console.log("added tables for signup");
+
+    }
+    catch(err){
+        console.log("error inserting new tables");
+        res.status(401).send("error");
+    }
+
+
+    try{
+        const member = "SELECT * FROM Members WHERE username=\'" + username + "\' AND password=\'" + password  + "\'";
+        //console.log(member);
+        let r = await client.query(member);
+        console.log(r.rows[0]);
+
+        req.session.user = r.rows[0];
+        req.session.type = 'member';
+        req.session.loggedin = true;
+        console.log(req.session);
+
+        res.redirect(`http://localhost:3000/member`);
+    }
+    catch(err){
+        console.log("error finding signup");
+        res.status(401).send("error");
+    }
     
 });
 

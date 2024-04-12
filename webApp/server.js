@@ -636,14 +636,17 @@ app.post('/member/schedule', async (req, res) => {
     try {      
         if(items) {
             console.log(items)
+            items = Array.isArray(items) ? items : items.split(" ")
+
             for(item of items) {
                 let id = parseInt(item)
                 console.log(id)
-                const query = "DELETE from ScheduledMembers WHERE schedule_id =$1 AND member_id =$2";
-                await client.query(query, [id, user]);
 
                 const query3 = "DELETE from Billing WHERE schedule_id =$1 AND member_id =$2"
                 await client.query(query3, [id, user]);
+
+                const query = "DELETE from ScheduledMembers WHERE schedule_id =$1 AND member_id =$2";
+                await client.query(query, [id, user]);
 
                 const query2 = "DELETE from Schedule WHERE schedule_id =$1 AND session_type ='private'"
                 await client.query(query2, [id]);

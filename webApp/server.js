@@ -605,7 +605,7 @@ app.post('/member/schedule', async (req, res) => {
                 const query = "DELETE from ScheduledMembers WHERE schedule_id =$1 AND member_id =$2";
                 await client.query(query, [id, user]);
 
-                const query2 = "UPDATE Schedule SET availability = true WHERE schedule_id =$1"
+                const query2 = "DELETE from Schedule WHERE schedule_id =$1"
                 await client.query(query2, [id]);
             }
             
@@ -779,39 +779,44 @@ app.post('/addSession', async (req, res) => {
     let day = req.body.day;
     let start_time = req.body.start_hour + ':' + req.body.start_min;
     let end_time = req.body.end_hour + ':' + req.body.end_min;
-    let sessType = req.body.sessType;
+    let sessType = req.session.type == 'member' ? 'private' : 'group'
+    let availability = req.session.type == 'member' ? false : true
+    console.log(sessType)
     let discard = req.body.discardBtn
-    let id = 0;
+    let id = parseInt(req.body.trainer)
 
-    if (req.session.type == 'trainer') {
-        id = req.session.user.trainer_id
-    } else {
-        id = parseInt(req.body.trainer)
-    }
     
     try {
         if (!discard) {
             console.log(req.body)
             console.log(id)
-            const query = "INSERT INTO SCHEDULE (trainer_id, day, start_time, end_time, availability, session_type) VALUES ( \'" + id + "\', \'" + day + "\', \'" + start_time + "\', \'" + end_time + "\', \'true\', \'" + sessType + "\') RETURNING *;";
-            let result = await client.query(query);
+            const query = "INSERT INTO SCHEDULE (trainer_id, day, start_time, end_time, availability, session_type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;";
+            let result = await client.query(query, [id, day, start_time, end_time, availability, sessType, ]);
 
             let sched = result.rows[0]
             console.log(sched)
+
+            if (req.session.type == 'member') {
+                const query2 = "INSERT INTO ScheduledMembers (schedule_id, trainer_id, member_id) VALUES ($1, $2, $3);";
+                await client.query(query2, [sched.schedule_id, id, req.session.user.member_id]);
+            } else {
+                console.log("inserting to schedule members")
+                const query3 = "INSERT INTO ScheduledMembers (schedule_id, trainer_id) VALUES ($1, $2);";
+                await client.query(query3, [sched.schedule_id, id]);
+            }
             
-            const query2 = "INSERT INTO ScheduledMembers (schedule_id, trainer_id) VALUES ( \'" + sched.schedule_id + "\', \'" + id + "\');";
-            await client.query(query2);
+            
         }
 
-        if (req.session.type == 'trainer') {
-            res.redirect(`http://localhost:3000/trainer`);
+        if (req.session.type == 'member') {
+            res.redirect(`http://localhost:3000/member/schedule`)
         } else {
             res.redirect(`http://localhost:3000/scheduleManagement`);
         }
 
     } catch (err) {
         console.log(err)
-        res.status(401).send("error");
+        res.status(401).send(err);
     }
     
 });

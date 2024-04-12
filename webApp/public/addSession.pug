@@ -10,7 +10,11 @@ html(lang="en")
             }
         
        
-        h3 Add Session
+        if session.type == 'member'
+            h3 Add Private Session
+        else 
+            h3 Create Group Class 
+
         form(action="/addSession" method="post")
             |
             label(for='dropdown') #[strong Day:]   
@@ -46,22 +50,20 @@ html(lang="en")
                 option(value='00' checked) 00
                 option(value='30') 30
 
+            //- br
+            //- br
+            //- | #[strong Session Type:] 
+            //- label(for='dropdown')    
+            //- select(type='select' id='sessType' name='sessType')
+            //-     option(value='private' checked) Private
+            //-     option(value='group') Group
             br
             br
-            | #[strong Session Type:] 
-            label(for='dropdown')    
-            select(type='select' id='sessType' name='sessType')
-                option(value='private' checked) Private
-                option(value='group') Group
-            br
-            br
-            | 
-            if session.type == 'admin'
-                | #[strong Trainer:] 
-                label(for='dropdown')   
-                select(type='select' id='trainer' name='trainer')
-                    each trainer in trainers
-                        option(value=trainer.trainer_id) #{trainer.fname} #{trainer.lname}
+            | #[strong Trainer:] 
+            label(for='dropdown')   
+            select(type='select' id='trainer' name='trainer')
+                each trainer in trainers
+                    option(value=trainer.trainer_id) #{trainer.fname} #{trainer.lname}
             br
             br
             | 

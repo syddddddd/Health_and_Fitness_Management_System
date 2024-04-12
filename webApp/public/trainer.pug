@@ -54,7 +54,8 @@ html(lang="en")
                             td #{sched.room_num}
                            
                             td
-                                a(href=`/editSession/${sched.schedule_id}`) edit
+                                if sched.session_type == 'private'
+                                    a(href=`/editSession/${sched.schedule_id}`) edit
             |
             
 
@@ -71,7 +72,7 @@ html(lang="en")
         //-                     #{sched.session_type}&nbsp;&nbsp;&nbsp;&nbsp;
         //-                     #{sched.member_id}
 
-        br
-        button(type="button" id="addSession") Add Session
+        //- br
+        //- button(type="button" id="addSession") Add Session
 
         script(src="/js/trainerScheduleManagement.js")

@@ -14,14 +14,18 @@ html(lang="en")
                 border: 1px solid #dddddd;
                 text-align: left;
                 padding: 8px;
-            }#addBtn {
+            }.addBtn {
                 margin-right: 10px; 
             }
 
-        h1 #{session.user.fname} #{session.user.lname}
+        h1 #{session.user.fname} #{session.user.lname}'s Schedule
         
-        h2 Schedule 
-        form(action=`/member/schedule` method="post")
+        //h2 Schedule 
+        button#addBtn(type="button" class="addBtn") Add Private Session
+        button#groupBtn(type="button" class="addBtn") Join Group Class
+        
+        form(action="/member/schedule" method="post")
+            br
             table
                 thead 
                     tr
@@ -33,7 +37,6 @@ html(lang="en")
                         th Room Number
                         th Paid
                         
-
                 tbody
                     if schedule && schedule.length > 0
                         each sched in schedule
@@ -50,15 +53,11 @@ html(lang="en")
                                     else if sched.bill_id
                                         p Not paid 
                                      
-                                    
-                        
-                            
                                 td
                                     input(type='checkbox' name='deleteBox' value=sched.schedule_id)
                                     label(for='checkbox') &nbsp;&nbsp;Cancel Session
             
-            br
-            button#addBtn(type="button" name="addBtn") Add Session
-            button(type="submit" name="save" class="link") Save Edits
+            br 
+            button(type="submit") Save Edits
         
             script(src="/js/memberSchedule.js")

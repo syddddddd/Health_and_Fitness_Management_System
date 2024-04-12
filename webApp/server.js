@@ -157,6 +157,9 @@ app.post('/signup', async (req, res) => {
         req.session.loggedin = true;
         console.log(req.session);
 
+        const memberFee = "INSERT into Billing (member_id, type, fee) VALUES ($1, 'member fee', 50)";
+        await client.query(memberFee, [req.session.user.member_id]);
+
         res.redirect(`http://localhost:3000/member`);
     }
     catch(err){
